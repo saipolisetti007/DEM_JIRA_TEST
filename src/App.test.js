@@ -1,8 +1,10 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { render, screen } from "@testing-library/react";
+import Header from "./components/Header/Header";
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test("Should have header", () => {
+  render(<Header />);
+  const headingElement = screen.getByRole("heading", {
+    name: /Digital Event Manager/i,
+  });
+  expect(headingElement).toBeInTheDocument();
 });
