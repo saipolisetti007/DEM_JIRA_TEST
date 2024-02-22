@@ -1,0 +1,36 @@
+name: Build ui
+
+on:
+   workflow_dispatch:
+   push:
+    branches:
+     - develop
+    #  - stage
+    #  - main
+
+jobs:
+    Test_and_Build_UI_code:
+        strategy:
+            matrix:
+              node-version: [14.x, 16.x, 18.x]
+              # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        runs-on: [self-hosted,Linux, cicdframework]
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+      
+            - name: Set up Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v1
+              with:
+               node-version: ${{ matrix.node-version }}
+        
+            - name: Install dependencies
+              run: npm install
+        
+            - name: Run the tests and generate coverage report
+              run: npm test -- --coverage
+
+            - name: Build
+              run: npm run build              
+    
+
