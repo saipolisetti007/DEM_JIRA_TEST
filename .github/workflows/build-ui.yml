@@ -47,7 +47,7 @@ jobs:
             - name: download the artifact
               uses: actions/download-artifact@v4
               with:
-                name: release.zip
+                name: node-app
             
             - name: deploy the web-app
               uses: azure/webapps-deploy@v2
