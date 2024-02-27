@@ -29,16 +29,15 @@ jobs:
             - name: Run the tests and generate coverage report
               run: npm test --coverage
 
-            # - name: Zip release
-            #   run: |
-            #     zip -r release.zip ./build/*
+            - name: Zip release
+              run: |
+                zip -r release.zip ./build/*
             
             - name: upload artifact
               uses: actions/upload-artifact@v4
               with:
                 name: node-app
-                path: ./build/*
-
+                path: release.zip
 
     Deploy:
         runs-on: [self-hosted,Linux, cicdframework]
