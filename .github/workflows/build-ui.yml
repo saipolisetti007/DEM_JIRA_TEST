@@ -11,9 +11,9 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-   build_and_scan:
+  build_and_scan:
     name: SonarQube
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted,Linux, cicdframework]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -22,50 +22,51 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-    Test_and_Build_UI_code:
-        runs-on: [self-hosted,Linux, cicdframework]
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v2
-      
-            - name: Set up Node.js 16.x
-              uses: actions/setup-node@v4
-              with:
-               node-version: 16.x
+  Test_and_Build_UI_code:
+    runs-on: [self-hosted,Linux, cicdframework]
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
+        - name: Set up Node.js 16.x
+          uses: actions/setup-node@v4
+          with:
+            node-version: 16.x
+    
+        - name: Install dependencies
+          run: npm install
+
+        - name: Build
+          run: npm run build 
+          
+        - name: Run the tests and generate coverage report
+          run: npm test --coverage
+
+        - name: Zip release
+          run: |
+            cd ./build
+            zip -r release.zip .
         
-            - name: Install dependencies
-              run: npm install
+        - name: upload artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: node-app
+            path: ./build/release.zip
 
-            - name: Build
-              run: npm run build 
-              
-            - name: Run the tests and generate coverage report
-              run: npm test --coverage
-
-            - name: Zip release
-              run: |
-                cd ./build
-                zip -r release.zip .
-            
-            - name: upload artifact
-              uses: actions/upload-artifact@v4
-              with:
-                name: node-app
-                path: ./build/release.zip
-
-    Deploy:
-        runs-on: [self-hosted,Linux, cicdframework]
-        needs: Test_and_Build_UI_code
-        steps: 
-            - name: download the artifact
-              uses: actions/download-artifact@v4
-              with:
-                name: node-app
-            - name: Display structure of downloaded files
-              run: ls -R 
-            - name: deploy the web-app
-              uses: azure/webapps-deploy@v2
-              with:
-                app-name: 'webdem-web-dev-web02'
-                publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE}}
-                package: release.zip
+  Deploy:
+    runs-on: [self-hosted,Linux, cicdframework]
+    needs: Test_and_Build_UI_code
+    steps: 
+        - name: download the artifact
+          uses: actions/download-artifact@v4
+          with:
+            name: node-app
+        - name: Display structure of downloaded files
+          run: ls -R 
+        - name: deploy the web-app
+          uses: azure/webapps-deploy@v2
+          with:
+            app-name: 'webdem-web-dev-web02'
+            publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE}}
+            package: release.zip
