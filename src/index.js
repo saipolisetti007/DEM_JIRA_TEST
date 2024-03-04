@@ -13,11 +13,13 @@ import {
 
 import Home from "./components/Home/Home";
 import App from "./App";
+import StoreToDcMapping from "./pages/StoreToDcMapping";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="" element={<Home />} />
+      <Route path="/store-to-dc-mapping" element={<StoreToDcMapping />} />
     </Route>
   )
 );
