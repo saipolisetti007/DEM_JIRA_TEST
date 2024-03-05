@@ -5,8 +5,10 @@ on:
    push:
     branches:
      - develop
-    #  - stage
-    #  - main
+     - stage
+     - main
+    paths-ignore:
+     - '.github\workflows\**'
    pull_request:
     types: [opened, synchronize, reopened]
 
@@ -30,39 +32,32 @@ jobs:
           run: npm run build 
           
         - name: Run the tests and generate coverage report
-          run: npm test --coverage
+          run: npm test
 
         - name: Zip release
           run: |
             cd ./build
             zip -r release.zip .
         
-        - name: upload artifact
+        - name: Upload artifact
           uses: actions/upload-artifact@v4
           with:
             name: node-app
             path: ./build/release.zip
 
-  # SonarQube_scan:
-  #   name: SonarQube
-  #   needs: Test_and_Build_UI_code    
-  #   runs-on: [self-hosted,Linux, cicdframework]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-  #     - uses: sonarsource/sonarqube-scan-action@master
-  #       env:
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        - name: SonarQube code scan
+          uses: sonarsource/sonarqube-scan-action@master
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-  #     - name: SonarQube Quality Gate check
-  #       id: sonarqube-quality-gate-check
-  #       uses: sonarsource/sonarqube-quality-gate-action@master
-  #       continue-on-error: true
-  #       env:
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
+        - name: SonarQube Quality Gate check
+          id: sonarqube-quality-gate-check
+          uses: sonarsource/sonarqube-quality-gate-action@master
+          continue-on-error: true
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
 
   Deploy:
     runs-on: [self-hosted,Linux, cicdframework]

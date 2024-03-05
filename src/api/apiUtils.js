@@ -1,20 +1,17 @@
-import axios from "axios";
-import { BASE_API_URL } from "./constants";
+import axios from 'axios';
+const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
 
 const api = axios.create({
   baseURL: BASE_API_URL,
-  timeout: 10000, // adjust as needed
-  headers: {
-    "Access-Control-Allow-Origin": "*",
-  },
+  timeout: 10000
 });
 
-export const performApiRequest = async (url, method = "GET", data = null) => {
+export const performApiRequest = async (url, method = 'GET', data = null) => {
   try {
     const response = await api.request({
       url,
       method,
-      data,
+      data
     });
     return handleResponse(response);
   } catch (error) {
@@ -32,6 +29,6 @@ export const handleResponse = (response) => {
 };
 
 export const handleError = (error) => {
-  console.error("Error performing API request:", error);
+  console.error('Error performing API request:', error);
   throw error;
 };

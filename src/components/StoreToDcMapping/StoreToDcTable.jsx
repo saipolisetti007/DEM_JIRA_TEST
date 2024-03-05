@@ -1,19 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { getHealth } from "../../api/api";
-import { useErrorBoundary } from "react-error-boundary";
+import React, { useState, useEffect } from 'react';
+import { getHealth } from '../../api/api';
 
 const StoreToDcTable = () => {
-  const { showBoundary } = useErrorBoundary();
   const [data, setData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const statusData = await getHealth();
-        console.log(statusData);
-        setData(statusData);
-      } catch (error) {
-        showBoundary(error);
-      }
+      const statusData = await getHealth();
+      setData(statusData);
     };
     fetchData();
   });
@@ -21,7 +14,7 @@ const StoreToDcTable = () => {
   return (
     <div className="container mx-auto">
       {data.map((sdata, index) => (
-        <p key={index}>{sdata.status}</p>
+        <p key={index}>{sdata.name}</p>
       ))}
     </div>
   );

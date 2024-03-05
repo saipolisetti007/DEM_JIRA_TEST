@@ -8,18 +8,20 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.7",
+    "husky": "^9.0.11",
+    "moment": "^2.30.1",
+    "msw": "^2.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-error-boundary": "^4.0.12",
     "react-router-dom": "^6.22.1",
     "react-scripts": "5.0.1",
+    "sass": "^1.71.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --detectOpenHandles",
-    "test:coverage": "react-scripts test --coverage --collectCoverageFrom='src/components/**/*.{js,jsx}' --collectCoverageFrom='!src/components/**/StoreToDcTable.{js,jsx}'",
+    "test": "react-scripts test --coverage --detectOpenHandles --collectCoverageFrom='src/components/**/*.{js,jsx}' --collectCoverageFrom='!src/components/**/StoreToDcTable.{js,jsx}'",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -40,9 +42,6 @@
       "last 1 safari version"
     ]
   },
-  "overrides": {
-    "@types/react": "17.0.60"
-  },
   "jest": {
     "coverageThreshold": {
       "global": {
@@ -52,5 +51,15 @@
         "statements": -10
       }
     }
-  }
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.34.0",
+    "prettier": "^3.2.5"
+  },
+  "lint": "eslint .",
+  "lint:fix": "eslint --fix",
+  "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
 }

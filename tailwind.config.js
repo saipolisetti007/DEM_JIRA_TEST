@@ -1,17 +1,10 @@
-const withMT = require("@material-tailwind/react/utils/withMT");
+const withMT = require('@material-tailwind/react/utils/withMT');
 
+// eslint-disable-next-line no-undef
 module.exports = withMT({
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
-    container: {
-      padding: {
-        DEFAULT: "1rem",
-        sm: "2rem",
-        lg: "4rem",
-        xl: "5rem",
-      },
-    },
-    extend: {},
+    extend: {}
   },
-  plugins: [],
+  plugins: []
 });
