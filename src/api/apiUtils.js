@@ -21,7 +21,6 @@ export const performApiRequest = async (url, method = 'GET', data = null) => {
 
 export const handleResponse = (response) => {
   if (response.status >= 200 && response.status < 300) {
-    console.log(response.data);
     return response.data;
   } else {
     throw new Error(`HTTP error! Status: ${response.status}`);

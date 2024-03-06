@@ -11,13 +11,7 @@ const StoreToDcTable = () => {
     fetchData();
   });
 
-  return (
-    <div className="container mx-auto">
-      {data.map((sdata, index) => (
-        <p key={index}>{sdata.name}</p>
-      ))}
-    </div>
-  );
+  return <div className="container mx-auto">Health Check Status : {data.status}</div>;
 };
 
 export default StoreToDcTable;
