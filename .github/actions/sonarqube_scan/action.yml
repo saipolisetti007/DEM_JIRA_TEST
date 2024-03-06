@@ -1,0 +1,25 @@
+name: Quality Gate
+
+inputs:
+  SONAR_TOKEN:
+    description: 'Sonar Token'
+    required: true
+  SONAR_HOST_URL:
+    description: 'Sonar URL'
+    required: true
+
+runs:
+    using: "composite"
+    steps:
+        - uses: sonarsource/sonarqube-scan-action@master
+          env:
+            SONAR_TOKEN: ${{ inputs.SONAR_TOKEN }}
+            SONAR_HOST_URL: ${{ inputs.SONAR_HOST_URL }}
+  
+        - name: SonarQube Quality Gate check
+          id: sonarqube-quality-gate-check
+          uses: sonarsource/sonarqube-quality-gate-action@master
+          continue-on-error: true
+          env:
+            SONAR_TOKEN: ${{ inputs.SONAR_TOKEN }}
+            SONAR_HOST_URL: ${{ inputs.SONAR_HOST_URL }}

@@ -1,21 +1,43 @@
-name: Build ui
+name: Check, Build & Deploy UI code
 
 on:
    workflow_dispatch:
+    inputs: 
+      environment: 
+        description: 'Environment to deploy'
+        type: environment
+        required: true
+
    push:
     branches:
      - develop
      - stage
      - main
     paths-ignore:
-     - '.github\workflows\**'
+     - '.github/**'
      - 'sonar-project.properties'
-   pull_request:
-    types: [opened, synchronize, reopened]
+
+env:
+  REACT_APP_BASE_API_URL: ${{ secrets.BASE_API_URL }}
 
 jobs:
-  Test_and_Build_UI_code:
+  SonarQube_Scan:
+    name: SonarQube Scan
     runs-on: [self-hosted,Linux, cicdframework]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/sonarqube_scan
+        name: Sonarqube-scan
+        with:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  Build_and_test_UI_code:
+    runs-on: [self-hosted,Linux, cicdframework]
+    needs: SonarQube_Scan
     steps:
         - name: Checkout repository
           uses: actions/checkout@v2
@@ -46,31 +68,35 @@ jobs:
             name: node-app
             path: ./build/release.zip
 
-  SonarQube_scan:
-    name: SonarQube
-    needs: Test_and_Build_UI_code    
+  environment:
+    name: Select Environment
     runs-on: [self-hosted,Linux, cicdframework]
+    needs: SonarQube_Scan
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-
-      - name: SonarQube Quality Gate check
-        id: sonarqube-quality-gate-check
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        continue-on-error: true
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
+      -   name: Select deployment environment
+          id: branch_check
+          run: |
+              echo "Running on branch ${{ github.ref }}"
+              if [ "${{ inputs.environment }}" != "" ]; then
+                  echo "env_name=${{ inputs.environment }}" >> $GITHUB_OUTPUT
+              elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+                  echo "env_name=develop" >> $GITHUB_OUTPUT
+              elif [ "${{ github.ref }}" == "refs/heads/stage" ]; then
+                  echo "env_name=Stage" >> $GITHUB_OUTPUT
+              elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+                  echo "env_name=Production" >> $GITHUB_OUTPUT                    
+              else
+                  echo "ERROR: The environment is not defined"; exit 1;
+              fi
+    outputs:
+        env_name: ${{ steps.branch_check.outputs.env_name }}
 
   Deploy:
+    name: Deploy to ${{ needs.environment.outputs.env_name }} environment
     runs-on: [self-hosted,Linux, cicdframework]
-    needs: SonarQube_scan
-    if: ${{ ! startsWith(github.ref, 'refs/pull/') }}
+    needs: environment
+    environment: 
+      name: ${{ needs.environment.outputs.env_name }}
     steps: 
         - name: download the artifact
           uses: actions/download-artifact@v4
