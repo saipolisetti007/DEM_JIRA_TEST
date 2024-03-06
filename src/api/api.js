@@ -1,5 +1,9 @@
 import { performApiRequest } from './apiUtils';
 
 export const getHealth = async () => {
-  return performApiRequest('/health-check');
+  return await performApiRequest('/health-check');
+};
+
+export const getMessage = async () => {
+  return await performApiRequest('/get_data');
 };
