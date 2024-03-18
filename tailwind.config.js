@@ -1,10 +1,10 @@
-const withMT = require('@material-tailwind/react/utils/withMT');
+/** @type {import('tailwindcss').Config} */
 
 // eslint-disable-next-line no-undef
-module.exports = withMT({
+module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {}
   },
   plugins: []
-});
+};

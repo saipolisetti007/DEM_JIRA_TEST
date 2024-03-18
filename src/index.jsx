@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
-// @material-tailwind/react
-import { ThemeProvider } from '@material-tailwind/react';
+import { ThemeProvider } from '@mui/material/styles';
+import customTheme from './customTheme';
 import {
   Route,
   RouterProvider,
@@ -15,6 +15,9 @@ import App from './App';
 
 import StoreToDcMapping from './pages/StoreToDcMapping';
 import Home from './pages/Home';
+import { Provider } from 'react-redux';
+import store from './store/store';
+import ErrorBoundary from './errorHanlding/ErrorBoundary';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,8 +31,12 @@ const router = createBrowserRouter(
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ThemeProvider>
-      <RouterProvider router={router} />
+    <ThemeProvider theme={customTheme}>
+      <ErrorBoundary>
+        <Provider store={store}>
+          <RouterProvider router={router} />
+        </Provider>
+      </ErrorBoundary>
     </ThemeProvider>
   </React.StrictMode>
 );

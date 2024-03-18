@@ -1,14 +1,13 @@
 import React, { Suspense } from 'react';
-import StoreToDcTable from '../components/StoreToDcMapping/StoreToDcTable';
-import ErrorBoundary from '../errorHanlding/ErrorBoundary';
+// import StoreToDcTable from '../components/StoreToDcMapping/StoreToDcTable';
+import StoreToDc from '../components/StoreToDcMapping/StoreToDc';
 
 const StoreToDcMapping = () => {
   return (
-    <ErrorBoundary>
-      <Suspense fallback={<div>Loading...</div>}>
-        <StoreToDcTable />
-      </Suspense>
-    </ErrorBoundary>
+    <Suspense fallback={<div>Loading...</div>}>
+      {/* <StoreToDcTable /> */}
+      <StoreToDc />
+    </Suspense>
   );
 };
 

@@ -1,10 +1,12 @@
 import React from 'react';
-import { Button } from '@material-tailwind/react';
+import { Button } from '@mui/material';
 
 const NavBar = () => {
   return (
     <nav data-testid="navbar">
-      <Button color="cyan">Sign In</Button>
+      <Button variant="contained" color="primary">
+        Sign In
+      </Button>
     </nav>
   );
 };

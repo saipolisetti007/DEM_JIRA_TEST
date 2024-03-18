@@ -1,9 +1,16 @@
 import { performApiRequest } from './apiUtils';
 
-export const getHealth = async () => {
-  return await performApiRequest('/health-check');
+export const getData = async () => {
+  return await performApiRequest('/tabledata');
 };
 
-export const getMessage = async () => {
-  return await performApiRequest('/get_data');
+export const getCategories = async () => {
+  return await performApiRequest('/category');
+};
+
+export const getBrands = async () => {
+  return await performApiRequest('/brand');
+};
+export const getSubsectors = async () => {
+  return await performApiRequest('/subsector');
 };
