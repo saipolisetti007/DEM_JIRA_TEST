@@ -14,8 +14,8 @@ on:
      - stage
      - main
     paths-ignore:
-     - '.github/**'
-     - 'sonar-project.properties'
+      - './.github/**/*' 
+      - './sonar-project.properties'
 
 env:
   REACT_APP_BASE_API_URL: ${{ secrets.BASE_API_URL }}
@@ -29,13 +29,24 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run the tests and generate coverage report
+        run: npm test
+
       - uses: ./.github/actions/sonarqube_scan
         name: Sonarqube-scan
         with:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-  Build_and_test_UI_code:
+  Build_UI_code:
     runs-on: [self-hosted,Linux, cicdframework]
     needs: SonarQube_Scan
     steps:
@@ -47,15 +58,23 @@ jobs:
           uses: actions/setup-node@v4
           with:
             node-version: 20.x
-    
+
+        - name: Install GitVersion
+          uses: gittools/actions/gitversion/setup@v1.1.0
+          with:
+            versionSpec: '5.12.0'
+
+        - name: Determine Version
+          id: gitversion
+          uses: gittools/actions/gitversion/execute@v1.1.0
+          with:
+            useConfigFile: true  
+
         - name: Install dependencies
           run: npm install
 
         - name: Build
           run: npm run build 
-          
-        - name: Run the tests and generate coverage report
-          run: npm test
 
         - name: Zip release
           run: |
@@ -65,13 +84,15 @@ jobs:
         - name: Upload artifact
           uses: actions/upload-artifact@v4
           with:
-            name: node-app
+            name: node-app-${{ steps.gitversion.outputs.MajorMinorPatch }}
             path: ./build/release.zip
+    outputs:
+      version_num: ${{ steps.gitversion.outputs.MajorMinorPatch }}
 
   environment:
     name: Select Environment
     runs-on: [self-hosted,Linux, cicdframework]
-    needs: Build_and_test_UI_code
+    needs: Build_UI_code
     steps:
       -   name: Select deployment environment
           id: branch_check
@@ -94,14 +115,14 @@ jobs:
   Deploy:
     name: Deploy to ${{ needs.environment.outputs.env_name }} environment
     runs-on: [self-hosted,Linux, cicdframework]
-    needs: environment
+    needs: [environment, Build_UI_code]
     environment: 
       name: ${{ needs.environment.outputs.env_name }}
     steps: 
         - name: download the artifact
           uses: actions/download-artifact@v4
           with:
-            name: node-app
+            name: node-app-${{ needs.Build_UI_code.outputs.version_num }}
 
         - name: deploy the web-app
           uses: azure/webapps-deploy@v2
