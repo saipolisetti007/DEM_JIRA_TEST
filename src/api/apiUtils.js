@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
-const api = axios.create({
+
+export const api = axios.create({
   baseURL: BASE_API_URL,
   timeout: 10000
 });
@@ -36,12 +37,13 @@ api.interceptors.response.use(
   }
 );
 
-export const performApiRequest = async (url, method = 'GET', data = null) => {
+export const performApiRequest = async (url, method = 'GET', data = null, responseType) => {
   try {
     const response = await api.request({
       url,
       method,
-      data
+      data,
+      responseType
     });
     return handleResponse(response);
   } catch (error) {

@@ -1,17 +1,18 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import CustomerProfile from './CustomerProfile';
+import EventGrid from './EventGrid';
 
 test('Homepage Example Text renders successfully', () => {
   render(
     <BrowserRouter>
-      <CustomerProfile />
+      <EventGrid />
     </BrowserRouter>
   );
-  const headingElement = screen.getByText(/Customer Profile Maintenance/i);
+  const headingElement = screen.getByText(/Event Forecast Input/i);
   expect(headingElement).toBeInTheDocument();
+
   const buttonComponent = screen.getByRole('button');
   expect(buttonComponent).toBeInTheDocument();
-  expect(buttonComponent).toHaveTextContent(/Store to DC Mapping/i);
+  expect(buttonComponent).toHaveTextContent(/Promo Grid/i);
   fireEvent.click(buttonComponent);
 });

@@ -18,12 +18,14 @@ import Home from './pages/Home';
 import { Provider } from 'react-redux';
 import store from './store/store';
 import ErrorBoundary from './errorHanlding/ErrorBoundary';
+import PromoGrid from './pages/PromoGrid';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="" element={<Home />} />
       <Route path="/store-to-dc-mapping" element={<StoreToDcMapping />} />
+      <Route path="/promo-grid" element={<PromoGrid />} />
     </Route>
   )
 );

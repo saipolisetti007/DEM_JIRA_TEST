@@ -14,8 +14,8 @@ on:
      - stage
      - main
     paths-ignore:
-      - './.github/**/*' 
-      - './sonar-project.properties'
+      - '.github/**/*' 
+      - 'sonar-project.properties'
 
 env:
   REACT_APP_BASE_API_URL: ${{ secrets.BASE_API_URL }}

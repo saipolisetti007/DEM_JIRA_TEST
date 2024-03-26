@@ -7,11 +7,14 @@ on:
         - stage
         - main
     types: [opened, synchronize, reopened]
+    paths-ignore:
+      - '.github/**/*' 
+      - 'sonar-project.properties'
 
 jobs:
     compliance:
         name: PR Compliance check
-        runs-on: [self-hosted,Linux, cicdframework]
+        runs-on: [self-hosted,Linux,cicdframework,azlgleus2enp041.runner0]
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
@@ -33,3 +36,6 @@ jobs:
               with:
                 SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
                 SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+            - name: Build UI code
+              run: npm run build

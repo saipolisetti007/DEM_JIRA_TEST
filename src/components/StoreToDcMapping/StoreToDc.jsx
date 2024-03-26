@@ -60,10 +60,12 @@ const StoreToDc = () => {
   const handleCreate = async ({ values, table }) => {
     const newValidationErrors = validateUser(values);
     if (Object.values(newValidationErrors).some((error) => error)) {
+      console.log('error', newValidationErrors);
       setValidationErrors(newValidationErrors);
       return;
     }
     setValidationErrors({});
+    console.log('values:', values);
 
     const newValues = {
       ...values,
@@ -167,8 +169,8 @@ const StoreToDc = () => {
         accessorKey: 'dateTo',
         header: 'Date To',
         Edit: ({ column, row }) => {
-          const initialValue = row.original.dateFrom
-            ? moment(row.original.dateFrom, 'MM/DD/YYYY')
+          const initialValue = row.original.dateTo
+            ? moment(row.original.dateTo, 'MM/DD/YYYY')
             : null;
           return (
             <LocalizationProvider dateAdapter={AdapterMoment}>

@@ -9,9 +9,9 @@ describe('BlankExcelComponent', () => {
         <BlankExcelDownload />
       </BrowserRouter>
     );
-    const ButtonComponent = screen.getByRole('button');
-    expect(ButtonComponent).toBeInTheDocument();
-    expect(ButtonComponent).toHaveTextContent(/Download\sBlank Template/i);
-    fireEvent.click(ButtonComponent);
+    const buttonComponent = screen.getByRole('button');
+    expect(buttonComponent).toBeInTheDocument();
+    expect(buttonComponent).toHaveTextContent(/Download\sBlank Template/i);
+    fireEvent.click(buttonComponent);
   });
 });

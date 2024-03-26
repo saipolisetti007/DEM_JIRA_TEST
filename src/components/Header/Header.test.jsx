@@ -12,10 +12,10 @@ describe('HeaderComponent', () => {
         <Header />
       </BrowserRouter>
     );
-    const LogoComponent = screen.getByTestId('logo');
-    expect(LogoComponent).toBeInTheDocument();
-    const NavComponent = screen.getByTestId('navbar');
-    expect(NavComponent).toBeInTheDocument();
+    const logoComponent = screen.getByTestId('logo');
+    expect(logoComponent).toBeInTheDocument();
+    const navComponent = screen.getByTestId('navbar');
+    expect(navComponent).toBeInTheDocument();
   });
 });
 
@@ -30,8 +30,8 @@ describe('LogoComponent', () => {
     expect(logoImage).toHaveAttribute('src', LogoImage);
     expect(logoImage).toHaveAttribute('alt', 'DEM Logo');
 
-    const TextElement = screen.getByText('Digital Event Manager');
-    expect(TextElement).toBeInTheDocument();
+    const textElement = screen.getByText('Digital Event Manager');
+    expect(textElement).toBeInTheDocument();
   });
 });
 

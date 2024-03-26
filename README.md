@@ -31,8 +31,20 @@ Your app is ready to be deployed!
 
 # Dependecy Packages:
 
-### `npm i @material-tailwind/react` 
-Material Tailwind is an open-source library that uses the power of Tailwind CSS and React to help you build unique web projects faster and easier. The stunning design inspired by Material Design is a bonus!
+### `$ npm install @mui/material @emotion/react @emotion/styled`
+Material UI is an open-source React component library that implements Google's Material Design. Ready to use Material Design components
+
+### `npm install -D tailwindcss` 
+Tailwind css - Rapidly build modern websites without ever leaving your HTML - A utility-first CSS framework packed with classes 
 
 ### `npm i react-router-dom` 
 The react-router-dom package contains bindings for using React Router in web applications.
+
+### `npm i material-react-table`
+Material Table is a once-popular Material UI table library originally built in 2018 for creating Material UI tables that includes tons of features. 
+
+### `npm i sass`
+Sass is the most mature, stable, and powerful professional grade CSS extension language in the world.
+
+### `npm i moment`
+A JavaScript date library for parsing, validating, manipulating, and formatting dates.

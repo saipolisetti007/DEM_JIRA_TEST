@@ -40,6 +40,13 @@ const customTheme = createTheme({
         }
       }
     },
+    MuiRadio: {
+      styleOverrides: {
+        root: {
+          padding: '0 0.5rem'
+        }
+      }
+    },
     MuiCardHeader: {
       styleOverrides: {
         root: {

@@ -1,12 +1,9 @@
 import React from 'react';
 import { Button } from '@mui/material';
 
-const BlankExcelDownload = () => {
-  const handleClick = () => {
-    console.log('test');
-  };
+const BlankExcelDownload = ({ handleDownloadBlankExcel }) => {
   return (
-    <Button size="small" variant="contained" color="success" onClick={handleClick}>
+    <Button size="small" variant="contained" color="success" onClick={handleDownloadBlankExcel}>
       Download <br />
       Blank Template
     </Button>
