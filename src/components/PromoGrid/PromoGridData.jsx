@@ -5,7 +5,12 @@ import {
   MRT_TableContainer
 } from 'material-react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { downloadBlankExcel, downloadDataExcel, getData } from '../../api/promoGridApi';
+import {
+  downloadBlankExcel,
+  downloadDataExcel,
+  getData,
+  uploadDataExcel
+} from '../../api/promoGridApi';
 import { setPromoData } from './promoGridSlice';
 
 import { handleChangeValidate } from '../../utils/commonMethods';
@@ -17,24 +22,35 @@ import PageSection from '../Common/PageSection';
 
 const PromoGridData = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isDataLoading, setIsDataLoading] = useState(false);
   const [isSaving] = useState(false);
+  const [rowCount, setRowCount] = useState(0);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10
+  });
+
   const tableData = useSelector((state) => state.promoData.promoData);
   const [validationErrors, setValidationErrors] = useState({});
   const dispatch = useDispatch();
 
   const fetchData = async () => {
-    const response = await getData();
-    dispatch(setPromoData(response));
+    const response = await getData(pagination.pageIndex, pagination.pageSize);
+    // console.log('results', response.results);
+    // const sortedData = response.results.sort((a, b) => a.id - b.id);
+    // dispatch(setPromoData(sortedData));
+    dispatch(setPromoData(response.results));
+    setRowCount(response.count);
     setIsLoading(false);
   };
 
   useEffect(() => {
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, pagination]);
 
   //CREATE action
-  const handleCreate = async ({ values, table }) => {
-    console.log(values, table);
+  const handleCreate = async () => {
+    //console.log(values, table);
     // setIsSaving(true);
     // const newValidationErrors = validateData(values);
     // if (Object.values(newValidationErrors).some((error) => error)) {
@@ -51,8 +67,8 @@ const PromoGridData = () => {
   };
 
   //UPDATE action
-  const handleUpdate = async ({ values, table, row }) => {
-    console.log(values, table, row);
+  const handleUpdate = async () => {
+    //console.log(values, table, row);
     // const newValidationErrors = validateData(values);
     // if (Object.values(newValidationErrors).some((error) => error)) {
     //   setValidationErrors(newValidationErrors);
@@ -107,12 +123,29 @@ const PromoGridData = () => {
     await downloadDataExcel();
   };
 
+  const handleUploadDataExcel = async (event) => {
+    console.log('handle uploadDataExcel');
+    const file = event.target.files[0];
+    if (file) {
+      setIsDataLoading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      await uploadDataExcel(formData);
+      console.log('file uploaded Successfully');
+      setIsDataLoading(false);
+      fetchData();
+      event.target.value = null;
+    } else {
+      alert('No File Selected');
+    }
+  };
+
   const table = useMaterialReactTable({
     columns: PromoGridColumns({ validationErrors, handleChange }),
     data: tableData,
     createDisplayMode: 'modal',
     editDisplayMode: 'modal',
-    muiTableContainerProps: { sx: { minHeight: '400px' } },
+    muiTableContainerProps: { sx: { minHeight: '510px', maxHeight: '510px' } },
     muiTableHeadCellProps: {
       sx: (theme) => ({
         backgroundColor: theme.palette.secondary.main,
@@ -122,11 +155,14 @@ const PromoGridData = () => {
     enableEditing: true,
     enableRowActions: true,
     enableColumnActions: false,
+    manualPagination: true,
     getRowId: (row) => row.id,
     onCreatingRowSave: handleCreate,
     onCreatingRowCancel: () => setValidationErrors({}),
     onEditingRowSave: handleUpdate,
     onEditingRowCancel: () => setValidationErrors({}),
+    onPaginationChange: setPagination,
+    rowCount: rowCount,
     initialState: {
       density: 'compact',
       showGlobalFilter: true,
@@ -156,7 +192,8 @@ const PromoGridData = () => {
     ),
     state: {
       isLoading: isLoading,
-      isSaving: isSaving
+      isSaving: isSaving,
+      pagination
     }
   });
 
@@ -168,6 +205,8 @@ const PromoGridData = () => {
         subtitle="See information about Events"
         handleDataDownloadExcel={handleDataDownloadExcel}
         handleDownloadBlankExcel={handleDownloadBlankExcel}
+        handleUploadDataExcel={handleUploadDataExcel}
+        isDataLoading={isDataLoading}
       />
       <MRT_TableContainer table={table} />
       <MRT_TablePagination table={table} />

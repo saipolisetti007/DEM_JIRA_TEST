@@ -5,9 +5,10 @@ import {
   editPromoData
 } from '../components/PromoGrid/promoGridSlice';
 
-export const getData = async () => {
-  const response = await performApiRequest('promo/promo-grid-list/');
-  return response.results;
+export const getData = async (pageIndex, pageSize) => {
+  const url = `promo/promo-grid-list/?page=${pageIndex + 1}&page_size=${pageSize}`;
+  const response = await performApiRequest(url);
+  return response;
 };
 
 export const addNewRowData = (rowData) => async (dispatch) => {
@@ -54,4 +55,8 @@ export const downloadDataExcel = async () => {
   downloadLink.click();
   window.URL.revokeObjectURL(url);
   document.body.removeChild(downloadLink);
+};
+
+export const uploadDataExcel = async (formData) => {
+  await performApiRequest('/promo/promo-grid-file-upload/', 'POST', formData, '');
 };

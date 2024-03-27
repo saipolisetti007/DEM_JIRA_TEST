@@ -8,8 +8,10 @@ const PageHeader = ({
   table,
   title,
   subtitle,
+  isDataLoading,
   handleDownloadBlankExcel,
-  handleDataDownloadExcel
+  handleDataDownloadExcel,
+  handleUploadDataExcel
 }) => {
   return (
     <Box className="p-2">
@@ -34,7 +36,10 @@ const PageHeader = ({
       <hr />
       <div className="flex justify-end py-2 gap-2">
         <BlankExcelDownload handleDownloadBlankExcel={handleDownloadBlankExcel} />
-        <UploadExcelData color="success">
+        <UploadExcelData
+          color="success"
+          handleUploadDataExcel={handleUploadDataExcel}
+          isDataLoading={isDataLoading}>
           Upload New Data <br /> Add to Record
         </UploadExcelData>
         <ExcelWithDataDownload handleDataDownloadExcel={handleDataDownloadExcel} />
