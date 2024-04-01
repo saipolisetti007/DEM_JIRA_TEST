@@ -36,7 +36,8 @@ const customTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          fontWeight: 600
+          fontWeight: 600,
+          maxWidth: '170px'
         }
       }
     },

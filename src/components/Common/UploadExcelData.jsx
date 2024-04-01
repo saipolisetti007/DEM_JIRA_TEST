@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Button } from '@mui/material';
 
-const UploadExcelData = ({ color, children, handleUploadDataExcel, isDataLoading }) => {
+const UploadExcelData = ({ color, children, handleUploadDataExcel, isDataLoading, testId }) => {
   const fileInputRef = useRef(null);
   const handleClick = () => {
     fileInputRef.current.click();
@@ -15,6 +15,7 @@ const UploadExcelData = ({ color, children, handleUploadDataExcel, isDataLoading
       <label style={{ display: 'none' }}>
         Upload File
         <input
+          data-testid={testId}
           type="file"
           ref={fileInputRef}
           onChange={handleUploadDataExcel}

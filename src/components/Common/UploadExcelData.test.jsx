@@ -14,4 +14,10 @@ describe('UploadExcelComponent', () => {
     const fileInput = screen.getByLabelText(/Upload File/i);
     expect(fileInput).toBeInTheDocument();
   });
+
+  test('should display Uploading.. when isDataLoading is true', () => {
+    render(<UploadExcelData isDataLoading={true}> Upload </UploadExcelData>);
+    const buttonComponent = screen.getByText('Uploading...');
+    expect(buttonComponent).toBeInTheDocument();
+  });
 });

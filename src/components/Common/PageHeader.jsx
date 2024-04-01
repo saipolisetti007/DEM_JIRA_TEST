@@ -37,14 +37,15 @@ const PageHeader = ({
       <div className="flex justify-end py-2 gap-2">
         <BlankExcelDownload handleDownloadBlankExcel={handleDownloadBlankExcel} />
         <UploadExcelData
+          testId="upload"
           color="success"
           handleUploadDataExcel={handleUploadDataExcel}
           isDataLoading={isDataLoading}>
-          Upload New Data <br /> Add to Record
+          Upload New Data Add to Record
         </UploadExcelData>
         <ExcelWithDataDownload handleDataDownloadExcel={handleDataDownloadExcel} />
-        <UploadExcelData color="info">
-          Re-Upload / <br /> Overwrite Data
+        <UploadExcelData color="info" testId="reupload">
+          Re-Upload / Overwrite Data
         </UploadExcelData>
       </div>
     </Box>

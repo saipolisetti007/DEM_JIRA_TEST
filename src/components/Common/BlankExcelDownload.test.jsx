@@ -6,7 +6,7 @@ describe('BlankExcelComponent', () => {
     render(<BlankExcelDownload />);
     const buttonComponent = screen.getByRole('button');
     expect(buttonComponent).toBeInTheDocument();
-    expect(buttonComponent).toHaveTextContent(/Download\sBlank Template/i);
+    expect(buttonComponent).toHaveTextContent(/Download Blank Template/i);
     fireEvent.click(buttonComponent);
   });
 });

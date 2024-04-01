@@ -54,8 +54,10 @@
       "^axios$": "axios/dist/axios.js"
     },
     "collectCoverageFrom": [
+      "./src/api/**/*.{js,jsx}",
       "./src/components/**/*.{js,jsx}",
-      "!src/components/**/StoreToDc.{js,jsx}"
+      "!src/components/**/StoreToDc.{js,jsx}",
+      "!src/api/**/storeApi.{js,jsx}"
     ],
     "coverageThreshold": {
       "global": {

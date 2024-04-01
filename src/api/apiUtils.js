@@ -1,46 +1,34 @@
 import axios from 'axios';
-
 const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
 
-export const api = axios.create({
-  baseURL: BASE_API_URL,
-  timeout: 10000
-});
-
-// Add a request interceptor
-api.interceptors.request.use(
+//Add a request interceptor
+axios.interceptors.request.use(
   (config) => {
-    // Do something before request is sent
-    console.log('Making request:', config);
+    // console.log('Making request:', config);
     return config;
   },
   (error) => {
-    // Do something with request error
-    console.error('Request error:', error);
+    // console.error('Request error:', error);
     return Promise.reject(error);
   }
 );
 
 // Add a response interceptor
-api.interceptors.response.use(
+axios.interceptors.response.use(
   (response) => {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    console.log('Response received:', response);
+    // console.log('Response received:', response);
     return response;
   },
   (error) => {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    console.error('Response error:', error);
+    //console.error('Response error:', error);
     return Promise.reject(error);
   }
 );
 
 export const performApiRequest = async (url, method = 'GET', data = null, responseType) => {
   try {
-    const response = await api.request({
-      url,
+    const response = await axios({
+      url: `${BASE_API_URL}/${url}`,
       method,
       data,
       responseType
@@ -60,6 +48,6 @@ export const handleResponse = (response) => {
 };
 
 export const handleError = (error) => {
-  console.error('Error performing API request:', error);
+  console.error('Failed to perform API request:', error);
   throw error;
 };

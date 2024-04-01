@@ -2,9 +2,9 @@ import React from 'react';
 import { Box, IconButton, Tooltip } from '@mui/material';
 
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+// import DeleteIcon from '@mui/icons-material/Delete';
 
-const RowActions = ({ row, table, handleDelete }) => {
+const RowActions = ({ row, table }) => {
   return (
     <Box sx={{ display: 'flex', gap: '1rem' }}>
       <Tooltip title="Edit">
@@ -12,11 +12,11 @@ const RowActions = ({ row, table, handleDelete }) => {
           <EditIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Delete">
+      {/* <Tooltip title="Delete">
         <IconButton color="error" onClick={() => handleDelete(row)}>
           <DeleteIcon />
         </IconButton>
-      </Tooltip>
+      </Tooltip> */}
     </Box>
   );
 };

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {
   MRT_TablePagination,
   useMaterialReactTable,
-  MRT_TableContainer
+  MRT_TableContainer,
+  MRT_ToolbarAlertBanner
 } from 'material-react-table';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -19,10 +20,14 @@ import PromoGridColumns from './PromoGridColumns';
 import RowActions from '../Common/RowActions';
 import PageHeader from '../Common/PageHeader';
 import PageSection from '../Common/PageSection';
-
+import InfoSnackBar from '../Common/InfoSnackBar';
 const PromoGridData = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDataLoading, setIsDataLoading] = useState(false);
+  const [isRefetching, setIsRefetching] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isSnackOpen, setIsSnackOpen] = useState(false);
+  const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
   const [isSaving] = useState(false);
   const [rowCount, setRowCount] = useState(0);
   const [pagination, setPagination] = useState({
@@ -35,13 +40,16 @@ const PromoGridData = () => {
   const dispatch = useDispatch();
 
   const fetchData = async () => {
-    const response = await getData(pagination.pageIndex, pagination.pageSize);
-    // console.log('results', response.results);
-    // const sortedData = response.results.sort((a, b) => a.id - b.id);
-    // dispatch(setPromoData(sortedData));
-    dispatch(setPromoData(response.results));
-    setRowCount(response.count);
-    setIsLoading(false);
+    try {
+      const response = await getData(pagination.pageIndex, pagination.pageSize);
+      dispatch(setPromoData(response.results));
+      setRowCount(response.count);
+      setIsLoading(false);
+      setIsRefetching(false);
+    } catch (error) {
+      setIsLoading(true);
+      setIsError(true);
+    }
   };
 
   useEffect(() => {
@@ -83,15 +91,15 @@ const PromoGridData = () => {
   };
 
   //DELETE action
-  const handleDelete = async (row) => {
-    console.log(row);
-    // if (window.confirm('Are you sure you want to delete this data?')) {
-    //   setIsSaving(true);
-    //   dispatch(deleteRowData(row.original.id));
-    //   setIsSaving(false);
-    // }
-    // fetchData();
-  };
+  // const handleDelete = async (row) => {
+  //   console.log(row);
+  //   // if (window.confirm('Are you sure you want to delete this data?')) {
+  //   //   setIsSaving(true);
+  //   //   dispatch(deleteRowData(row.original.id));
+  //   //   setIsSaving(false);
+  //   // }
+  //   // fetchData();
+  // };
   const handleChange = (event, validationType, accessorKey) => {
     let errorMessage = handleChangeValidate(event, validationType);
     setValidationErrors({
@@ -116,28 +124,77 @@ const PromoGridData = () => {
   // };
 
   const handleDownloadBlankExcel = async () => {
-    await downloadBlankExcel();
+    try {
+      await downloadBlankExcel();
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Excel Template Downloaded Successfully',
+        severity: 'success'
+      });
+    } catch (error) {
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Error Occured while downloading ! Please Try Agian !!!',
+        severity: 'error'
+      });
+    }
   };
 
   const handleDataDownloadExcel = async () => {
-    await downloadDataExcel();
+    try {
+      await downloadDataExcel();
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Excel Data Downlaoded Successfully',
+        severity: 'success'
+      });
+    } catch (error) {
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Error Occured while downloading ! Please Try Agian !!!',
+        severity: 'error'
+      });
+    }
   };
 
   const handleUploadDataExcel = async (event) => {
-    console.log('handle uploadDataExcel');
-    const file = event.target.files[0];
-    if (file) {
-      setIsDataLoading(true);
-      const formData = new FormData();
-      formData.append('file', file);
-      await uploadDataExcel(formData);
-      console.log('file uploaded Successfully');
+    try {
+      const file = event.target.files[0];
+      if (file) {
+        if (file.type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+          setIsDataLoading(true);
+          const formData = new FormData();
+          formData.append('file', file);
+          await uploadDataExcel(formData);
+          setIsDataLoading(false);
+          setIsSnackOpen(true);
+          setSnackBar({
+            message: 'Excel File Data Uploaded Successfully',
+            severity: 'success'
+          });
+          setIsLoading(true);
+          setIsRefetching(true);
+          fetchData();
+          event.target.value = null;
+        } else {
+          alert('Please select an Excel file');
+        }
+      } else {
+        alert('Please select a file');
+      }
+    } catch (error) {
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Error Occured while Updating the Data ! Please Try Agian !!!',
+        severity: 'error'
+      });
       setIsDataLoading(false);
-      fetchData();
-      event.target.value = null;
-    } else {
-      alert('No File Selected');
     }
+  };
+
+  const handleSnackbar = () => {
+    setIsSnackOpen(false);
+    setSnackBar(null);
   };
 
   const table = useMaterialReactTable({
@@ -152,6 +209,12 @@ const PromoGridData = () => {
         color: theme.palette.secondary.contrastText
       })
     },
+    muiToolbarAlertBannerProps: isError
+      ? {
+          color: 'error',
+          children: 'Network Error. Could not fetch data.'
+        }
+      : undefined,
     enableEditing: true,
     enableRowActions: true,
     enableColumnActions: false,
@@ -187,30 +250,41 @@ const PromoGridData = () => {
         internalEditComponents={internalEditComponents}
       />
     ),
-    renderRowActions: ({ row, table }) => (
-      <RowActions table={table} row={row} handleDelete={handleDelete} />
-    ),
+    renderRowActions: ({ row, table }) => <RowActions table={table} row={row} />,
     state: {
       isLoading: isLoading,
       isSaving: isSaving,
+      showAlertBanner: isError,
+      showProgressBars: isRefetching,
       pagination
     }
   });
 
   return (
-    <PageSection>
-      <PageHeader
-        table={table}
-        title="Event Promo Grid"
-        subtitle="See information about Events"
-        handleDataDownloadExcel={handleDataDownloadExcel}
-        handleDownloadBlankExcel={handleDownloadBlankExcel}
-        handleUploadDataExcel={handleUploadDataExcel}
-        isDataLoading={isDataLoading}
-      />
-      <MRT_TableContainer table={table} />
-      <MRT_TablePagination table={table} />
-    </PageSection>
+    <>
+      <PageSection>
+        <PageHeader
+          table={table}
+          title="Event Promo Grid"
+          subtitle="See information about Events"
+          handleDataDownloadExcel={handleDataDownloadExcel}
+          handleDownloadBlankExcel={handleDownloadBlankExcel}
+          handleUploadDataExcel={handleUploadDataExcel}
+          isDataLoading={isDataLoading}
+        />
+        <MRT_ToolbarAlertBanner table={table} />
+        <MRT_TableContainer table={table} />
+        <MRT_TablePagination table={table} />
+      </PageSection>
+      {isSnackOpen && snackBar && (
+        <InfoSnackBar
+          isOpen={isSnackOpen}
+          message={snackBar.message}
+          severity={snackBar.severity}
+          onClose={handleSnackbar}
+        />
+      )}
+    </>
   );
 };
 

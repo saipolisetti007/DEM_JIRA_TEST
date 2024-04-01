@@ -1,8 +1,15 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import { addNewRowData, deleteRowData, getData, updateRowData } from '../../api/promoGridApi';
+import {
+  addNewRowData,
+  downloadBlankExcel,
+  downloadDataExcel,
+  getData,
+  updateRowData,
+  uploadDataExcel
+} from '../../api/promoGridApi';
 import PromoGridData from './PromoGridData';
 
 // Mocking the getData function
@@ -14,10 +21,169 @@ describe('PromoGridData Component', () => {
   let store;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     store = mockStore({
       promoData: {
         promoData: []
       }
+    });
+    store.dispatch = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('handles Excel file upload', async () => {
+    const file = new File(['data'], 'example.xlsx', {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    uploadDataExcel.mockResolvedValueOnce({ data: {} });
+    render(
+      <Provider store={store}>
+        <PromoGridData />
+      </Provider>
+    );
+    await act(async () => {
+      const fileInput = screen.getByTestId('upload');
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+
+    await waitFor(() => {
+      expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData));
+      expect(screen.getByText('Excel File Data Uploaded Successfully')).toBeInTheDocument();
+    });
+  });
+
+  test('shows an alert if no file is selected', async () => {
+    window.alert = jest.fn();
+
+    render(
+      <Provider store={store}>
+        <PromoGridData />
+      </Provider>
+    );
+    await act(async () => {
+      const fileInput = screen.getByTestId('upload');
+      fireEvent.change(fileInput, { target: { files: [] } });
+    });
+    expect(window.alert).toHaveBeenCalledWith('Please select a file');
+  });
+
+  test('shows an alert if selected file is not excel', async () => {
+    window.alert = jest.fn();
+    const file = new File(['data'], 'example.png', {
+      type: 'image/png'
+    });
+    render(
+      <Provider store={store}>
+        <PromoGridData />
+      </Provider>
+    );
+    await act(async () => {
+      const fileInput = screen.getByTestId('upload');
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+
+    expect(window.alert).toHaveBeenCalledWith('Please select an Excel file');
+  });
+
+  test('handles upload failure', async () => {
+    const file = new File(['data'], 'example.xlsx', {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+    uploadDataExcel.mockRejectedValueOnce(new Error('Upload failed'));
+    render(
+      <Provider store={store}>
+        <PromoGridData />
+      </Provider>
+    );
+
+    await act(async () => {
+      const fileInput = screen.getByTestId('upload');
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+    await waitFor(async () => {
+      expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData));
+      expect(
+        screen.getByText('Error Occured while Updating the Data ! Please Try Agian !!!')
+      ).toBeInTheDocument();
+    });
+  });
+
+  test('handles successful blank Excel file download', async () => {
+    downloadBlankExcel.mockResolvedValueOnce();
+
+    render(
+      <Provider store={store}>
+        <PromoGridData />
+      </Provider>
+    );
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Download Blank Template/i));
+    });
+    await waitFor(() => {
+      expect(downloadBlankExcel).toHaveBeenCalled();
+      expect(screen.getByText('Excel Template Downloaded Successfully')).toBeInTheDocument();
+    });
+  });
+
+  test('handles failed blank Excel file download', async () => {
+    downloadBlankExcel.mockRejectedValueOnce();
+
+    render(
+      <Provider store={store}>
+        <PromoGridData />
+      </Provider>
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Download Blank Template/i));
+    });
+    await waitFor(() => {
+      expect(downloadBlankExcel).toHaveBeenCalled();
+      expect(
+        screen.getByText('Error Occured while downloading ! Please Try Agian !!!')
+      ).toBeInTheDocument();
+    });
+  });
+
+  test('handles successful data Excel file download', async () => {
+    downloadDataExcel.mockResolvedValueOnce();
+
+    const { getByText } = render(
+      <Provider store={store}>
+        <PromoGridData />
+      </Provider>
+    );
+    await act(async () => {
+      fireEvent.click(getByText(/Download Filled Template/i));
+    });
+    await waitFor(() => {
+      expect(downloadDataExcel).toHaveBeenCalled();
+      expect(getByText('Excel Data Downlaoded Successfully')).toBeInTheDocument();
+    });
+  });
+
+  test('handles fail data Excel file download', async () => {
+    downloadDataExcel.mockRejectedValueOnce(
+      new Error('Error Occured while downloading ! Please Try Agian !!!')
+    );
+
+    render(
+      <Provider store={store}>
+        <PromoGridData />
+      </Provider>
+    );
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Download Filled Template/i));
+    });
+    await waitFor(() => {
+      expect(downloadDataExcel).toHaveBeenCalled();
+      expect(
+        screen.getByText('Error Occured while downloading ! Please Try Agian !!!')
+      ).toBeInTheDocument();
     });
   });
 
@@ -25,12 +191,13 @@ describe('PromoGridData Component', () => {
     // Mock the API response
     const mockData = require('../../__mocks__/promoGridData.json');
     getData.mockResolvedValue(mockData);
-
-    render(
-      <Provider store={store}>
-        <PromoGridData />
-      </Provider>
-    );
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <PromoGridData />
+        </Provider>
+      );
+    });
 
     await waitFor(() => {
       mockData.forEach(async (item) => {
@@ -39,6 +206,7 @@ describe('PromoGridData Component', () => {
       });
     });
   });
+
   test('should add new row data', async () => {
     // Mock the API response
     addNewRowData.mockResolvedValue({});
@@ -92,26 +260,26 @@ describe('PromoGridData Component', () => {
     );
   });
 
-  test('should delete row data', async () => {
-    // Mock the API response
-    deleteRowData.mockResolvedValueOnce({});
-    const mockData = require('../../__mocks__/promoGridData.json');
-    getData.mockResolvedValue(mockData);
+  // test('should delete row data', async () => {
+  //   // Mock the API response
+  //   deleteRowData.mockResolvedValueOnce({});
+  //   const mockData = require('../../__mocks__/promoGridData.json');
+  //   getData.mockResolvedValue(mockData);
 
-    render(
-      <Provider store={store}>
-        <PromoGridData />
-      </Provider>
-    );
+  //   render(
+  //     <Provider store={store}>
+  //       <PromoGridData />
+  //     </Provider>
+  //   );
 
-    // await waitFor(async () => {
-    //   const tableElement = screen.getByRole('table');
-    //   expect(tableElement).toBeInTheDocument();
-    //   mockData.forEach(async (item) => {
-    //     const goldenCustomerID = await screen.findByText(item.goldenCustomerID);
-    //     expect(goldenCustomerID).toBeInTheDocument();
-    //     expect(await screen.findByText(item.eventType)).toBeInTheDocument();
-    //   });
-    // });
-  });
+  //   await waitFor(async () => {
+  //     const tableElement = screen.getByRole('table');
+  //     expect(tableElement).toBeInTheDocument();
+  //     mockData.forEach(async (item) => {
+  //       const goldenCustomerID = await screen.findByText(item.goldenCustomerID);
+  //       expect(goldenCustomerID).toBeInTheDocument();
+  //       expect(await screen.findByText(item.eventType)).toBeInTheDocument();
+  //     });
+  //   });
+  // });
 });

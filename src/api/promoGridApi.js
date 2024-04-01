@@ -1,9 +1,5 @@
 import { performApiRequest } from './apiUtils';
-import {
-  addPromoData,
-  deletePromoData,
-  editPromoData
-} from '../components/PromoGrid/promoGridSlice';
+import { addPromoData, editPromoData } from '../components/PromoGrid/promoGridSlice';
 
 export const getData = async (pageIndex, pageSize) => {
   const url = `promo/promo-grid-list/?page=${pageIndex + 1}&page_size=${pageSize}`;
@@ -12,20 +8,20 @@ export const getData = async (pageIndex, pageSize) => {
 };
 
 export const addNewRowData = (rowData) => async (dispatch) => {
-  const response = await performApiRequest('/promodata', 'POST', rowData);
+  const response = await performApiRequest('promodata', 'POST', rowData);
   dispatch(addPromoData(response));
 };
 
 export const updateRowData = (id, newData) => async (dispatch) => {
-  const response = await performApiRequest(`/promodata/${id}`, 'PUT', newData);
+  const response = await performApiRequest(`promodata/${id}`, 'PUT', newData);
   dispatch(editPromoData({ id, newData: response }));
 };
 
-export const deleteRowData = (id) => async (dispatch) => {
-  // eslint-disable-next-line no-unused-vars
-  const response = await performApiRequest(`/promodata/${id}`, 'DELETE');
-  dispatch(deletePromoData(id));
-};
+// export const deleteRowData = (id) => async (dispatch) => {
+//   // eslint-disable-next-line no-unused-vars
+//   const response = await performApiRequest(`/promodata/${id}`, 'DELETE');
+//   dispatch(deletePromoData(id));
+// };
 
 export const downloadBlankExcel = async () => {
   const response = await performApiRequest('promo/excel-template/download/', 'GET', null, 'blob');
@@ -43,7 +39,7 @@ export const downloadBlankExcel = async () => {
 };
 
 export const downloadDataExcel = async () => {
-  const response = await performApiRequest('/promo/existing-data/download/', 'GET', null, 'blob');
+  const response = await performApiRequest('promo/existing-data/download/', 'GET', null, 'blob');
   const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
 
   const downloadLink = document.createElement('a');
@@ -58,5 +54,6 @@ export const downloadDataExcel = async () => {
 };
 
 export const uploadDataExcel = async (formData) => {
-  await performApiRequest('/promo/promo-grid-file-upload/', 'POST', formData, '');
+  const response = await performApiRequest('promo/promo-grid-file-upload/', 'POST', formData);
+  return response;
 };

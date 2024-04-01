@@ -4,8 +4,7 @@ import { Button } from '@mui/material';
 const ExcelWithDataDownload = ({ handleDataDownloadExcel }) => {
   return (
     <Button size="small" variant="contained" color="info" onClick={handleDataDownloadExcel}>
-      Download <br />
-      Filled Template
+      Download Filled Template
     </Button>
   );
 };
