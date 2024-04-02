@@ -14,7 +14,7 @@ on:
 jobs:
     compliance:
         name: PR Compliance check
-        runs-on: [self-hosted,Linux,cicdframework,azlgleus2enp041.runner0]
+        runs-on: [self-hosted,Linux,cicdframework]
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
