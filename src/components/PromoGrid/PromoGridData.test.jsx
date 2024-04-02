@@ -52,7 +52,7 @@ describe('PromoGridData Component', () => {
 
     await waitFor(() => {
       expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData));
-      expect(screen.getByText('Excel File Data Uploaded Successfully')).toBeInTheDocument();
+      expect(screen.getByText('Excel file data uploaded successfully !!!')).toBeInTheDocument();
     });
   });
 
@@ -86,7 +86,7 @@ describe('PromoGridData Component', () => {
       fireEvent.change(fileInput, { target: { files: [file] } });
     });
 
-    expect(window.alert).toHaveBeenCalledWith('Please select an Excel file');
+    expect(window.alert).toHaveBeenCalledWith('Please select an excel file');
   });
 
   test('handles upload failure', async () => {
@@ -107,7 +107,7 @@ describe('PromoGridData Component', () => {
     await waitFor(async () => {
       expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData));
       expect(
-        screen.getByText('Error Occured while Updating the Data ! Please Try Agian !!!')
+        screen.getByText('Error occured while updating the data ! Please try again !!!')
       ).toBeInTheDocument();
     });
   });
@@ -125,7 +125,7 @@ describe('PromoGridData Component', () => {
     });
     await waitFor(() => {
       expect(downloadBlankExcel).toHaveBeenCalled();
-      expect(screen.getByText('Excel Template Downloaded Successfully')).toBeInTheDocument();
+      expect(screen.getByText('Excel template downloaded successfully !!!')).toBeInTheDocument();
     });
   });
 
@@ -144,7 +144,7 @@ describe('PromoGridData Component', () => {
     await waitFor(() => {
       expect(downloadBlankExcel).toHaveBeenCalled();
       expect(
-        screen.getByText('Error Occured while downloading ! Please Try Agian !!!')
+        screen.getByText('Error occured while downloading ! Please try again !!!')
       ).toBeInTheDocument();
     });
   });
@@ -162,13 +162,13 @@ describe('PromoGridData Component', () => {
     });
     await waitFor(() => {
       expect(downloadDataExcel).toHaveBeenCalled();
-      expect(getByText('Excel Data Downlaoded Successfully')).toBeInTheDocument();
+      expect(getByText('Excel data downloaded successfully !!!')).toBeInTheDocument();
     });
   });
 
   test('handles fail data Excel file download', async () => {
     downloadDataExcel.mockRejectedValueOnce(
-      new Error('Error Occured while downloading ! Please Try Agian !!!')
+      new Error('Error occured while data downloading ! Please try again !!!')
     );
 
     render(
@@ -182,7 +182,7 @@ describe('PromoGridData Component', () => {
     await waitFor(() => {
       expect(downloadDataExcel).toHaveBeenCalled();
       expect(
-        screen.getByText('Error Occured while downloading ! Please Try Agian !!!')
+        screen.getByText('Error occured while data downloading ! Please try again !!!')
       ).toBeInTheDocument();
     });
   });

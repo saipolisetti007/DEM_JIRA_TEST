@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 
 const RowActions = ({ row, table }) => {
   return (
-    <Box sx={{ display: 'flex', gap: '1rem' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
       <Tooltip title="Edit">
         <IconButton onClick={() => table.setEditingRow(row)}>
           <EditIcon />

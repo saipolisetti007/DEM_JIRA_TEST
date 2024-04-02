@@ -128,13 +128,13 @@ const PromoGridData = () => {
       await downloadBlankExcel();
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Excel Template Downloaded Successfully',
+        message: 'Excel template downloaded successfully !!!',
         severity: 'success'
       });
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Error Occured while downloading ! Please Try Agian !!!',
+        message: 'Error occured while downloading ! Please try again !!!',
         severity: 'error'
       });
     }
@@ -145,13 +145,13 @@ const PromoGridData = () => {
       await downloadDataExcel();
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Excel Data Downlaoded Successfully',
+        message: 'Excel data downloaded successfully !!!',
         severity: 'success'
       });
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Error Occured while downloading ! Please Try Agian !!!',
+        message: 'Error occured while data downloading ! Please try again !!!',
         severity: 'error'
       });
     }
@@ -169,15 +169,14 @@ const PromoGridData = () => {
           setIsDataLoading(false);
           setIsSnackOpen(true);
           setSnackBar({
-            message: 'Excel File Data Uploaded Successfully',
+            message: 'Excel file data uploaded successfully !!!',
             severity: 'success'
           });
           setIsLoading(true);
           setIsRefetching(true);
           fetchData();
-          event.target.value = null;
         } else {
-          alert('Please select an Excel file');
+          alert('Please select an excel file');
         }
       } else {
         alert('Please select a file');
@@ -185,9 +184,10 @@ const PromoGridData = () => {
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Error Occured while Updating the Data ! Please Try Agian !!!',
+        message: 'Error occured while updating the data ! Please try again !!!',
         severity: 'error'
       });
+      event.target.value = null;
       setIsDataLoading(false);
     }
   };
@@ -212,7 +212,7 @@ const PromoGridData = () => {
     muiToolbarAlertBannerProps: isError
       ? {
           color: 'error',
-          children: 'Network Error. Could not fetch data.'
+          children: 'Network Error. Could not fetch the data.'
         }
       : undefined,
     enableEditing: true,
@@ -267,7 +267,7 @@ const PromoGridData = () => {
         <PageHeader
           table={table}
           title="Event Promo Grid"
-          subtitle="See information about Events"
+          subtitle="See information about events"
           handleDataDownloadExcel={handleDataDownloadExcel}
           handleDownloadBlankExcel={handleDownloadBlankExcel}
           handleUploadDataExcel={handleUploadDataExcel}
