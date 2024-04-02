@@ -3,7 +3,12 @@ import { Button } from '@mui/material';
 
 const BlankExcelDownload = ({ handleDownloadBlankExcel }) => {
   return (
-    <Button size="small" variant="contained" color="success" onClick={handleDownloadBlankExcel}>
+    <Button
+      size="small"
+      variant="contained"
+      color="success"
+      className="w-40"
+      onClick={handleDownloadBlankExcel}>
       Download Blank Template
     </Button>
   );

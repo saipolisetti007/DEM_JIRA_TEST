@@ -44,7 +44,7 @@ const PageHeader = ({
           Upload New Data Add to Record
         </UploadExcelData>
         <ExcelWithDataDownload handleDataDownloadExcel={handleDataDownloadExcel} />
-        <UploadExcelData color="info" testId="reupload">
+        <UploadExcelData color="info" testId="reupload" isDisable={true}>
           Re-Upload / Overwrite Data
         </UploadExcelData>
       </div>

@@ -6,11 +6,17 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'id',
-        header: 'Id',
-        enableEditing: false,
-        size: 40,
-        Edit: () => null
+        accessorKey: 'unique_event_id',
+        header: 'Unique Event Id',
+        muiEditTextFieldProps: {
+          variant: 'outlined',
+          required: true,
+          error: !!validationErrors?.unique_event_id,
+          helperText: validationErrors?.unique_event_id,
+          onChange: (event) => {
+            handleChange(event, 'stringValidation', 'unique_event_id');
+          }
+        }
       },
       {
         accessorKey: 'golden_customer_id',
@@ -51,18 +57,6 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         header: 'End Of Shipments',
         Edit: ({ column, row }) => {
           return <DatePickerComponent row={row} column={column} />;
-        }
-      },
-      {
-        accessorKey: 'unique_event_id',
-        header: 'Unique Event Id',
-        muiEditTextFieldProps: {
-          variant: 'outlined',
-          error: !!validationErrors?.unique_event_id,
-          helperText: validationErrors?.unique_event_id,
-          onChange: (event) => {
-            handleChange(event, 'stringValidation', 'unique_event_id');
-          }
         }
       },
       {

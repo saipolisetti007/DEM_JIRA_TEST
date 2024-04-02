@@ -218,6 +218,7 @@ const PromoGridData = () => {
     enableEditing: true,
     enableRowActions: true,
     enableColumnActions: false,
+    enableColumnPinning: true,
     manualPagination: true,
     getRowId: (row) => row.id,
     onCreatingRowSave: handleCreate,

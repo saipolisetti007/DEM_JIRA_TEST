@@ -10,20 +10,25 @@ describe('PromoGridColumns', () => {
     const columns = result.current;
 
     // Test for all columns
-    expect(columns).toHaveLength(48);
+    expect(columns).toHaveLength(47);
 
     expect(result.current).toEqual(
       expect.arrayContaining([
         expect.objectContaining(
+          {},
           {
-            accessorKey: 'id',
-            header: 'Id',
-            enableEditing: false,
-            size: 40,
-            Edit: expect.any(Function)
+            accessorKey: 'unique_event_id',
+            header: 'Unique Event Id',
+            muiEditTextFieldProps: {
+              error: expect.any(Boolean),
+              helperText: expect.anything(),
+              onChange: expect.any(Function),
+              required: true,
+              variant: 'outlined'
+            }
           },
           {
-            accessorKey: 'goldenCustomerID',
+            accessorKey: 'golden_customer_id',
             header: 'Golden Customer ID',
             muiEditTextFieldProps: {
               error: expect.any(Boolean),

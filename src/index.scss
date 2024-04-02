@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+th.MuiTableCell-root[data-pinned="true"]:before{
+    background-color: #263238 !important;
+}

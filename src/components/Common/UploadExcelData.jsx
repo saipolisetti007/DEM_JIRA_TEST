@@ -1,7 +1,14 @@
 import React, { useRef } from 'react';
 import { Button } from '@mui/material';
 
-const UploadExcelData = ({ color, children, handleUploadDataExcel, isDataLoading, testId }) => {
+const UploadExcelData = ({
+  color,
+  children,
+  handleUploadDataExcel,
+  isDataLoading,
+  isDisable,
+  testId
+}) => {
   const fileInputRef = useRef(null);
   const handleClick = () => {
     fileInputRef.current.click();
@@ -9,7 +16,13 @@ const UploadExcelData = ({ color, children, handleUploadDataExcel, isDataLoading
 
   return (
     <>
-      <Button variant="outlined" color={color} size="small" onClick={handleClick}>
+      <Button
+        variant="outlined"
+        color={color}
+        size="small"
+        disabled={isDisable}
+        className="w-40"
+        onClick={handleClick}>
         {isDataLoading ? 'Uploading...' : children}
       </Button>
       <label style={{ display: 'none' }}>
