@@ -8,9 +8,6 @@ on:
         - stage
         - main
     types: [opened, synchronize, reopened]
-    paths-ignore:
-      - '.github/**/*' 
-      - 'sonar-project.properties'
 
 jobs:
     compliance:
