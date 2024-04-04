@@ -3,6 +3,14 @@ import DatePickerComponent from '../Common/DatePickerComponent';
 import InputRadioComponent from '../Common/InputRadioComponent';
 
 const PromoGridColumns = ({ validationErrors, handleChange }) => {
+  const RadioCellValue = (value) => {
+    if (value === true) {
+      return 'Yes';
+    } else if (value === false) {
+      return 'No';
+    }
+    return '';
+  };
   const columns = useMemo(
     () => [
       {
@@ -36,6 +44,13 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         header: 'Event in Store Start Date',
         Edit: ({ column, row }) => {
           return <DatePickerComponent row={row} column={column} />;
+        },
+        muiEditTextFieldProps: {
+          error: !!validationErrors?.event_in_store_start_date,
+          helperText: validationErrors?.event_in_store_start_date,
+          onChange: (event) => {
+            handleChange(event, '', 'event_in_store_start_date');
+          }
         }
       },
       {
@@ -43,6 +58,13 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         header: 'Event in store End Date',
         Edit: ({ column, row }) => {
           return <DatePickerComponent row={row} column={column} />;
+        },
+        muiEditTextFieldProps: {
+          error: !!validationErrors?.event_in_store_end_date,
+          helperText: validationErrors?.event_in_store_end_date,
+          onChange: (event) => {
+            handleChange(event, '', 'event_in_store_start_date');
+          }
         }
       },
       {
@@ -128,13 +150,7 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         muiEditTextFieldProps: {
           variant: 'outlined'
         },
-        Cell: ({ row, column }) => {
-          return row.original[column.id] === true
-            ? 'Yes'
-            : row.original[column.id] === false
-              ? 'No'
-              : '';
-        },
+        Cell: ({ row, column }) => RadioCellValue(row.original[column.id]),
         Edit: ({ row, column }) => {
           return <InputRadioComponent row={row} column={column} />;
         }
@@ -241,13 +257,7 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
       {
         accessorKey: 'pgp_flag',
         header: 'PGP Flag',
-        Cell: ({ row, column }) => {
-          return row.original[column.id] === true
-            ? 'Yes'
-            : row.original[column.id] === false
-              ? 'No'
-              : '';
-        },
+        Cell: ({ row, column }) => RadioCellValue(row.original[column.id]),
         Edit: ({ row, column }) => {
           return <InputRadioComponent row={row} column={column} />;
         }
@@ -284,154 +294,264 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         accessorKey: 'discount_amt',
         header: 'Discount Amount',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.discount_amt,
+          helperText: validationErrors?.discount_amt,
+          onChange: (event) => {
+            handleChange(event, 'floatValidation', 'discount_amt');
+          }
         }
       },
       {
         accessorKey: 'base_price',
         header: 'Base Price',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.base_price,
+          helperText: validationErrors?.base_price,
+          onChange: (event) => {
+            handleChange(event, 'floatValidation', 'base_price');
+          }
         }
       },
       {
         accessorKey: 'price_after_discount',
         header: 'Price After Discount',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.price_after_discount,
+          helperText: validationErrors?.price_after_discount,
+          onChange: (event) => {
+            handleChange(event, 'floatValidation', 'price_after_discount');
+          }
         }
       },
       {
         accessorKey: 'status',
         header: 'Status',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.status,
+          helperText: validationErrors?.status,
+          onChange: (event) => {
+            handleChange(event, 'stringValidation', 'status');
+          }
         }
       },
       {
         accessorKey: 'event_string_property_1',
         header: 'Event String Property 1',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.event_string_property_1,
+          helperText: validationErrors?.event_string_property_1,
+          onChange: (event) => {
+            handleChange(event, 'stringValidation', 'event_string_property_1');
+          }
         }
       },
       {
         accessorKey: 'event_string_property_2',
         header: 'Event String Property 2',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.event_string_property_2,
+          helperText: validationErrors?.event_string_property_2,
+          onChange: (event) => {
+            handleChange(event, 'stringValidation', 'event_string_property_2');
+          }
         }
       },
       {
         accessorKey: 'event_string_property_3',
         header: 'Event String Property 3',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.event_string_property_3,
+          helperText: validationErrors?.event_string_property_3,
+          onChange: (event) => {
+            handleChange(event, 'stringValidation', 'event_string_property_3');
+          }
         }
       },
       {
         accessorKey: 'event_string_property_4',
         header: 'Event String Property 4',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.event_string_property_4,
+          helperText: validationErrors?.event_string_property_4,
+          onChange: (event) => {
+            handleChange(event, 'stringValidation', 'event_string_property_4');
+          }
         }
       },
       {
         accessorKey: 'event_string_property_5',
         header: 'Event String Property 5',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.event_string_property_5,
+          helperText: validationErrors?.event_string_property_5,
+          onChange: (event) => {
+            handleChange(event, 'stringValidation', 'event_string_property_5');
+          }
         }
       },
       {
         accessorKey: 'event_num_property_1',
         header: 'Event Num  Property 1',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.event_num_property_1,
+          helperText: validationErrors?.event_num_property_1,
+          onChange: (event) => {
+            handleChange(event, 'integerValidation', 'event_num_property_1');
+          }
         }
       },
       {
         accessorKey: 'event_num_property_2',
         header: 'Event Num  Property 2',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.event_num_property_2,
+          helperText: validationErrors?.event_num_property_2,
+          onChange: (event) => {
+            handleChange(event, 'integerValidation', 'event_num_property_2');
+          }
         }
       },
       {
         accessorKey: 'event_num_property_3',
         header: 'Event Num  Property 3',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.event_num_property_3,
+          helperText: validationErrors?.event_num_property_3,
+          onChange: (event) => {
+            handleChange(event, 'integerValidation', 'event_num_property_3');
+          }
         }
       },
       {
         accessorKey: 'event_num_property_4',
         header: 'Event Num  Property 4',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.event_num_property_4,
+          helperText: validationErrors?.event_num_property_4,
+          onChange: (event) => {
+            handleChange(event, 'integerValidation', 'event_num_property_4');
+          }
         }
       },
       {
         accessorKey: 'event_num_property_5',
         header: 'Event Num  Property 5',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.event_num_property_5,
+          helperText: validationErrors?.event_num_property_5,
+          onChange: (event) => {
+            handleChange(event, 'integerValidation', 'event_num_property_5');
+          }
         }
       },
       {
         accessorKey: 'offer_type',
         header: 'Offer Type',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.offer_type,
+          helperText: validationErrors?.offer_type,
+          onChange: (event) => {
+            handleChange(event, 'stringValidation', 'offer_type');
+          }
         }
       },
       {
         accessorKey: 'off',
         header: 'Off',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.off,
+          helperText: validationErrors?.off,
+          onChange: (event) => {
+            handleChange(event, 'integerValidation', 'off');
+          }
         }
       },
       {
         accessorKey: 'limit',
         header: 'Limit',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.limit,
+          helperText: validationErrors?.limit,
+          onChange: (event) => {
+            handleChange(event, 'floatValidation', 'limit');
+          }
         }
       },
       {
         accessorKey: 'tpr',
         header: 'TPR',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.tpr,
+          helperText: validationErrors?.tpr,
+          onChange: (event) => {
+            handleChange(event, 'floatValidation', 'tpr');
+          }
         }
       },
       {
         accessorKey: 'off_2',
         header: 'OFF 2',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.off_2,
+          helperText: validationErrors?.off_2,
+          onChange: (event) => {
+            handleChange(event, 'floatValidation', 'off_2');
+          }
         }
       },
       {
         accessorKey: 'gc_buy',
         header: 'GC-Buy',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.gc_buy,
+          helperText: validationErrors?.gc_buy,
+          onChange: (event) => {
+            handleChange(event, 'floatValidation', 'gc_buy');
+          }
         }
       },
       {
         accessorKey: 'gc_save',
         header: 'GC-Save',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.gc_save,
+          helperText: validationErrors?.gc_save,
+          onChange: (event) => {
+            handleChange(event, 'floatValidation', 'gc_save');
+          }
         }
       },
       {
         accessorKey: 'percentage',
         header: 'Percentage(%)',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.percentage,
+          helperText: validationErrors?.percentage,
+          onChange: (event) => {
+            handleChange(event, 'floatValidation', 'percentage');
+          }
         }
       }
     ],

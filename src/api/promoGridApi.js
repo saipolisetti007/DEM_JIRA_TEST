@@ -23,14 +23,14 @@ export const updateRowData = (id, newData) => async (dispatch) => {
 //   dispatch(deletePromoData(id));
 // };
 
-export const downloadBlankExcel = async () => {
-  const response = await performApiRequest('promo/excel-template/download/', 'GET', null, 'blob');
+const downloadExcel = async (endpoint, filename) => {
+  const response = await performApiRequest(endpoint, 'GET', null, 'blob');
   const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
 
   const downloadLink = document.createElement('a');
   const url = window.URL.createObjectURL(blob);
   downloadLink.href = url;
-  downloadLink.setAttribute('download', 'DEM - Promo Grid Template.xlsx');
+  downloadLink.setAttribute('download', filename);
 
   document.body.appendChild(downloadLink);
   downloadLink.click();
@@ -38,19 +38,12 @@ export const downloadBlankExcel = async () => {
   document.body.removeChild(downloadLink);
 };
 
+export const downloadBlankExcel = async () => {
+  await downloadExcel('promo/excel-template/download/', 'DEM - Promo Grid Template.xlsx');
+};
+
 export const downloadDataExcel = async () => {
-  const response = await performApiRequest('promo/existing-data/download/', 'GET', null, 'blob');
-  const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
-
-  const downloadLink = document.createElement('a');
-  const url = window.URL.createObjectURL(blob);
-  downloadLink.href = url;
-  downloadLink.setAttribute('download', 'DEM - Promo Grid Data.xlsx');
-
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-  window.URL.revokeObjectURL(url);
-  document.body.removeChild(downloadLink);
+  await downloadExcel('promo/existing-data/download/', 'DEM - Promo Grid Data.xlsx');
 };
 
 export const uploadDataExcel = async (formData) => {
