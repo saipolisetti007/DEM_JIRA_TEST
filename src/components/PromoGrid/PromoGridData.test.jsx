@@ -1,33 +1,21 @@
 import React from 'react';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import {
   addNewRowData,
   downloadBlankExcel,
   downloadDataExcel,
   getData,
-  updateRowData,
   uploadDataExcel
 } from '../../api/promoGridApi';
-import PromoGridData from './PromoGridData';
 
+import PromoGridData from './PromoGridData';
+import { act } from 'react-dom/test-utils';
 // Mocking the getData function
 jest.mock('../../api/promoGridApi');
 
-const mockStore = configureStore([]);
-
 describe('PromoGridData Component', () => {
-  let store;
-
   beforeEach(() => {
     jest.clearAllMocks();
-    store = mockStore({
-      promoData: {
-        promoData: []
-      }
-    });
-    store.dispatch = jest.fn();
   });
 
   afterEach(() => {
@@ -40,11 +28,8 @@ describe('PromoGridData Component', () => {
     });
 
     uploadDataExcel.mockResolvedValueOnce({ data: {} });
-    render(
-      <Provider store={store}>
-        <PromoGridData />
-      </Provider>
-    );
+    render(<PromoGridData />);
+
     await act(async () => {
       const fileInput = screen.getByTestId('upload');
       fireEvent.change(fileInput, { target: { files: [file] } });
@@ -59,11 +44,7 @@ describe('PromoGridData Component', () => {
   test('shows an alert if no file is selected', async () => {
     window.alert = jest.fn();
 
-    render(
-      <Provider store={store}>
-        <PromoGridData />
-      </Provider>
-    );
+    render(<PromoGridData />);
     await act(async () => {
       const fileInput = screen.getByTestId('upload');
       fireEvent.change(fileInput, { target: { files: [] } });
@@ -76,11 +57,7 @@ describe('PromoGridData Component', () => {
     const file = new File(['data'], 'example.png', {
       type: 'image/png'
     });
-    render(
-      <Provider store={store}>
-        <PromoGridData />
-      </Provider>
-    );
+    render(<PromoGridData />);
     await act(async () => {
       const fileInput = screen.getByTestId('upload');
       fireEvent.change(fileInput, { target: { files: [file] } });
@@ -94,11 +71,7 @@ describe('PromoGridData Component', () => {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     });
     uploadDataExcel.mockRejectedValueOnce(new Error('Upload failed'));
-    render(
-      <Provider store={store}>
-        <PromoGridData />
-      </Provider>
-    );
+    render(<PromoGridData />);
 
     await act(async () => {
       const fileInput = screen.getByTestId('upload');
@@ -115,11 +88,7 @@ describe('PromoGridData Component', () => {
   test('handles successful blank Excel file download', async () => {
     downloadBlankExcel.mockResolvedValueOnce();
 
-    render(
-      <Provider store={store}>
-        <PromoGridData />
-      </Provider>
-    );
+    render(<PromoGridData />);
     await act(async () => {
       fireEvent.click(screen.getByText(/Download Blank Template/i));
     });
@@ -132,11 +101,7 @@ describe('PromoGridData Component', () => {
   test('handles failed blank Excel file download', async () => {
     downloadBlankExcel.mockRejectedValueOnce();
 
-    render(
-      <Provider store={store}>
-        <PromoGridData />
-      </Provider>
-    );
+    render(<PromoGridData />);
 
     await act(async () => {
       fireEvent.click(screen.getByText(/Download Blank Template/i));
@@ -152,11 +117,7 @@ describe('PromoGridData Component', () => {
   test('handles successful data Excel file download', async () => {
     downloadDataExcel.mockResolvedValueOnce();
 
-    const { getByText } = render(
-      <Provider store={store}>
-        <PromoGridData />
-      </Provider>
-    );
+    const { getByText } = render(<PromoGridData />);
     await act(async () => {
       fireEvent.click(getByText(/Download Filled Template/i));
     });
@@ -171,11 +132,7 @@ describe('PromoGridData Component', () => {
       new Error('Error occured while data downloading ! Please try again !!!')
     );
 
-    render(
-      <Provider store={store}>
-        <PromoGridData />
-      </Provider>
-    );
+    render(<PromoGridData />);
     await act(async () => {
       fireEvent.click(screen.getByText(/Download Filled Template/i));
     });
@@ -187,16 +144,12 @@ describe('PromoGridData Component', () => {
     });
   });
 
-  test('should fetch and render data from Redux store', async () => {
+  test('should fetch and render data', async () => {
     // Mock the API response
     const mockData = require('../../__mocks__/promoGridData.json');
     getData.mockResolvedValue(mockData);
     await act(async () => {
-      render(
-        <Provider store={store}>
-          <PromoGridData />
-        </Provider>
-      );
+      render(<PromoGridData />);
     });
 
     await waitFor(() => {
@@ -209,18 +162,15 @@ describe('PromoGridData Component', () => {
 
   test('should add new row data', async () => {
     // Mock the API response
-    addNewRowData.mockResolvedValue({});
-    const mockData = require('../../__mocks__/promoGridData.json');
-    getData.mockResolvedValue(mockData);
 
-    render(
-      <Provider store={store}>
-        <PromoGridData />
-      </Provider>
-    );
+    const mockData = require('../../__mocks__/promoGridData.json');
+    addNewRowData.mockResolvedValue({ results: mockData });
+
+    render(<PromoGridData />);
 
     const addRowButton = screen.getByText('Add New Record');
     fireEvent.click(addRowButton);
+
     const goldenCustomerID = screen.getByRole('textbox', { name: /Golden Customer ID/i });
     const eventType = screen.getByRole('textbox', { name: /Event Type/i });
     const eventSubtype = screen.getByRole('textbox', { name: /Event Subtype/i });
@@ -245,41 +195,45 @@ describe('PromoGridData Component', () => {
 
     const saveButton = screen.getByText('Save');
     fireEvent.click(saveButton);
+
+    await waitFor(async () => {
+      setTimeout(() => {
+        expect(addNewRowData).toHaveBeenCalledWith({
+          golden_customer_id: goldenCustomerID.value
+        });
+        expect(screen.getByText('New data added successfully !!!')).toBeInTheDocument();
+      }, 1000);
+    });
   });
 
-  test('should Update row data', async () => {
-    // Mock the API response
-    updateRowData.mockResolvedValue({});
-    const mockData = require('../../__mocks__/promoGridData.json');
-    getData.mockResolvedValue(mockData);
+  test('should failed to add data if addrowdata failed', async () => {
+    const errorResponse = {
+      response: {
+        data: {
+          field1: 'Error message for field',
+          field2: 'Error message for field'
+        }
+      }
+    };
 
-    render(
-      <Provider store={store}>
-        <PromoGridData />
-      </Provider>
-    );
+    addNewRowData.mockRejectedValueOnce(errorResponse);
+
+    render(<PromoGridData />);
+
+    const addRowButton = screen.getByText('Add New Record');
+    fireEvent.click(addRowButton);
+
+    const goldenCustomerID = screen.getByRole('textbox', { name: /Golden Customer ID/i });
+
+    fireEvent.change(goldenCustomerID, { target: { value: 123 } });
+
+    const saveButton = screen.getByText('Save');
+    fireEvent.click(saveButton);
+
+    await waitFor(async () => {
+      setTimeout(() => {
+        expect(screen.getByText(/Error message for field/)).toBeInTheDocument();
+      }, 1000);
+    });
   });
-
-  // test('should delete row data', async () => {
-  //   // Mock the API response
-  //   deleteRowData.mockResolvedValueOnce({});
-  //   const mockData = require('../../__mocks__/promoGridData.json');
-  //   getData.mockResolvedValue(mockData);
-
-  //   render(
-  //     <Provider store={store}>
-  //       <PromoGridData />
-  //     </Provider>
-  //   );
-
-  //   await waitFor(async () => {
-  //     const tableElement = screen.getByRole('table');
-  //     expect(tableElement).toBeInTheDocument();
-  //     mockData.forEach(async (item) => {
-  //       const goldenCustomerID = await screen.findByText(item.goldenCustomerID);
-  //       expect(goldenCustomerID).toBeInTheDocument();
-  //       expect(await screen.findByText(item.eventType)).toBeInTheDocument();
-  //     });
-  //   });
-  // });
 });

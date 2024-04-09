@@ -1,8 +1,8 @@
 [
     {
         "id": "1",
-        "event_in_store_start_date": "03/23/2024",
-        "event_in_store_end_date": "03/29/2024",
+        "event_in_store_start_date": null,
+        "event_in_store_end_date": null,
         "start_of_shipments": null,
         "end_of_shipments": null,
         "unique_event_id": 1,

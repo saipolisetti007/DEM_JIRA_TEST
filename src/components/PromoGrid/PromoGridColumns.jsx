@@ -43,42 +43,44 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         accessorKey: 'event_in_store_start_date',
         header: 'Event in Store Start Date',
         Edit: ({ column, row }) => {
-          return <DatePickerComponent row={row} column={column} />;
-        },
-        muiEditTextFieldProps: {
-          error: !!validationErrors?.event_in_store_start_date,
-          helperText: validationErrors?.event_in_store_start_date,
-          onChange: (event) => {
-            handleChange(event, '', 'event_in_store_start_date');
-          }
+          return (
+            <DatePickerComponent
+              row={row}
+              column={column}
+              isRequired={true}
+              isError={!!validationErrors?.event_in_store_start_date}
+              helperText={validationErrors?.event_in_store_start_date}
+            />
+          );
         }
       },
       {
         accessorKey: 'event_in_store_end_date',
         header: 'Event in store End Date',
         Edit: ({ column, row }) => {
-          return <DatePickerComponent row={row} column={column} />;
-        },
-        muiEditTextFieldProps: {
-          error: !!validationErrors?.event_in_store_end_date,
-          helperText: validationErrors?.event_in_store_end_date,
-          onChange: (event) => {
-            handleChange(event, '', 'event_in_store_start_date');
-          }
+          return (
+            <DatePickerComponent
+              row={row}
+              column={column}
+              isRequired={true}
+              isError={!!validationErrors?.event_in_store_end_date}
+              helperText={validationErrors?.event_in_store_end_date}
+            />
+          );
         }
       },
       {
         accessorKey: 'start_of_shipments',
         header: 'Start Of Shipments',
         Edit: ({ column, row }) => {
-          return <DatePickerComponent row={row} column={column} />;
+          return <DatePickerComponent row={row} column={column} isRequired={false} />;
         }
       },
       {
         accessorKey: 'end_of_shipments',
         header: 'End Of Shipments',
         Edit: ({ column, row }) => {
-          return <DatePickerComponent row={row} column={column} />;
+          return <DatePickerComponent row={row} column={column} isRequired={false} />;
         }
       },
       {
@@ -147,12 +149,17 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
       {
         accessorKey: 'event_publish_to_demand',
         header: 'Event Publish to Demand',
-        muiEditTextFieldProps: {
-          variant: 'outlined'
-        },
         Cell: ({ row, column }) => RadioCellValue(row.original[column.id]),
         Edit: ({ row, column }) => {
-          return <InputRadioComponent row={row} column={column} />;
+          return (
+            <InputRadioComponent
+              row={row}
+              column={column}
+              isRequired={true}
+              isError={!!validationErrors?.event_publish_to_demand}
+              helperText={validationErrors?.event_publish_to_demand}
+            />
+          );
         }
       },
       {
@@ -161,10 +168,10 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         muiEditTextFieldProps: {
           required: true,
           variant: 'outlined',
-          error: !!validationErrors?.eventSalesChannel,
-          helperText: validationErrors?.eventSalesChannel,
+          error: !!validationErrors?.event_sales_channel,
+          helperText: validationErrors?.event_sales_channel,
           onChange: (event) => {
-            handleChange(event, 'stringValidation', 'eventSalesChannel');
+            handleChange(event, 'stringValidation', 'event_sales_channel');
           }
         }
       },
@@ -217,7 +224,7 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
           error: !!validationErrors?.product_id,
           helperText: validationErrors?.product_id,
           onChange: (event) => {
-            handleChange(event, 'integerValidation', 'product_id');
+            handleChange(event, 'stringValidation', 'product_id');
           }
         }
       },
@@ -259,7 +266,7 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         header: 'PGP Flag',
         Cell: ({ row, column }) => RadioCellValue(row.original[column.id]),
         Edit: ({ row, column }) => {
-          return <InputRadioComponent row={row} column={column} />;
+          return <InputRadioComponent row={row} column={column} isRequired={false} />;
         }
       },
       {

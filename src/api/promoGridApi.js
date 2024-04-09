@@ -1,5 +1,4 @@
 import { performApiRequest } from './apiUtils';
-import { addPromoData, editPromoData } from '../components/PromoGrid/promoGridSlice';
 
 export const getData = async (pageIndex, pageSize) => {
   const url = `promo/promo-grid-list/?page=${pageIndex + 1}&page_size=${pageSize}`;
@@ -7,21 +6,15 @@ export const getData = async (pageIndex, pageSize) => {
   return response;
 };
 
-export const addNewRowData = (rowData) => async (dispatch) => {
-  const response = await performApiRequest('promodata', 'POST', rowData);
-  dispatch(addPromoData(response));
+export const addNewRowData = async (rowData) => {
+  const response = await performApiRequest('promo/promo-grid-add/', 'POST', rowData);
+  return response;
 };
 
-export const updateRowData = (id, newData) => async (dispatch) => {
+export const updateRowData = async (id, newData) => {
   const response = await performApiRequest(`promodata/${id}`, 'PUT', newData);
-  dispatch(editPromoData({ id, newData: response }));
+  return response;
 };
-
-// export const deleteRowData = (id) => async (dispatch) => {
-//   // eslint-disable-next-line no-unused-vars
-//   const response = await performApiRequest(`/promodata/${id}`, 'DELETE');
-//   dispatch(deletePromoData(id));
-// };
 
 const downloadExcel = async (endpoint, filename) => {
   const response = await performApiRequest(endpoint, 'GET', null, 'blob');

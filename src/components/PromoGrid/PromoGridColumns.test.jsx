@@ -42,9 +42,7 @@ describe('PromoGridColumns', () => {
       ])
     );
 
-    const columnsWithOnChange = columns.filter(
-      (column) => column.muiEditTextFieldProps && column.muiEditTextFieldProps.onChange
-    );
+    const columnsWithOnChange = columns.filter((column) => column?.muiEditTextFieldProps?.onChange);
 
     columnsWithOnChange.forEach((column) => {
       column.muiEditTextFieldProps.onChange({ target: { value: 'test' } });

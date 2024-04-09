@@ -1,7 +1,7 @@
-const validateRequired = (value) => !!value.length;
-const validateInteger = (value) => value.match(/^[0-9]+$/);
-const validateString = (value) => value.match(/^([A-Za-z0-9\s'" ]{1,255})$/);
-const validateFloat = (value) => value.match(/^[0-9]+\.[0-9]+$/);
+const validateRequired = (value) => !!String(value).length;
+const validateInteger = (value) => /^\d+$/.exec(String(value));
+const validateString = (value) => /^[A-Za-z0-9][^\r\n]*$/.exec(String(value));
+const validateFloat = (value) => /^\d+\.\d+$/.exec(String(value));
 
 const handleValidate = (validationType, isRequired, value) => {
   let errorMessage = '';
@@ -34,6 +34,7 @@ const handleValidate = (validationType, isRequired, value) => {
 
 const handleChangeValidate = (event, validationType) => {
   const newValue = event.target.value;
+
   let errorMessage;
   switch (validationType) {
     case 'stringValidation':
@@ -61,11 +62,29 @@ const handleChangeValidate = (event, validationType) => {
   return errorMessage;
 };
 
+const parseValues = (values) => {
+  const parsedValues = {};
+  Object.keys(values).forEach((key) => {
+    let parsedValue = values[key];
+    if (parsedValue === '') {
+      parsedValues[key] = null;
+    } else if (validateInteger(parsedValue)) {
+      parsedValues[key] = parseInt(parsedValue);
+    } else if (validateFloat(parsedValue)) {
+      parsedValues[key] = parseFloat[parsedValue];
+    } else if (validateString(parsedValue)) {
+      parsedValues[key] = parsedValue;
+    }
+  });
+  return parsedValues;
+};
+
 export {
   handleValidate,
   validateRequired,
   validateInteger,
   validateString,
   validateFloat,
-  handleChangeValidate
+  handleChangeValidate,
+  parseValues
 };

@@ -26,7 +26,7 @@ const UploadExcelData = ({
         {isDataLoading ? 'Uploading...' : children}
       </Button>
       <label style={{ display: 'none' }}>
-        Upload File
+        Upload File {''}
         <input
           data-testid={testId}
           type="file"

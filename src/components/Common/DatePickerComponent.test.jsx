@@ -9,7 +9,6 @@ moment.locale('en');
 
 describe('DatePickerComponent', () => {
   test('updates the value when a new date is selecetd', async () => {
-    // Mock data for the row and column
     const row = {
       original: {
         date: moment().format('MM/DD/YYYY')

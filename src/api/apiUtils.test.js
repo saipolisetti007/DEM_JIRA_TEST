@@ -2,7 +2,6 @@ import axios from 'axios';
 import { performApiRequest, handleResponse, handleError } from './apiUtils';
 const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
 
-// Mock axios
 jest.mock('axios');
 
 describe('API Utils', () => {
@@ -14,7 +13,7 @@ describe('API Utils', () => {
     test('should make a GET request to the correct URL', async () => {
       const mockResponseData = { id: 1, message: 'welcome' };
       const mockUrl = 'data';
-      const mockBaseUrl = BASE_API_URL; // Replace with your BASE_API_URL
+      const mockBaseUrl = BASE_API_URL;
       axios.mockResolvedValueOnce({ status: 200, data: mockResponseData });
 
       const response = await performApiRequest(mockUrl, 'GET');
@@ -22,7 +21,7 @@ describe('API Utils', () => {
       expect(axios).toHaveBeenCalledWith({
         url: `${mockBaseUrl}/${mockUrl}`,
         method: 'GET',
-        data: null,
+        data: undefined,
         responseType: undefined
       });
       expect(response).toEqual(mockResponseData);
@@ -35,7 +34,6 @@ describe('API Utils', () => {
       await expect(performApiRequest('users/1', 'GET')).rejects.toThrow(errorMessage);
     });
     test('should setup axios request and response interceptors', () => {
-      // Add a small delay to allow axios interceptors to be set up
       setTimeout(() => {
         expect(axios.interceptors.request.use).toHaveBeenCalled();
         expect(axios.interceptors.request.use.mock.calls[0][0]).toBeInstanceOf(Function);
@@ -44,7 +42,7 @@ describe('API Utils', () => {
         expect(axios.interceptors.response.use).toHaveBeenCalled();
         expect(axios.interceptors.response.use.mock.calls[0][0]).toBeInstanceOf(Function);
         expect(axios.interceptors.response.use.mock.calls[0][1]).toBeInstanceOf(Function);
-      }, 100); // Adjust the delay as needed
+      }, 100);
     });
   });
 
@@ -66,7 +64,7 @@ describe('API Utils', () => {
   describe('handleError', () => {
     test('should log the error and throw it', () => {
       const error = new Error('Failed to perform API request');
-      console.error = jest.fn(); // Mock console.error
+      console.error = jest.fn();
 
       expect(() => handleError(error)).toThrow(error);
       expect(console.error).toHaveBeenCalledWith('Failed to perform API request:', error);

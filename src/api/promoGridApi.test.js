@@ -1,4 +1,3 @@
-import { addPromoData, editPromoData } from '../components/PromoGrid/promoGridSlice';
 import { performApiRequest } from './apiUtils';
 import {
   getData,
@@ -35,21 +34,17 @@ describe('promoGridApi', () => {
   });
 
   test('adds new row data', async () => {
-    const dispatch = jest.fn();
     const rowData = { id: 1, name: 'test' };
     performApiRequest.mockResolvedValueOnce(rowData);
-    await addNewRowData(rowData)(dispatch);
-    expect(dispatch).toHaveBeenCalledWith(addPromoData(rowData));
-    expect(performApiRequest).toHaveBeenCalledWith('promodata', 'POST', rowData);
+    await addNewRowData(rowData);
+    expect(performApiRequest).toHaveBeenCalledWith('promo/promo-grid-add/', 'POST', rowData);
   });
 
   test('updates row data', async () => {
-    const dispatch = jest.fn();
     const id = 1;
     const rowData = { id: 1, name: 'test' };
     performApiRequest.mockResolvedValueOnce(rowData);
-    await updateRowData(id, rowData)(dispatch);
-    expect(dispatch).toHaveBeenCalledWith(editPromoData({ id, newData: rowData }));
+    await updateRowData(id, rowData);
     expect(performApiRequest).toHaveBeenCalledWith(`promodata/${id}`, 'PUT', rowData);
   });
 

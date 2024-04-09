@@ -19,7 +19,7 @@ axios.interceptors.response.use(
   }
 );
 
-export const performApiRequest = async (url, method = 'GET', data = null, responseType) => {
+export const performApiRequest = async (url, method, data, responseType) => {
   try {
     const response = await axios({
       url: `${BASE_API_URL}/${url}`,
