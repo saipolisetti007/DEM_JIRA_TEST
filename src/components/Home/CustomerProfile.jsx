@@ -1,16 +1,11 @@
 import React from 'react';
-import { Button } from '@mui/material';
-import { Link } from 'react-router-dom';
 import HomeCardSection from './HomeCardSection';
+import NavigationButton from './NavigationButton';
 
 const CustomerProfile = () => {
   return (
     <HomeCardSection title="Customer Profile Maintenance">
-      <Link to="/store-to-dc-mapping">
-        <Button variant="contained" color="primary">
-          Store to DC Mapping
-        </Button>
-      </Link>
+      <NavigationButton navUrl="/store-to-dc-mapping"> Store to DC Mapping </NavigationButton>
     </HomeCardSection>
   );
 };

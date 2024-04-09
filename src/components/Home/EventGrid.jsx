@@ -1,16 +1,13 @@
 import React from 'react';
 import HomeCardSection from './HomeCardSection';
-import { Link } from 'react-router-dom';
-import { Button } from '@mui/material';
+import CPFForecastButton from './CPFForecastButton';
+import NavigationButton from './NavigationButton';
 
 const EventGrid = () => {
   return (
     <HomeCardSection title="Event Forecast Input">
-      <Link to="/promo-grid">
-        <Button variant="contained" color="primary">
-          Promo Grid
-        </Button>
-      </Link>
+      <NavigationButton navUrl="/promo-grid"> Promo Grid </NavigationButton>
+      <CPFForecastButton />
     </HomeCardSection>
   );
 };

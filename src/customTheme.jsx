@@ -40,6 +40,13 @@ const customTheme = createTheme({
         }
       }
     },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          fontWeight: 600
+        }
+      }
+    },
     MuiRadio: {
       styleOverrides: {
         root: {

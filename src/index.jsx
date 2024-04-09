@@ -19,6 +19,7 @@ import { Provider } from 'react-redux';
 import store from './store/store';
 import ErrorBoundary from './errorHanlding/ErrorBoundary';
 import PromoGrid from './pages/PromoGrid';
+import CPFForecast from './components/CPFForecast/CPFForecast';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
       <Route path="" element={<Home />} />
       <Route path="/store-to-dc-mapping" element={<StoreToDcMapping />} />
       <Route path="/promo-grid" element={<PromoGrid />} />
+      <Route path="/cpf-forecast" element={<CPFForecast />} />
     </Route>
   )
 );
