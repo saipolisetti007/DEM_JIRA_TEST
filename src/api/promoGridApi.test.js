@@ -41,11 +41,10 @@ describe('promoGridApi', () => {
   });
 
   test('updates row data', async () => {
-    const id = 1;
     const rowData = { id: 1, name: 'test' };
     performApiRequest.mockResolvedValueOnce(rowData);
-    await updateRowData(id, rowData);
-    expect(performApiRequest).toHaveBeenCalledWith(`promodata/${id}`, 'PUT', rowData);
+    await updateRowData(rowData);
+    expect(performApiRequest).toHaveBeenCalledWith('promo/promo-grid-edit/', 'POST', rowData);
   });
 
   test('downloads blank Excel', async () => {

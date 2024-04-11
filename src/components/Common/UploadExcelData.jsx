@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Button } from '@mui/material';
+import { useFileUpload } from '../../hooks/useFileUpload';
 
 const UploadExcelData = ({
   color,
@@ -9,10 +10,10 @@ const UploadExcelData = ({
   isDisable,
   testId
 }) => {
-  const fileInputRef = useRef(null);
-  const handleClick = () => {
-    fileInputRef.current.click();
-  };
+  const { isLoading, fileInputRef, handleClick, handleFileUpload } = useFileUpload({
+    isDataLoading,
+    handleUploadDataExcel
+  });
 
   return (
     <>
@@ -23,7 +24,7 @@ const UploadExcelData = ({
         disabled={isDisable}
         className="w-40"
         onClick={handleClick}>
-        {isDataLoading ? 'Uploading...' : children}
+        {isLoading ? 'Uploading...' : children}
       </Button>
       <label style={{ display: 'none' }}>
         Upload File {''}
@@ -31,7 +32,7 @@ const UploadExcelData = ({
           data-testid={testId}
           type="file"
           ref={fileInputRef}
-          onChange={handleUploadDataExcel}
+          onChange={handleFileUpload}
           style={{ display: 'none' }}
         />
       </label>

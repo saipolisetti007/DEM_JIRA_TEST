@@ -10,6 +10,7 @@ import {
   downloadBlankExcel,
   downloadDataExcel,
   getData,
+  updateRowData,
   uploadDataExcel
 } from '../../api/promoGridApi';
 
@@ -60,48 +61,67 @@ const PromoGridData = () => {
     if (Object.values(newValidationErrors).some((error) => error)) {
       setValidationErrors(newValidationErrors);
       setIsSaving(false);
-      return true;
-    } else {
       return false;
     }
+    setValidationErrors({});
+    return true;
   };
-
   //CREATE action
   const handleCreate = async ({ values, table }) => {
     setIsSaving(true);
     const parsedValues = parseValues(values);
-    validateValues(values);
-
-    try {
-      await addNewRowData(parsedValues);
-      table.setCreatingRow(null);
-      setIsLoading(true);
-      setIsRefetching(true);
-      await fetchData();
-      setIsSaving(false);
-      setIsSnackOpen(true);
-      setSnackBar({
-        message: 'New data added successfully !!!',
-        severity: 'success'
-      });
-    } catch (error) {
-      const errors = error.response.data;
-      let message = 'Error occured while adding the data.\n';
-      Object.keys(errors).forEach((key) => {
-        if (key) {
-          message += `${key}:${errors[key]}\n`;
-        }
-      });
-      setIsSaving(false);
-      setIsSnackOpen(true);
-      setSnackBar({
-        message: message,
-        severity: 'error'
-      });
+    if (validateValues(values)) {
+      try {
+        await addNewRowData(parsedValues);
+        table.setCreatingRow(null);
+        setIsLoading(true);
+        setIsRefetching(true);
+        await fetchData();
+        setIsSaving(false);
+        setIsSnackOpen(true);
+        setSnackBar({
+          message: 'New data added successfully !!!',
+          severity: 'success'
+        });
+      } catch (error) {
+        setIsSaving(false);
+        setIsSnackOpen(true);
+        setSnackBar({
+          message: 'Error occured while adding the data !!!',
+          severity: 'error'
+        });
+      }
     }
   };
 
-  const handleUpdate = () => {};
+  //UPDATE action
+  const handleUpdate = async ({ values, table }) => {
+    setIsSaving(true);
+    if (validateValues(values)) {
+      try {
+        await updateRowData(values);
+        table.setEditingRow(null);
+        setIsLoading(true);
+        setIsRefetching(true);
+        await fetchData();
+        setIsSaving(false);
+        setIsSnackOpen(true);
+        setSnackBar({
+          message: 'Data Updated successfully !!!',
+          severity: 'success'
+        });
+      } catch (error) {
+        setIsSaving(false);
+        setIsSnackOpen(true);
+        setSnackBar({
+          message: 'Error occured while updating the data !!!',
+          severity: 'error'
+        });
+      }
+    }
+  };
+
+  //UPDATE action
 
   const handleChange = (event, validationType, accessorKey) => {
     let errorMessage = handleChangeValidate(event, validationType);
@@ -113,7 +133,6 @@ const PromoGridData = () => {
 
   const validateData = (data) => {
     return {
-      unique_event_id: handleValidate('stringValidation', 'required', data.unique_event_id),
       golden_customer_id: handleValidate('integerValidation', 'required', data.golden_customer_id),
       event_type: handleValidate('stringValidation', 'required', data.event_type),
       event_subtype: handleValidate('stringValidation', 'required', data.event_subtype),

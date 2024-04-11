@@ -11,8 +11,8 @@ export const addNewRowData = async (rowData) => {
   return response;
 };
 
-export const updateRowData = async (id, newData) => {
-  const response = await performApiRequest(`promodata/${id}`, 'PUT', newData);
+export const updateRowData = async (newData) => {
+  const response = await performApiRequest('promo/promo-grid-edit/', 'POST', newData);
   return response;
 };
 

@@ -16,14 +16,9 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
       {
         accessorKey: 'unique_event_id',
         header: 'Unique Event Id',
+        enableEditing: false,
         muiEditTextFieldProps: {
-          variant: 'outlined',
-          required: true,
-          error: !!validationErrors?.unique_event_id,
-          helperText: validationErrors?.unique_event_id,
-          onChange: (event) => {
-            handleChange(event, 'stringValidation', 'unique_event_id');
-          }
+          variant: 'outlined'
         }
       },
       {

@@ -13,7 +13,8 @@ const DatePickerComponent = ({ row, column, isRequired, isError, helperText }) =
     setHelperMsg(helperText);
   }, [isError]);
   const handleChange = (newValue) => {
-    row._valuesCache[column.id] = moment(newValue).format('MM/DD/YYYY');
+    const formattdDate = newValue ? moment(newValue).format('MM/DD/YYYY') : null;
+    row._valuesCache[column.id] = formattdDate;
     setError(false);
     setHelperMsg('');
   };
@@ -28,6 +29,7 @@ const DatePickerComponent = ({ row, column, isRequired, isError, helperText }) =
         slotProps={{
           textField: {
             size: 'small',
+            clearable: true,
             required: isRequired,
             error: error,
             helperText: helperMsg

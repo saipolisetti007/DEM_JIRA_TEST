@@ -1,12 +1,12 @@
-const validateRequired = (value) => !!String(value).length;
+const validateRequired = (value) => String(value).length;
 const validateInteger = (value) => /^\d+$/.exec(String(value));
 const validateString = (value) => /^[A-Za-z0-9][^\r\n]*$/.exec(String(value));
-const validateFloat = (value) => /^\d+\.\d+$/.exec(String(value));
+const validateFloat = (value) => /^\d+(\.\d+)?$/.exec(String(value));
 
 const handleValidate = (validationType, isRequired, value) => {
   let errorMessage = '';
   if (isRequired === 'required') {
-    if (!validateRequired(value)) {
+    if (!validateRequired(value) || value == null) {
       errorMessage += 'Required.';
     }
   }
