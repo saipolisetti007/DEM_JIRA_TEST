@@ -19,6 +19,8 @@ on:
 
 env:
   REACT_APP_BASE_API_URL: ${{ secrets.BASE_API_URL }}
+  REACT_APP_CLIENT_ID: ${{ secrets.APP_CLIENT_ID }}
+  REACT_APP_TENANT_ID: ${{ secrets.APP_TENANT_ID }}
 
 jobs:
   SonarQube_Scan:
