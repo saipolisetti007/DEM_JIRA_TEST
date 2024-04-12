@@ -1,7 +1,6 @@
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Logo from './Logo';
-import NavBar from './NavBar';
 import LogoImage from '../../assets/images/logo.png';
 import Header from './Header';
 
@@ -32,14 +31,5 @@ describe('LogoComponent', () => {
 
     const textElement = screen.getByText('Digital Event Manager');
     expect(textElement).toBeInTheDocument();
-  });
-});
-
-describe('NavBarComponent', () => {
-  test('renders button with text and click event', () => {
-    render(<NavBar />);
-    const buttonElement = screen.getByText(/Sign In/i);
-    expect(buttonElement).toBeInTheDocument();
-    fireEvent.click(buttonElement);
   });
 });

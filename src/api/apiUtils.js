@@ -1,12 +1,15 @@
 import axios from 'axios';
+import { getAccessToken } from '../auth/msalInstance';
 const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
 
 axios.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    const token = await getAccessToken();
+    config.headers['Authorization'] = `Bearer ${token}`;
     return config;
   },
   (error) => {
-    return Promise.reject(error);
+    Promise.reject(error);
   }
 );
 

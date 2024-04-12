@@ -30,6 +30,9 @@ const customTheme = createTheme({
     },
     h6: {
       fontWeight: 600
+    },
+    subtitle2: {
+      fontWeight: 600
     }
   },
   components: {

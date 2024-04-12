@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@azure/msal-browser": "^3.11.1",
+    "@azure/msal-react": "^2.0.14",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.13",
@@ -50,6 +52,9 @@
     ]
   },
   "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@azure/msal-react)).*\\.js$"
+    ],
     "moduleNameMapper": {
       "^axios$": "axios/dist/axios.js"
     },

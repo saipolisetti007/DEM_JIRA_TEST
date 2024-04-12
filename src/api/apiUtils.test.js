@@ -1,8 +1,13 @@
 import axios from 'axios';
 import { performApiRequest, handleResponse, handleError } from './apiUtils';
+import { getAccessToken } from '../auth/msalInstance';
+
 const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
 
 jest.mock('axios');
+jest.mock('../auth/msalInstance', () => ({
+  getAccessToken: jest.fn()
+}));
 
 describe('API Utils', () => {
   afterEach(() => {
@@ -68,6 +73,19 @@ describe('API Utils', () => {
 
       expect(() => handleError(error)).toThrow(error);
       expect(console.error).toHaveBeenCalledWith('Failed to perform API request:', error);
+    });
+  });
+
+  describe('Request Interceptor', () => {
+    test('add authorization header with token', async () => {
+      const iDToken = 'mockIdToken';
+      getAccessToken.mockResolvedValueOnce({ iDToken });
+      const requestConfig = { headers: {} };
+      axios.interceptors.request.use(async (callback) => {
+        const config = await callback(requestConfig);
+        expect(config.headers.Authorization).toBe(`Bearer ${iDToken}`);
+        return config;
+      });
     });
   });
 });

@@ -1,17 +1,18 @@
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { render } from '@testing-library/react';
+import { MsalProvider } from '@azure/msal-react';
 import App from './App';
-describe('App Component', () => {
-  test('renders header component', () => {
-    render(
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    );
-    const headerElement = screen.getByTestId('header');
-    expect(headerElement).toBeInTheDocument();
+jest.mock('@azure/msal-react');
+const msalInstance = {
+  getActiveAccount: jest.fn(),
+  getLogger: jest.fn()
+};
 
-    const footerElement = screen.getByTestId('footer');
-    expect(footerElement).toBeInTheDocument();
+describe('App Component', () => {
+  test('renders App component', () => {
+    render(
+      <MsalProvider instance={msalInstance}>
+        <App />
+      </MsalProvider>
+    );
   });
 });

@@ -4,3 +4,6 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
 jest.setTimeout(10000);
+jest.mock('./auth/msalInstance', () => ({
+  getAccessToken: jest.fn()
+}));
