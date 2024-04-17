@@ -5,12 +5,12 @@ export const useFileUpload = ({ isDataLoading, handleUploadDataExcel }) => {
   const fileInputRef = React.useRef(null);
 
   const handleClick = () => {
-    setIsLoading(true);
     fileInputRef.current.click();
     document.body.onfocus = checkCancel;
   };
 
   const handleFileUpload = async (event) => {
+    setIsLoading(true);
     await handleUploadDataExcel(event);
     setIsLoading(false);
     document.body.onfocus = null;
