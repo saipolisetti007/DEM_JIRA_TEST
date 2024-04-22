@@ -13,7 +13,7 @@ export const msalConfig = {
 };
 
 export const loginRequest = {
-  scopes: []
+  scopes: ['user.read']
 };
 
 export const silentRequest = {

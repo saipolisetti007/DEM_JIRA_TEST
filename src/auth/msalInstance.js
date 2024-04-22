@@ -13,7 +13,7 @@ export const getAccessToken = async () => {
     accessTokenRequest,
     account: account
   });
-  return response.idToken;
+  return response.accessToken;
 };
 
 if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0) {
