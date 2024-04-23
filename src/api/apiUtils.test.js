@@ -78,12 +78,12 @@ describe('API Utils', () => {
 
   describe('Request Interceptor', () => {
     test('add authorization header with token', async () => {
-      const iDToken = 'mockIdToken';
-      getAccessToken.mockResolvedValueOnce({ iDToken });
+      const accessToken = 'mockAccessToken';
+      getAccessToken.mockResolvedValueOnce({ accessToken });
       const requestConfig = { headers: {} };
       axios.interceptors.request.use(async (callback) => {
         const config = await callback(requestConfig);
-        expect(config.headers.Authorization).toBe(`Bearer ${iDToken}`);
+        expect(config.headers.Authorization).toBe(`Bearer ${accessToken}`);
         return config;
       });
     });

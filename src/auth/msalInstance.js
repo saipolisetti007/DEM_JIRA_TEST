@@ -5,15 +5,26 @@ msalInstance.initialize();
 
 export const getAccessToken = async () => {
   const account = msalInstance.getActiveAccount();
-  const accessTokenRequest = {
-    scopes: [],
-    account: account
-  };
-  let response = await msalInstance.acquireTokenSilent({
-    accessTokenRequest,
-    account: account
-  });
-  return response.accessToken;
+  if (!account) return null;
+  let token = sessionStorage.getItem('accessToken');
+  let expiration = sessionStorage.getItem('accessTokenExpiration');
+
+  if (!token || new Date(expiration) <= new Date()) {
+    try {
+      let response = await msalInstance.acquireTokenSilent({
+        scopes: [],
+        account: account
+      });
+      token = response.accessToken;
+      expiration = response.expiresOn;
+      sessionStorage.setItem('accessToken', token);
+      sessionStorage.setItem('accessTokenExpiration', expiration);
+    } catch (error) {
+      console.log('Error Acquiring token', error);
+      return null;
+    }
+  }
+  return token;
 };
 
 if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0) {

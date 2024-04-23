@@ -7,11 +7,11 @@ import {
 import PageLayout from './components/PageLayout/PageLayout';
 import { Outlet } from 'react-router-dom';
 import SignIn from './components/SignIn/SignIn';
-
+import msalInstance, { getAccessToken } from './auth/msalInstance';
+import { useEffect } from 'react';
 const MainContent = () => {
   const { instance } = useMsal();
   const activeAccount = instance.getActiveAccount();
-
   return (
     <main className="flex-grow py-5">
       <AuthenticatedTemplate>{activeAccount ? <Outlet /> : null}</AuthenticatedTemplate>
@@ -23,6 +23,11 @@ const MainContent = () => {
 };
 
 const App = ({ instance }) => {
+  useEffect(() => {
+    msalInstance.handleRedirectPromise().then(() => {
+      getAccessToken();
+    });
+  }, []);
   return (
     <MsalProvider instance={instance}>
       <PageLayout>

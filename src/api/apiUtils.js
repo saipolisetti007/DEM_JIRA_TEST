@@ -1,11 +1,18 @@
 import axios from 'axios';
 import { getAccessToken } from '../auth/msalInstance';
+
 const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
 
 axios.interceptors.request.use(
   async (config) => {
-    const token = await getAccessToken();
-    config.headers['Authorization'] = `Bearer ${token}`;
+    let token = sessionStorage.getItem('accessToken');
+    let expiration = sessionStorage.getItem('accessTokenExpiration');
+    if (!token || (expiration && new Date(expiration) <= new Date())) {
+      token = await getAccessToken();
+    }
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
