@@ -17,8 +17,14 @@ on:
       - '.github/**/*' 
       - 'sonar-project.properties'
 
+   pull_request:
+    branches:
+      - develop
+      - stage
+      - main
+    types: [opened, synchronize, reopened]
+
 env:
-  REACT_APP_BASE_API_URL: ${{ secrets.BASE_API_URL }}
   REACT_APP_CLIENT_ID: ${{ secrets.APP_CLIENT_ID }}
   REACT_APP_TENANT_ID: ${{ secrets.APP_TENANT_ID }}
 
@@ -50,9 +56,60 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-  Build_UI_code:
+  Build_UI_code_for_PR:
+    name: Build_UI_code_for_PR
+    if: ${{ startsWith(github.ref, 'refs/pull/') }}
     runs-on: [self-hosted,Linux, cicdframework]
     needs: SonarQube_Scan
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
+        - name: Set up Node.js 20.x
+          uses: actions/setup-node@v4
+          with:
+            node-version: 20.x
+
+        - name: Install dependencies
+          run: npm install
+
+        - name: Build
+          run: npm run build 
+
+  environment:
+    name: Select Environment
+    runs-on: [self-hosted,Linux, cicdframework]
+    if: ${{ ! startsWith(github.ref, 'refs/pull/') }}
+    needs: SonarQube_Scan
+    steps:
+      -   name: Select deployment environment
+          id: branch_check
+          run: |
+              echo "Running on branch ${{ github.ref }}"
+              if [ "${{ inputs.environment }}" != "" ]; then
+                  echo "env_name=${{ inputs.environment }}" >> $GITHUB_OUTPUT
+              elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+                  echo "env_name=develop" >> $GITHUB_OUTPUT
+              elif [ "${{ github.ref }}" == "refs/heads/stage" ]; then
+                  echo "env_name=Stage" >> $GITHUB_OUTPUT
+              elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+                  echo "env_name=Production" >> $GITHUB_OUTPUT                    
+              else
+                  echo "ERROR: The environment is not defined"; exit 1;
+              fi
+    outputs:
+        env_name: ${{ steps.branch_check.outputs.env_name }}
+
+  Build_UI_code:
+    name: Build_UI_code
+    runs-on: [self-hosted,Linux, cicdframework]
+    if: ${{ ! startsWith(github.ref, 'refs/pull/') }}
+    needs: environment
+    environment:
+      name: ${{ needs.environment.outputs.env_name }}
+    env:
+      REACT_APP_BASE_API_URL: ${{ vars.BASE_API_URL }}
     steps:
         - name: Checkout repository
           uses: actions/checkout@v2
@@ -93,32 +150,10 @@ jobs:
     outputs:
       version_num: ${{ steps.gitversion.outputs.MajorMinorPatch }}
 
-  environment:
-    name: Select Environment
-    runs-on: [self-hosted,Linux, cicdframework]
-    needs: Build_UI_code
-    steps:
-      -   name: Select deployment environment
-          id: branch_check
-          run: |
-              echo "Running on branch ${{ github.ref }}"
-              if [ "${{ inputs.environment }}" != "" ]; then
-                  echo "env_name=${{ inputs.environment }}" >> $GITHUB_OUTPUT
-              elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-                  echo "env_name=develop" >> $GITHUB_OUTPUT
-              elif [ "${{ github.ref }}" == "refs/heads/stage" ]; then
-                  echo "env_name=Stage" >> $GITHUB_OUTPUT
-              elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-                  echo "env_name=Production" >> $GITHUB_OUTPUT                    
-              else
-                  echo "ERROR: The environment is not defined"; exit 1;
-              fi
-    outputs:
-        env_name: ${{ steps.branch_check.outputs.env_name }}
-
   Deploy:
     name: Deploy to ${{ needs.environment.outputs.env_name }} environment
     runs-on: [self-hosted,Linux, cicdframework]
+    if: ${{ ! startsWith(github.ref, 'refs/pull/') }}
     needs: [environment, Build_UI_code]
     environment: 
       name: ${{ needs.environment.outputs.env_name }}
