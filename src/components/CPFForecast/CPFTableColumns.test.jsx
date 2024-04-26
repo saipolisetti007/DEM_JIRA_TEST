@@ -15,12 +15,12 @@ describe('PromoGridColumns', () => {
         expect.objectContaining(
           {},
           {
-            accessorKey: 'product',
-            header: 'Product'
+            accessorKey: 'product_id',
+            header: 'Product ID'
           },
           {
-            accessorKey: 'wk1',
-            header: 'Wk1'
+            accessorKey: 'week1',
+            header: 'Week1'
           }
         )
       ])
