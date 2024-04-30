@@ -45,13 +45,15 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
               isRequired={true}
               isError={!!validationErrors?.event_in_store_start_date}
               helperText={validationErrors?.event_in_store_start_date}
+              validationType="startDate"
+              startDateField="event_in_store_start_date"
             />
           );
         }
       },
       {
         accessorKey: 'event_in_store_end_date',
-        header: 'Event in store End Date',
+        header: 'Event in Store End Date',
         Edit: ({ column, row }) => {
           return (
             <DatePickerComponent
@@ -60,6 +62,8 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
               isRequired={true}
               isError={!!validationErrors?.event_in_store_end_date}
               helperText={validationErrors?.event_in_store_end_date}
+              validationType="endDate"
+              startDateField="event_in_store_start_date"
             />
           );
         }
@@ -68,14 +72,33 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         accessorKey: 'start_of_shipments',
         header: 'Start Of Shipments',
         Edit: ({ column, row }) => {
-          return <DatePickerComponent row={row} column={column} isRequired={false} />;
+          return (
+            <DatePickerComponent
+              row={row}
+              column={column}
+              isRequired={false}
+              isError={!!validationErrors?.start_of_shipments}
+              helperText={validationErrors?.start_of_shipments}
+              validationType="startDate"
+            />
+          );
         }
       },
       {
         accessorKey: 'end_of_shipments',
         header: 'End Of Shipments',
         Edit: ({ column, row }) => {
-          return <DatePickerComponent row={row} column={column} isRequired={false} />;
+          return (
+            <DatePickerComponent
+              row={row}
+              column={column}
+              isRequired={false}
+              isError={!!validationErrors?.end_of_shipments}
+              helperText={validationErrors?.end_of_shipments}
+              validationType="endDate"
+              startDateField="start_of_shipments"
+            />
+          );
         }
       },
       {

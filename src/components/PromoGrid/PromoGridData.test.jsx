@@ -15,6 +15,7 @@ jest.mock('../../api/promoGridApi');
 
 describe('PromoGridData Component', () => {
   beforeEach(() => {
+    getData.mockResolvedValue([]);
     jest.clearAllMocks();
   });
 

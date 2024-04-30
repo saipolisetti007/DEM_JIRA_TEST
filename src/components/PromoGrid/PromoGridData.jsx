@@ -21,10 +21,14 @@ import RowActions from '../Common/RowActions';
 import PageHeader from '../Common/PageHeader';
 import PageSection from '../Common/PageSection';
 import InfoSnackBar from '../Common/InfoSnackBar';
+import ResponseMessageDialog from '../Common/ResponseMessageDialog';
 const PromoGridData = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDataLoading, setIsDataLoading] = useState(false);
+  const [responseMessage, setResponseMessage] = useState([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRefetching, setIsRefetching] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
@@ -85,6 +89,8 @@ const PromoGridData = () => {
         });
       } catch (error) {
         setIsSaving(false);
+        setIsModalOpen(true);
+        setResponseMessage(error.response?.data);
         setIsSnackOpen(true);
         setSnackBar({
           message: 'Error occured while adding the data !!!',
@@ -112,6 +118,8 @@ const PromoGridData = () => {
         });
       } catch (error) {
         setIsSaving(false);
+        setIsModalOpen(true);
+        setResponseMessage(error.response?.data);
         setIsSnackOpen(true);
         setSnackBar({
           message: 'Error occured while updating the data !!!',
@@ -120,8 +128,6 @@ const PromoGridData = () => {
       }
     }
   };
-
-  //UPDATE action
 
   const handleChange = (event, validationType, accessorKey) => {
     let errorMessage = handleChangeValidate(event, validationType);
@@ -196,7 +202,6 @@ const PromoGridData = () => {
           const formData = new FormData();
           formData.append('file', file);
           await uploadDataExcel(formData);
-          setIsDataLoading(false);
           setIsSnackOpen(true);
           setSnackBar({
             message: 'Excel file data uploaded successfully !!!',
@@ -205,6 +210,7 @@ const PromoGridData = () => {
           setIsLoading(true);
           setIsRefetching(true);
           fetchData();
+          setIsDataLoading(false);
           event.target.value = null;
         } else {
           alert('Please select an excel file');
@@ -213,6 +219,8 @@ const PromoGridData = () => {
         alert('Please select a file');
       }
     } catch (error) {
+      setIsModalOpen(true);
+      setResponseMessage(error.response?.data);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Error occured while updating the data ! Please try again !!!',
@@ -293,6 +301,13 @@ const PromoGridData = () => {
 
   return (
     <>
+      {isModalOpen && (
+        <ResponseMessageDialog
+          responseMessage={responseMessage}
+          isOpen={isModalOpen}
+          onClose={setIsModalOpen}
+        />
+      )}
       <PageSection>
         <PageHeader
           table={table}
