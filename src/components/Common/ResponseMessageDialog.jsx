@@ -44,28 +44,30 @@ const ResponseMessageDialog = ({ responseMessage, isOpen, onClose }) => {
               <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                   <TableHead className="bg-slate-500">
-                    <TableCell>
-                      <Typography variant="subtitle2" className="text-white">
-                        Row
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="subtitle2" className=" text-white">
-                        Form Filed
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="subtitle2" className="text-white">
-                        Error Message
-                      </Typography>
-                    </TableCell>
+                    <TableRow>
+                      <TableCell>
+                        <Typography variant="subtitle2" className="text-white">
+                          Row
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="subtitle2" className=" text-white">
+                          Form Filed
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="subtitle2" className="text-white">
+                          Error Message
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
                   </TableHead>
                   <TableBody>
                     {responseMessage.errors.map((error, index) => (
                       <TableRow
                         key={index}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                        <TableCell component="th" scope="row">
+                        <TableCell>
                           <Typography variant="subtitle2"> {error.row}</Typography>
                         </TableCell>
                         <TableCell>

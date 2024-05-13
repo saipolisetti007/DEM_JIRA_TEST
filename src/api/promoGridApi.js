@@ -16,6 +16,10 @@ export const updateRowData = async (newData) => {
   return response;
 };
 
+export const cancelRowData = async (rowData) => {
+  await performApiRequest('promo/promo-grid-cancel/', 'POST', rowData);
+};
+
 const downloadExcel = async (endpoint, filename) => {
   const response = await performApiRequest(endpoint, 'GET', null, 'blob');
   const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
@@ -42,4 +46,19 @@ export const downloadDataExcel = async () => {
 export const uploadDataExcel = async (formData) => {
   const response = await performApiRequest('promo/promo-grid-file-upload/', 'POST', formData);
   return response;
+};
+
+export const promoGridGetValidations = async (promoHeader) => {
+  const url = `promo/promo-grid-validate/?promo_header=${promoHeader}`;
+  const response = await performApiRequest(url);
+  return response;
+};
+
+export const promoGridValidate = async (rowData) => {
+  const response = await performApiRequest('promo/promo-grid-validate/', 'POST', rowData);
+  return response;
+};
+
+export const promoGridSubmit = async (promoHeader) => {
+  await performApiRequest('promo/promo-grid-submit/', 'POST', promoHeader);
 };

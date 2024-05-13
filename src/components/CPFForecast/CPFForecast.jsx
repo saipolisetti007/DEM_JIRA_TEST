@@ -91,7 +91,7 @@ const CPFForecast = () => {
   const table = useMaterialReactTable({
     columns: CPFTableColumns(),
     data,
-    muiTableContainerProps: { sx: { minHeight: '510px', maxHeight: '510px' } },
+    muiTableContainerProps: { sx: { minHeight: '440px', maxHeight: '440px' } },
     muiTableHeadCellProps: {
       sx: (theme) => ({
         backgroundColor: theme.palette.secondary.main,
@@ -108,7 +108,6 @@ const CPFForecast = () => {
     enableRowActions: true,
     enableColumnActions: false,
     enableColumnPinning: true,
-    manualPagination: true,
     renderRowActions: ({ row }) => <CPFRowActions row={row} onChange={handleSelectionChange} />,
     initialState: {
       density: 'compact',

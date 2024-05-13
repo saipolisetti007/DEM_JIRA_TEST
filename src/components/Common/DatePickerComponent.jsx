@@ -10,7 +10,8 @@ const DatePickerComponent = ({
   isError,
   helperText,
   validationType,
-  startDateField
+  startDateField,
+  handleInputChange
 }) => {
   const value = row.original[column.id];
   const initialValue = value ? moment(value, 'MM/DD/YYYY') : null;
@@ -19,10 +20,12 @@ const DatePickerComponent = ({
   useEffect(() => {
     setError(isError);
     setHelperMsg(helperText);
-  }, [isError]);
+  }, [isError, helperText]);
 
   const handleChange = (newValue) => {
     const selectedDate = newValue ? moment(newValue) : null;
+    const accessorKey = column.id;
+    const rowIndex = row.index;
     const tomarrow = moment().add(1, 'day');
     const startDate = moment(row._valuesCache[startDateField], 'MM/DD/YYYY');
 
@@ -30,6 +33,10 @@ const DatePickerComponent = ({
       if (selectedDate?.isBefore(tomarrow, 'day')) {
         setError(true);
         setHelperMsg('Date Should be a future Date');
+        return;
+      } else if (!selectedDate) {
+        setError(true);
+        setHelperMsg('Required');
         return;
       }
     }
@@ -39,14 +46,21 @@ const DatePickerComponent = ({
         setError(true);
         setHelperMsg('End Date Should be a greater than start date');
         return;
+      } else if (!selectedDate) {
+        setError(true);
+        setHelperMsg('Required');
+        return;
       }
     }
 
-    const formattdDate = newValue ? selectedDate.format('MM/DD/YYYY') : null;
-    row._valuesCache[column.id] = formattdDate;
+    const formatedDate = newValue ? selectedDate.format('MM/DD/YYYY') : null;
+    row._valuesCache[column.id] = formatedDate;
 
     setError(false);
-    setHelperMsg('');
+    setHelperMsg(null);
+    if (handleInputChange) {
+      handleInputChange(formatedDate, rowIndex, accessorKey, null);
+    }
   };
 
   return (

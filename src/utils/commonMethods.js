@@ -1,5 +1,5 @@
 const validateRequired = (value) => String(value).length;
-const validateInteger = (value) => /^\d+$/.exec(String(value));
+const validateInteger = (value) => /^-?\d+$/.exec(String(value));
 const validateString = (value) => /^[A-Za-z0-9][^\r\n]*$/.exec(String(value));
 const validateFloat = (value) => /^\d+(\.\d+)?$/.exec(String(value));
 
@@ -32,9 +32,7 @@ const handleValidate = (validationType, isRequired, value) => {
   return errorMessage;
 };
 
-const handleChangeValidate = (event, validationType) => {
-  const newValue = event.target.value;
-
+const handleChangeValidate = (newValue, validationType) => {
   let errorMessage;
   switch (validationType) {
     case 'stringValidation':

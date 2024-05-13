@@ -8,7 +8,14 @@ import {
   RadioGroup
 } from '@mui/material';
 
-const InputRadioComponent = ({ row, column, isRequired, isError, helperText }) => {
+const InputRadioComponent = ({
+  row,
+  column,
+  isRequired,
+  isError,
+  helperText,
+  handleInputChange
+}) => {
   const rowValue = row.original[column.id];
   let initialValue;
   if (rowValue === true) {
@@ -18,13 +25,19 @@ const InputRadioComponent = ({ row, column, isRequired, isError, helperText }) =
   }
   const [value, setValue] = useState(initialValue);
   const [error, setError] = useState(isError);
+
   useEffect(() => {
     setError(isError);
   }, [isError]);
 
   const handleChange = (event) => {
+    const accessorKey = column.id;
+    const rowIndex = row.index;
     setValue(event.target.value);
     setError(false);
+    if (handleInputChange) {
+      handleInputChange(value, rowIndex, accessorKey, null);
+    }
   };
   let booleanValue;
   if (value === 'yes') {

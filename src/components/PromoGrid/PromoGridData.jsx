@@ -7,9 +7,11 @@ import {
 } from 'material-react-table';
 import {
   addNewRowData,
+  cancelRowData,
   downloadBlankExcel,
   downloadDataExcel,
   getData,
+  promoGridGetValidations,
   updateRowData,
   uploadDataExcel
 } from '../../api/promoGridApi';
@@ -21,14 +23,14 @@ import RowActions from '../Common/RowActions';
 import PageHeader from '../Common/PageHeader';
 import PageSection from '../Common/PageSection';
 import InfoSnackBar from '../Common/InfoSnackBar';
-import ResponseMessageDialog from '../Common/ResponseMessageDialog';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 const PromoGridData = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDataLoading, setIsDataLoading] = useState(false);
-  const [responseMessage, setResponseMessage] = useState([]);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRefetching, setIsRefetching] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
@@ -39,7 +41,6 @@ const PromoGridData = () => {
     pageIndex: 0,
     pageSize: 10
   });
-
   const [validationErrors, setValidationErrors] = useState({});
 
   const fetchData = async () => {
@@ -59,6 +60,17 @@ const PromoGridData = () => {
     fetchData();
   }, [pagination]);
 
+  useEffect(() => {
+    if (location.state && location.state.messageData) {
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: location.state.messageData,
+        severity: 'success'
+      });
+      window.history.replaceState(null, '');
+    }
+  }, [location.state]);
+
   //Validate Values
   const validateValues = (values) => {
     const newValidationErrors = validateData(values);
@@ -70,6 +82,14 @@ const PromoGridData = () => {
     setValidationErrors({});
     return true;
   };
+
+  const transformErrors = (response) => {
+    return response.errors.reduce((acc, { field, error }) => {
+      acc[field] = error;
+      return acc;
+    }, {});
+  };
+
   //CREATE action
   const handleCreate = async ({ values, table }) => {
     setIsSaving(true);
@@ -89,8 +109,10 @@ const PromoGridData = () => {
         });
       } catch (error) {
         setIsSaving(false);
-        setIsModalOpen(true);
-        setResponseMessage(error.response?.data);
+        const response = error.response?.data;
+        const transformedErrors = transformErrors(response);
+
+        setValidationErrors(transformedErrors);
         setIsSnackOpen(true);
         setSnackBar({
           message: 'Error occured while adding the data !!!',
@@ -118,8 +140,9 @@ const PromoGridData = () => {
         });
       } catch (error) {
         setIsSaving(false);
-        setIsModalOpen(true);
-        setResponseMessage(error.response?.data);
+        const response = error.response?.data;
+        const transformedErrors = transformErrors(response);
+        setValidationErrors(transformedErrors);
         setIsSnackOpen(true);
         setSnackBar({
           message: 'Error occured while updating the data !!!',
@@ -129,8 +152,37 @@ const PromoGridData = () => {
     }
   };
 
+  const handleCancel = async (row) => {
+    const rowData = {
+      unique_event_id: row.original.unique_event_id,
+      golden_customer_id: row.original.golden_customer_id
+    };
+    if (window.confirm('Are you sure want to cancel this promo data?')) {
+      try {
+        await cancelRowData(rowData);
+        setIsLoading(true);
+        setIsRefetching(true);
+        setIsSaving(false);
+        setIsSnackOpen(true);
+        setSnackBar({
+          message: 'Promo Cancelled successfully !!!',
+          severity: 'success'
+        });
+        await fetchData();
+      } catch (error) {
+        setIsSaving(false);
+        setIsSnackOpen(true);
+        setSnackBar({
+          message: 'Error occured while cancel the data !!!',
+          severity: 'error'
+        });
+      }
+    }
+  };
+
   const handleChange = (event, validationType, accessorKey) => {
-    let errorMessage = handleChangeValidate(event, validationType);
+    const newValue = event.target.value;
+    let errorMessage = handleChangeValidate(newValue, validationType);
     setValidationErrors({
       ...validationErrors,
       [accessorKey]: errorMessage
@@ -201,12 +253,9 @@ const PromoGridData = () => {
           setIsDataLoading(true);
           const formData = new FormData();
           formData.append('file', file);
-          await uploadDataExcel(formData);
-          setIsSnackOpen(true);
-          setSnackBar({
-            message: 'Excel file data uploaded successfully !!!',
-            severity: 'success'
-          });
+          const uploadResponse = await uploadDataExcel(formData);
+          const validateResponse = await promoGridGetValidations(uploadResponse.promo_header);
+          navigate('/promo-grid-validations', { state: { responseData: validateResponse } });
           setIsLoading(true);
           setIsRefetching(true);
           fetchData();
@@ -219,8 +268,6 @@ const PromoGridData = () => {
         alert('Please select a file');
       }
     } catch (error) {
-      setIsModalOpen(true);
-      setResponseMessage(error.response?.data);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Error occured while updating the data ! Please try again !!!',
@@ -289,7 +336,9 @@ const PromoGridData = () => {
         internalEditComponents={internalEditComponents}
       />
     ),
-    renderRowActions: ({ row, table }) => <RowActions table={table} row={row} />,
+    renderRowActions: ({ row, table }) => (
+      <RowActions table={table} row={row} handleCancel={handleCancel} />
+    ),
     state: {
       isLoading: isLoading,
       isSaving: isSaving,
@@ -301,13 +350,6 @@ const PromoGridData = () => {
 
   return (
     <>
-      {isModalOpen && (
-        <ResponseMessageDialog
-          responseMessage={responseMessage}
-          isOpen={isModalOpen}
-          onClose={setIsModalOpen}
-        />
-      )}
       <PageSection>
         <PageHeader
           table={table}

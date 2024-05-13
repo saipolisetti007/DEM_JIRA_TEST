@@ -19,6 +19,7 @@ import ErrorBoundary from './errorHanlding/ErrorBoundary';
 import SignIn from './components/SignIn/SignIn';
 import PromoGrid from './pages/PromoGrid';
 import CPFForecast from './components/CPFForecast/CPFForecast';
+import PromoGridValidations from './components/PromoGrid/PromoGridValidations';
 import StoreToDcMapping from './pages/StoreToDcMapping';
 
 const router = createBrowserRouter(
@@ -28,6 +29,7 @@ const router = createBrowserRouter(
       <Route path="/signin" element={<SignIn />} />
       <Route path="/store-to-dc-mapping" element={<StoreToDcMapping />} />
       <Route path="/promo-grid" element={<PromoGrid />} />
+      <Route path="/promo-grid-validations" element={<PromoGridValidations />} />
       <Route path="/cpf-forecast" element={<CPFForecast />} />
     </Route>
   )

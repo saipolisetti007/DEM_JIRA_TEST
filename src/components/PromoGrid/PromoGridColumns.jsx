@@ -197,14 +197,24 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         accessorKey: 'expected_shipments_forecast',
         header: 'Expected Shipments Forecast',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.expected_shipments_forecast,
+          helperText: validationErrors?.expected_shipments_forecast,
+          onChange: (event) => {
+            handleChange(event, 'integerValidation', 'expected_shipments_forecast');
+          }
         }
       },
       {
         accessorKey: 'expected_consumption_forecast',
         header: 'Expected Consumption Forecast',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.expected_consumption_forecast,
+          helperText: validationErrors?.expected_consumption_forecast,
+          onChange: (event) => {
+            handleChange(event, 'integerValidation', 'expected_shipments_forecast');
+          }
         }
       },
       {
@@ -276,7 +286,12 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         accessorKey: 'proxy_like_item_number',
         header: 'Proxy Like Item Number',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.proxy_like_item_number,
+          helperText: validationErrors?.proxy_like_item_number,
+          onChange: (event) => {
+            handleChange(event, 'integerValidation', 'proxy_like_item_number');
+          }
         }
       },
       {
@@ -291,7 +306,12 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         accessorKey: 'promoted_product_group_id',
         header: 'Promoted Product Group Id',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.promoted_product_group_id,
+          helperText: validationErrors?.promoted_product_group_id,
+          onChange: (event) => {
+            handleChange(event, 'stringValidation', 'promoted_product_group_id');
+          }
         }
       },
       {
@@ -312,7 +332,12 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         accessorKey: 'distribution_profile',
         header: 'Distribution Profile',
         muiEditTextFieldProps: {
-          variant: 'outlined'
+          variant: 'outlined',
+          error: !!validationErrors?.distribution_profile,
+          helperText: validationErrors?.distribution_profile,
+          onChange: (event) => {
+            handleChange(event, 'stringValidation', 'distribution_profile');
+          }
         }
       },
       {
@@ -431,7 +456,7 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
           error: !!validationErrors?.event_num_property_1,
           helperText: validationErrors?.event_num_property_1,
           onChange: (event) => {
-            handleChange(event, 'integerValidation', 'event_num_property_1');
+            handleChange(event, 'floatValidation', 'event_num_property_1');
           }
         }
       },
@@ -443,7 +468,7 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
           error: !!validationErrors?.event_num_property_2,
           helperText: validationErrors?.event_num_property_2,
           onChange: (event) => {
-            handleChange(event, 'integerValidation', 'event_num_property_2');
+            handleChange(event, 'floatValidation', 'event_num_property_2');
           }
         }
       },
@@ -455,7 +480,7 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
           error: !!validationErrors?.event_num_property_3,
           helperText: validationErrors?.event_num_property_3,
           onChange: (event) => {
-            handleChange(event, 'integerValidation', 'event_num_property_3');
+            handleChange(event, 'floatValidation', 'event_num_property_3');
           }
         }
       },
@@ -467,7 +492,7 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
           error: !!validationErrors?.event_num_property_4,
           helperText: validationErrors?.event_num_property_4,
           onChange: (event) => {
-            handleChange(event, 'integerValidation', 'event_num_property_4');
+            handleChange(event, 'floatValidation', 'event_num_property_4');
           }
         }
       },
@@ -479,7 +504,7 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
           error: !!validationErrors?.event_num_property_5,
           helperText: validationErrors?.event_num_property_5,
           onChange: (event) => {
-            handleChange(event, 'integerValidation', 'event_num_property_5');
+            handleChange(event, 'floatValidation', 'event_num_property_5');
           }
         }
       },

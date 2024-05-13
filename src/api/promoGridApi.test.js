@@ -5,7 +5,11 @@ import {
   updateRowData,
   downloadBlankExcel,
   downloadDataExcel,
-  uploadDataExcel
+  uploadDataExcel,
+  promoGridGetValidations,
+  promoGridValidate,
+  promoGridSubmit,
+  cancelRowData
 } from './promoGridApi';
 
 jest.mock('./apiUtils', () => ({
@@ -45,6 +49,13 @@ describe('promoGridApi', () => {
     performApiRequest.mockResolvedValueOnce(rowData);
     await updateRowData(rowData);
     expect(performApiRequest).toHaveBeenCalledWith('promo/promo-grid-edit/', 'POST', rowData);
+  });
+
+  test('cancel row data', async () => {
+    const rowData = { id: 1, name: 'test' };
+    performApiRequest.mockResolvedValueOnce(rowData);
+    await cancelRowData(rowData);
+    expect(performApiRequest).toHaveBeenCalledWith('promo/promo-grid-cancel/', 'POST', rowData);
   });
 
   test('downloads blank Excel', async () => {
@@ -118,5 +129,30 @@ describe('promoGridApi', () => {
       formData
     );
     expect(result).toEqual(mockResponse);
+  });
+
+  test('get promoGridGetValidations with promo header', async () => {
+    const promoHeader = 13;
+    const data = [{ id: 1, name: 'test' }];
+    performApiRequest.mockResolvedValueOnce(data);
+    const result = await promoGridGetValidations(promoHeader);
+    expect(result).toEqual(data);
+    const url = `promo/promo-grid-validate/?promo_header=${promoHeader}`;
+    expect(performApiRequest).toHaveBeenCalledWith(url);
+  });
+
+  test('promoGridValidate', async () => {
+    const rowData = { id: 1, name: 'test' };
+    performApiRequest.mockResolvedValueOnce(rowData);
+    await promoGridValidate(rowData);
+    expect(performApiRequest).toHaveBeenCalledWith('promo/promo-grid-validate/', 'POST', rowData);
+  });
+
+  test('promoGridSubmit', async () => {
+    const promoHeader = 13;
+    const data = [{ id: 1, name: 'test' }];
+    performApiRequest.mockResolvedValueOnce(data);
+    await promoGridSubmit(promoHeader);
+    expect(performApiRequest).toHaveBeenCalledWith('promo/promo-grid-submit/', 'POST', promoHeader);
   });
 });
