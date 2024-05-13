@@ -31,12 +31,13 @@ const InputRadioComponent = ({
   }, [isError]);
 
   const handleChange = (event) => {
+    const newValue = event.target.value;
     const accessorKey = column.id;
     const rowIndex = row.index;
     setValue(event.target.value);
     setError(false);
     if (handleInputChange) {
-      handleInputChange(value, rowIndex, accessorKey, null);
+      handleInputChange(newValue, rowIndex, accessorKey, null);
     }
   };
   let booleanValue;

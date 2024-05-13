@@ -21,6 +21,7 @@ const PromoGridValidationTable = () => {
   const { responseData } = location.state || {};
   const [tableData, setTableData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDataLoading, setIsDataLoading] = useState(false);
   const [isRefetching, setIsRefetching] = useState(false);
   const [isError, setIsError] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
@@ -74,6 +75,7 @@ const PromoGridValidationTable = () => {
   };
 
   const handleValidate = async () => {
+    setIsDataLoading(true);
     if (!allErrorsNull) return;
     try {
       const updatedRows = updatedData.rows.map((row) => {
@@ -83,6 +85,7 @@ const PromoGridValidationTable = () => {
       });
       const updatedState = { ...updatedData, rows: updatedRows };
       await promoGridValidate(updatedState);
+      setIsDataLoading(false);
       setSubmitDisabled(false);
       setIsSnackOpen(true);
       setSnackBar({
@@ -91,6 +94,7 @@ const PromoGridValidationTable = () => {
       });
     } catch (error) {
       updateData(error.response.data);
+      setIsDataLoading(false);
       setSubmitDisabled(true);
       setIsSnackOpen(true);
       setSnackBar({
@@ -169,7 +173,7 @@ const PromoGridValidationTable = () => {
                 variant="contained"
                 onClick={handleValidate}
                 disabled={!allErrorsNull}>
-                Validate
+                {isDataLoading ? 'Validating...' : 'Validate'}
               </Button>
 
               <Button
