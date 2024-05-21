@@ -18,7 +18,7 @@ import store from './store/store';
 import ErrorBoundary from './errorHanlding/ErrorBoundary';
 import SignIn from './components/SignIn/SignIn';
 import PromoGrid from './pages/PromoGrid';
-import CPFForecast from './components/CPFForecast/CPFForecast';
+import CPFForecast from './pages/CPFForecast';
 import PromoGridValidations from './components/PromoGrid/PromoGridValidations';
 import StoreToDcMapping from './pages/StoreToDcMapping';
 

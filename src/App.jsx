@@ -13,12 +13,12 @@ const MainContent = () => {
   const { instance } = useMsal();
   const activeAccount = instance.getActiveAccount();
   return (
-    <main className="flex-grow py-5">
+    <>
       <AuthenticatedTemplate>{activeAccount ? <Outlet /> : null}</AuthenticatedTemplate>
       <UnauthenticatedTemplate>
         <SignIn />
       </UnauthenticatedTemplate>
-    </main>
+    </>
   );
 };
 

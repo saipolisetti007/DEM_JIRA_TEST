@@ -83,7 +83,7 @@ const PromoGridData = () => {
     setIsLoading(true);
     try {
       const filterParams = Object.keys(selectedFilters)
-        .filter((key) => selectedFilters[key].length > 0)
+        .filter((key) => selectedFilters[key].length > 0 && selectedFilters[key][0] !== 'All')
         .map((key) => `${key}=${selectedFilters[key].join('.')}`)
         .join('&');
       const response = await getData(pagination.pageIndex, pagination.pageSize, filterParams);

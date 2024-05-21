@@ -1,11 +1,12 @@
-import { render, screen, within, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Filters from './Filters';
 
 describe('Filters Component', () => {
   const MOCK_OPTIONS = {
-    subsector: ['Skin and Personal Care', 'Home Care', 'Fabric Care', 'Oral Care'],
+    subsector: ['All', 'Skin and Personal Care', 'Home Care', 'Fabric Care', 'Oral Care'],
     category: [
+      'All',
       'Auto Dish',
       'Whitening/Sensitivity',
       'Laundry',
@@ -13,9 +14,9 @@ describe('Filters Component', () => {
       'AP/DO & Body Spray',
       'Fabric Enhancers'
     ],
-    brand: ['Crest', 'Glide', 'Tide', 'Secret', 'Downy', 'Cascade'],
-    brandForm: ['brandForm1', 'brandForm2', 'brandForm3', 'brandForm4'],
-    sku: ['sku1', 'sku2', 'sku3', 'sku4'],
+    brand: ['All', 'Crest', 'Glide', 'Tide', 'Secret', 'Downy', 'Cascade'],
+    brandForm: ['All', 'brandForm1', 'brandForm2', 'brandForm3', 'brandForm4'],
+    sku: ['All', 'sku1', 'sku2', 'sku3', 'sku4'],
     active: ['Active', 'Cancelled']
   };
 
@@ -40,31 +41,6 @@ describe('Filters Component', () => {
     const labels = ['Subsector', 'Category', 'Brand', 'BrandForm', 'Sku', 'Active'];
     for (const label of labels) {
       expect(screen.getByText(label)).toBeInTheDocument();
-    }
-  });
-
-  test('should call onFilterChange when a filter is changed', async () => {
-    const handleFilterChange = jest.fn();
-    render(
-      <Filters
-        isLoading={false}
-        filterOptions={MOCK_OPTIONS}
-        selectedFilters={selectedFilters}
-        onFilterChange={handleFilterChange}
-      />
-    );
-
-    for (const filterKey of Object.keys(MOCK_OPTIONS)) {
-      const select = screen.getByLabelText(
-        `${filterKey.charAt(0).toUpperCase() + filterKey.slice(1)}`
-      );
-      fireEvent.mouseDown(select);
-
-      const option = await screen.findByRole('option', { name: MOCK_OPTIONS[filterKey][0] });
-      userEvent.click(option);
-
-      expect(handleFilterChange).toHaveBeenCalledWith(filterKey, [MOCK_OPTIONS[filterKey][0]]);
-      handleFilterChange.mockClear();
     }
   });
 

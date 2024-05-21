@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-th.MuiTableCell-root[data-pinned="true"]:before{
-    background-color: #263238 !important;
+th.MuiTableCell-root[data-pinned='true']:before {
+  background-color: #263238 !important;
+}
+td.MuiTableCell-root .Mui-disabled {
+  display: none;
+}
+th.MuiTableCell-head svg {
+  color: #fff;
 }

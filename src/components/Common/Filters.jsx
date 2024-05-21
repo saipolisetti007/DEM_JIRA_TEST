@@ -38,6 +38,7 @@ function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
                   value={selectedFilters[filterKey]}
                   onChange={handleFilterChange(filterKey)}
                   label={filterKey}>
+                  {filterKey !== 'active' && <MenuItem value="All">All</MenuItem>}
                   {filterOptions[filterKey]?.length === 0 ? (
                     <MenuItem disabled value="">
                       <Typography variant="body2" color="textSecondary">
