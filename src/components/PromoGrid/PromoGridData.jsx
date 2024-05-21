@@ -11,6 +11,7 @@ import {
   downloadBlankExcel,
   downloadDataExcel,
   getData,
+  promoGridFilters,
   promoGridGetValidations,
   updateRowData,
   uploadDataExcel
@@ -24,6 +25,7 @@ import PageHeader from '../Common/PageHeader';
 import PageSection from '../Common/PageSection';
 import InfoSnackBar from '../Common/InfoSnackBar';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Filters from '../Common/Filters';
 
 const PromoGridData = () => {
   const location = useLocation();
@@ -42,10 +44,49 @@ const PromoGridData = () => {
     pageSize: 10
   });
   const [validationErrors, setValidationErrors] = useState({});
+  const [filterOptions, setFilterOptions] = useState({
+    subsector: [],
+    category: [],
+    brand: [],
+    brandForm: [],
+    sku: [],
+    active: []
+  });
+
+  const [selectedFilters, setSelectedFilters] = useState({
+    subsector: '',
+    category: '',
+    brand: '',
+    brandForm: '',
+    sku: '',
+    active: ''
+  });
+
+  const fetchFilters = async () => {
+    try {
+      const response = await promoGridFilters();
+      setFilterOptions({
+        subsector: response?.subsector,
+        category: response?.category,
+        brand: response?.brand,
+        brandForm: response?.prod_form_name,
+        sku: response?.sku,
+        active: response?.active
+      });
+      setIsDataLoading(false);
+    } catch (error) {
+      setIsLoading(true);
+    }
+  };
 
   const fetchData = async () => {
+    setIsLoading(true);
     try {
-      const response = await getData(pagination.pageIndex, pagination.pageSize);
+      const filterParams = Object.keys(selectedFilters)
+        .filter((key) => selectedFilters[key].length > 0)
+        .map((key) => `${key}=${selectedFilters[key].join('.')}`)
+        .join('&');
+      const response = await getData(pagination.pageIndex, pagination.pageSize, filterParams);
       setData(response.results);
       setRowCount(response.count);
       setIsLoading(false);
@@ -54,11 +95,16 @@ const PromoGridData = () => {
       setIsLoading(true);
       setIsError(true);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    fetchData();
+    fetchFilters();
   }, [pagination]);
+
+  useEffect(() => {
+    fetchData();
+  }, [pagination, selectedFilters]);
 
   useEffect(() => {
     if (location.state && location.state.messageData) {
@@ -70,6 +116,13 @@ const PromoGridData = () => {
       window.history.replaceState(null, '');
     }
   }, [location.state]);
+
+  const handleFilterChange = (filterKey, values) => {
+    setSelectedFilters((prev) => ({
+      ...prev,
+      [filterKey]: values
+    }));
+  };
 
   //Validate Values
   const validateValues = (values) => {
@@ -359,6 +412,12 @@ const PromoGridData = () => {
           handleDownloadBlankExcel={handleDownloadBlankExcel}
           handleUploadDataExcel={handleUploadDataExcel}
           isDataLoading={isDataLoading}
+        />
+        <Filters
+          isLoading={isLoading}
+          filterOptions={filterOptions}
+          selectedFilters={selectedFilters}
+          onFilterChange={handleFilterChange}
         />
         <MRT_ToolbarAlertBanner table={table} />
         <MRT_TableContainer table={table} />

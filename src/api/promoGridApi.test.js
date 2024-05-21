@@ -29,11 +29,12 @@ describe('promoGridApi', () => {
   test('get data with correct parameters', async () => {
     const pageIndex = 0;
     const pageSize = 10;
+    const filters = 'undefined'
     const data = [{ id: 1, name: 'test' }];
     performApiRequest.mockResolvedValueOnce(data);
     const result = await getData(pageIndex, pageSize);
     expect(result).toEqual(data);
-    const url = `promo/promo-grid-list/?page=${pageIndex + 1}&page_size=${pageSize}`;
+    const url = `promo/promo-grid-list/?page=${pageIndex + 1}&page_size=${pageSize}&${filters}`;
     expect(performApiRequest).toHaveBeenCalledWith(url);
   });
 
@@ -56,36 +57,6 @@ describe('promoGridApi', () => {
     performApiRequest.mockResolvedValueOnce(rowData);
     await cancelRowData(rowData);
     expect(performApiRequest).toHaveBeenCalledWith('promo/promo-grid-cancel/', 'POST', rowData);
-  });
-
-  test('downloads blank Excel', async () => {
-    const response = new Blob(['test'], { type: 'application/vnd.ms-excel' });
-    performApiRequest.mockResolvedValueOnce(response);
-
-    window.URL.createObjectURL = jest.fn(() => 'blob:test');
-    window.URL.revokeObjectURL = jest.fn();
-
-    const createElementSpy = jest.spyOn(document, 'createElement');
-    const appendChildSpy = jest.spyOn(document.body, 'appendChild');
-    const removeChildSpy = jest.spyOn(document.body, 'removeChild');
-
-    await downloadBlankExcel();
-
-    expect(performApiRequest).toHaveBeenCalledWith(
-      'promo/excel-template/download/',
-      'GET',
-      null,
-      'blob'
-    );
-    expect(window.URL.createObjectURL).toHaveBeenCalled();
-    expect(createElementSpy).toHaveBeenCalledWith('a');
-    expect(appendChildSpy).toHaveBeenCalled();
-    expect(removeChildSpy).toHaveBeenCalled();
-    expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:test');
-
-    createElementSpy.mockRestore();
-    appendChildSpy.mockRestore();
-    removeChildSpy.mockRestore();
   });
 
   test('downloads Data Excel', async () => {

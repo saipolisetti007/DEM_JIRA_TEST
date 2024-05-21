@@ -1,7 +1,7 @@
 import { performApiRequest } from './apiUtils';
 
-export const getData = async (pageIndex, pageSize) => {
-  const url = `promo/promo-grid-list/?page=${pageIndex + 1}&page_size=${pageSize}`;
+export const getData = async (pageIndex, pageSize, filters) => {
+  const url = `promo/promo-grid-list/?page=${pageIndex + 1}&page_size=${pageSize}&${filters}`;
   const response = await performApiRequest(url);
   return response;
 };
@@ -61,4 +61,10 @@ export const promoGridValidate = async (rowData) => {
 
 export const promoGridSubmit = async (promoHeader) => {
   await performApiRequest('promo/promo-grid-submit/', 'POST', promoHeader);
+};
+
+export const promoGridFilters = async () => {
+  const url = 'promo/filter/';
+  const response = await performApiRequest(url, 'GET');
+  return response;
 };

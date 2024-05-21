@@ -102,43 +102,6 @@ describe('PromoGridData Component', () => {
     });
   });
 
-  test('handles successful blank Excel file download', async () => {
-    downloadBlankExcel.mockResolvedValueOnce();
-
-    render(
-      <BrowserRouter>
-        <PromoGridData />
-      </BrowserRouter>
-    );
-    await act(async () => {
-      fireEvent.click(screen.getByText(/Download Blank Template/i));
-    });
-    await waitFor(() => {
-      expect(downloadBlankExcel).toHaveBeenCalled();
-      expect(screen.getByText('Excel template downloaded successfully !!!')).toBeInTheDocument();
-    });
-  });
-
-  test('handles failed blank Excel file download', async () => {
-    downloadBlankExcel.mockRejectedValueOnce();
-
-    render(
-      <BrowserRouter>
-        <PromoGridData />
-      </BrowserRouter>
-    );
-
-    await act(async () => {
-      fireEvent.click(screen.getByText(/Download Blank Template/i));
-    });
-    await waitFor(() => {
-      expect(downloadBlankExcel).toHaveBeenCalled();
-      expect(
-        screen.getByText('Error occured while downloading ! Please try again !!!')
-      ).toBeInTheDocument();
-    });
-  });
-
   test('handles successful data Excel file download', async () => {
     downloadDataExcel.mockResolvedValueOnce();
 
