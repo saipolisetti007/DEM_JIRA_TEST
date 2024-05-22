@@ -44,7 +44,6 @@ const CPFForescastMain = () => {
         brandForm: response?.prod_form_name,
         sku: response?.sku
       });
-      setIsLoading(false);
     } catch (error) {
       setIsLoading(true);
       setIsError(true);
