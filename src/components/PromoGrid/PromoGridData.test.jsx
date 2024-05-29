@@ -94,11 +94,15 @@ describe('PromoGridData Component', () => {
       const fileInput = screen.getByTestId('upload');
       fireEvent.change(fileInput, { target: { files: [file] } });
     });
-    await waitFor(async () => {
+
+    await waitFor(() => {
       expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData));
-      expect(
-        screen.getByText('Error occured while updating the data ! Please try again !!!')
-      ).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('snackbar-error')).toHaveTextContent(
+        'Error occured while updating the data! Please try again!!!'
+      );
     });
   });
 

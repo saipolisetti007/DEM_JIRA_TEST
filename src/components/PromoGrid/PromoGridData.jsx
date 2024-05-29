@@ -36,7 +36,7 @@ const PromoGridData = () => {
   const [isRefetching, setIsRefetching] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
-  const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
+  const [snackBar, setSnackBar] = useState({ message: '', severity: '', dataTestId: '' });
   const [isSaving, setIsSaving] = useState(false);
   const [rowCount, setRowCount] = useState(0);
   const [pagination, setPagination] = useState({
@@ -124,7 +124,7 @@ const PromoGridData = () => {
     }));
   };
 
-  //Validate Values
+  // Validate Values
   const validateValues = (values) => {
     const newValidationErrors = validateData(values);
     if (Object.values(newValidationErrors).some((error) => error)) {
@@ -143,7 +143,7 @@ const PromoGridData = () => {
     }, {});
   };
 
-  //CREATE action
+  // CREATE action
   const handleCreate = async ({ values, table }) => {
     setIsSaving(true);
     const parsedValues = parseValues(values);
@@ -175,7 +175,7 @@ const PromoGridData = () => {
     }
   };
 
-  //UPDATE action
+  // UPDATE action
   const handleUpdate = async ({ values, table }) => {
     setIsSaving(true);
     if (validateValues(values)) {
@@ -283,7 +283,13 @@ const PromoGridData = () => {
 
   const handleDataDownloadExcel = async () => {
     try {
-      await downloadDataExcel();
+      const filterParams = Object.keys(selectedFilters)
+        .filter((key) => selectedFilters[key].length > 0 && selectedFilters[key][0] !== 'All')
+        .reduce((acc, key) => {
+          acc[key] = selectedFilters[key].join('.');
+          return acc;
+        }, {});
+      await downloadDataExcel(filterParams);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Excel data downloaded successfully !!!',
@@ -302,16 +308,28 @@ const PromoGridData = () => {
     try {
       const file = event.target.files[0];
       if (file) {
-        if (file.type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+        if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
           setIsDataLoading(true);
           const formData = new FormData();
           formData.append('file', file);
           const uploadResponse = await uploadDataExcel(formData);
+
+          // Check for messages from the uploadResponse and show snackbar
+          if (uploadResponse.message) {
+            setIsSnackOpen(true);
+            setSnackBar({
+              message: uploadResponse.message,
+              severity: 'success'
+            });
+          }
+
           const validateResponse = await promoGridGetValidations(uploadResponse.promo_header);
-          navigate('/promo-grid-validations', { state: { responseData: validateResponse } });
+          navigate('/promo-grid-validations', {
+            state: { responseData: validateResponse }
+          });
           setIsLoading(true);
           setIsRefetching(true);
-          fetchData();
+          await fetchData();
           setIsDataLoading(false);
           event.target.value = null;
         } else {
@@ -323,8 +341,9 @@ const PromoGridData = () => {
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Error occured while updating the data ! Please try again !!!',
-        severity: 'error'
+        message: 'Error occured while updating the data! Please try again!!!',
+        severity: 'error',
+        dataTestId: 'snackbar-error'
       });
       event.target.value = null;
       setIsDataLoading(false);
@@ -429,6 +448,7 @@ const PromoGridData = () => {
           message={snackBar.message}
           severity={snackBar.severity}
           onClose={handleSnackbar}
+          dataTestId={snackBar.dataTestId}
         />
       )}
     </>

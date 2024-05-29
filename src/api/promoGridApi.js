@@ -39,8 +39,12 @@ export const downloadBlankExcel = async () => {
   await downloadExcel('promo/excel-template/download/', 'DEM - Promo Grid Template.xlsx');
 };
 
-export const downloadDataExcel = async () => {
-  await downloadExcel('promo/existing-data/download/', 'DEM - Promo Grid Data.xlsx');
+export const downloadDataExcel = async (filters = {}) => {
+  const urlParams = new URLSearchParams(filters).toString();
+  const endpoint = urlParams
+    ? `promo/existing-data/download/?${urlParams}`
+    : 'promo/existing-data/download/';
+  await downloadExcel(endpoint, 'DEM - Promo Grid Data.xlsx');
 };
 
 export const uploadDataExcel = async (formData) => {

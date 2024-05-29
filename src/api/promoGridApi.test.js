@@ -29,7 +29,7 @@ describe('promoGridApi', () => {
   test('get data with correct parameters', async () => {
     const pageIndex = 0;
     const pageSize = 10;
-    const filters = 'undefined'
+    const filters = 'undefined';
     const data = [{ id: 1, name: 'test' }];
     performApiRequest.mockResolvedValueOnce(data);
     const result = await getData(pageIndex, pageSize);
@@ -70,7 +70,8 @@ describe('promoGridApi', () => {
     const appendChildSpy = jest.spyOn(document.body, 'appendChild');
     const removeChildSpy = jest.spyOn(document.body, 'removeChild');
 
-    await downloadDataExcel();
+    const filters = {};
+    await downloadDataExcel(filters);
 
     expect(performApiRequest).toHaveBeenCalledWith(
       'promo/existing-data/download/',
@@ -88,6 +89,46 @@ describe('promoGridApi', () => {
     appendChildSpy.mockRestore();
     removeChildSpy.mockRestore();
   });
+
+  test('downloads Data Excel with filters', async () => {
+    const response = new Blob(['test'], { type: 'application/vnd.ms-excel' });
+    performApiRequest.mockResolvedValueOnce(response);
+
+    window.URL.createObjectURL = jest.fn(() => 'blob:test');
+    window.URL.revokeObjectURL = jest.fn();
+
+    const createElementSpy = jest.spyOn(document, 'createElement');
+    const appendChildSpy = jest.spyOn(document.body, 'appendChild');
+    const removeChildSpy = jest.spyOn(document.body, 'removeChild');
+
+    const filters = { brand: 'testBrand', category: 'testCategory' };
+    await downloadDataExcel(filters);
+
+    expect(performApiRequest).toHaveBeenCalledWith(
+      'promo/existing-data/download/?brand=testBrand&category=testCategory',
+      'GET',
+      null,
+      'blob'
+    );
+    expect(window.URL.createObjectURL).toHaveBeenCalled();
+    expect(createElementSpy).toHaveBeenCalledWith('a');
+    expect(appendChildSpy).toHaveBeenCalled();
+    expect(removeChildSpy).toHaveBeenCalled();
+    expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:test');
+
+    createElementSpy.mockRestore();
+    appendChildSpy.mockRestore();
+    removeChildSpy.mockRestore();
+  });
+
+  jest.mock('./apiUtils', () => ({
+    performApiRequest: jest.fn((url, method, body, responseType) => {
+      if (url.includes('download')) {
+        return Promise.resolve(new Blob(['test'], { type: 'application/vnd.ms-excel' }));
+      }
+      return Promise.resolve([]);
+    })
+  }));
 
   test('Upload Excel file', async () => {
     const formData = { key: 'value' };
