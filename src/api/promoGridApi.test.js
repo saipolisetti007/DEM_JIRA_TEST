@@ -3,7 +3,6 @@ import {
   getData,
   addNewRowData,
   updateRowData,
-  downloadBlankExcel,
   downloadDataExcel,
   uploadDataExcel,
   promoGridGetValidations,

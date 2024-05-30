@@ -62,7 +62,6 @@
       "./src/api/**/*.{js,jsx}",
       "./src/components/**/*.{js,jsx}",
       "!src/components/**/StoreToDc.{js,jsx}",
-      "!src/components/**/PromoGridData.{js,jsx}",
       "!src/api/**/storeApi.{js,jsx}"
     ],
     "coverageThreshold": {

@@ -284,7 +284,7 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
             <InputTextComponent
               row={row}
               column={column}
-              isRequired={true}
+              isRequired={false}
               isError={!!validationErrors[row.index]?.bu}
               helperText={validationErrors[row.index]?.bu}
               validationType="stringValidation"

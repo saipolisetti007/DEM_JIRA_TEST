@@ -234,7 +234,7 @@ const PromoGridColumns = ({ validationErrors, handleChange }) => {
         accessorKey: 'bu',
         header: 'BU',
         muiEditTextFieldProps: {
-          required: true,
+          required: false,
           variant: 'outlined',
           error: !!validationErrors?.bu,
           helperText: validationErrors?.bu,

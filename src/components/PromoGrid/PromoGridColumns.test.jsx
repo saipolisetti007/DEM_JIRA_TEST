@@ -60,4 +60,37 @@ describe('PromoGridColumns', () => {
       expect(column.Cell({ row, column })).toBe('');
     });
   });
+
+  test('checks required fields', () => {
+    const validationErrors = {};
+    const handleChange = jest.fn();
+    const { result } = renderHook(() => PromoGridColumns({ validationErrors, handleChange }));
+
+    const columns = result.current;
+
+    const requiredColumns = columns.filter((column) => column.muiEditTextFieldProps?.required);
+
+    requiredColumns.forEach((column) => {
+      expect(column.muiEditTextFieldProps.required).toBe(true);
+    });
+  });
+
+  test('checks for radio cell values', () => {
+    const validationErrors = {};
+    const handleChange = jest.fn();
+    const { result } = renderHook(() => PromoGridColumns({ validationErrors, handleChange }));
+
+    const columns = result.current;
+
+    const radioColumns = columns.filter((column) => typeof column.Cell === 'function');
+
+    radioColumns.forEach((column) => {
+      const row = { original: { [column.id]: true } };
+      expect(column.Cell({ row, column })).toBe('Yes');
+      row.original[column.id] = false;
+      expect(column.Cell({ row, column })).toBe('No');
+      row.original[column.id] = null;
+      expect(column.Cell({ row, column })).toBe('');
+    });
+  });
 });

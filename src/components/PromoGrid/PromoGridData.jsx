@@ -76,6 +76,12 @@ const PromoGridData = () => {
       setIsDataLoading(false);
     } catch (error) {
       setIsLoading(true);
+      setIsError(true);
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Network Error !!!',
+        severity: 'error'
+      });
     }
   };
 
@@ -249,7 +255,6 @@ const PromoGridData = () => {
       event_subtype: handleValidate('stringValidation', 'required', data.event_subtype),
       event_sales_channel: handleValidate('stringValidation', 'required', data.event_sales_channel),
       item_type: handleValidate('stringValidation', 'required', data.item_type),
-      bu: handleValidate('stringValidation', 'required', data.bu),
       product_id: handleValidate('stringValidation', 'required', data.product_id),
       id_type: handleValidate('stringValidation', 'required', data.id_type),
       customer_item_number: handleValidate(

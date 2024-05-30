@@ -67,7 +67,13 @@ const PromoGridValidationTable = () => {
       errorMessage = handleChangeValidate(newValue, validationType);
     }
     const updatedErrors = [...validationErrors];
+
     updatedErrors[rowIndex][accessorKey] = errorMessage !== undefined ? errorMessage : null;
+
+    if (accessorKey === 'event_type' && updatedErrors[rowIndex]?.event_subtype) {
+      updatedErrors[rowIndex].event_subtype = null;
+    }
+
     setValidationErrors(updatedErrors);
     const updatedValues = [...updatedData.rows];
     updatedValues[rowIndex][accessorKey] = newValue;
@@ -162,8 +168,12 @@ const PromoGridValidationTable = () => {
             <DefaultPageHeader
               title="Promo Grid Validations"
               subtitle={
-                !allErrorsNull && (
+                !allErrorsNull ? (
                   <Typography color="error">Fix and Validate errors before submitting</Typography>
+                ) : (
+                  <Typography className="text-green-700">
+                    Validate the data and proceed to submit
+                  </Typography>
                 )
               }
             />

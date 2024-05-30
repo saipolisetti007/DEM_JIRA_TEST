@@ -54,6 +54,7 @@ const InputRadioComponent = ({
         {column.columnDef.header}
       </FormLabel>
       <RadioGroup
+        data-testid={`${column.id}_radio`}
         row
         aria-labelledby={`${column.id}-label`}
         name={`${column.id}-radio`}
