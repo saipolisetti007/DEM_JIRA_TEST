@@ -153,7 +153,6 @@ const PromoGridData = () => {
   const handleCreate = async ({ values, table }) => {
     setIsSaving(true);
     const parsedValues = parseValues(values);
-    console.log('Values-------', parsedValues);
     if (validateValues(values)) {
       try {
         await addNewRowData(parsedValues);
@@ -254,6 +253,9 @@ const PromoGridData = () => {
     let errorMessage = handleChangeValidate(newValue, validationType);
     if (accessorKey === 'event_type' && validationErrors?.event_subtype) {
       validationErrors.event_subtype = null;
+    }
+    if (accessorKey === 'event_subtype' && validationErrors?.event_type) {
+      validationErrors.event_type = null;
     }
     setValidationErrors({
       ...validationErrors,

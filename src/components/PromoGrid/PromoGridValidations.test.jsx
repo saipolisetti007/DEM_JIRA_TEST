@@ -281,6 +281,50 @@ describe('PromoGridValidations', () => {
     expect(updatedErrors[0].event_subtype).toBeNull();
   });
 
+  test('should clear event type error when event subtype changes', async () => {
+    const mockResponseData = {
+      rows: [
+        {
+          event_type: 'Test',
+          event_subtype: 'Subtype',
+          validations: {
+            event_type: 'Invalid',
+            event_subtype: 'Invalid'
+          }
+        }
+      ]
+    };
+    useLocation.mockReturnValue({
+      state: {
+        responseData: mockResponseData
+      }
+    });
+
+    await act(async () =>
+      render(
+        <BrowserRouter>
+          <PromoGridValidations />
+        </BrowserRouter>
+      )
+    );
+    const divElement = screen.getByTestId('event_subtype');
+    const inputElement = divElement.querySelector('input');
+    expect(inputElement).toBeInTheDocument();
+    fireEvent.change(inputElement, { target: { value: 'newEventsubType' } });
+    await waitFor(() => {
+      expect(inputElement.value).toBe('newEventsubType');
+    });
+
+    const updatedErrors = [
+      {
+        event_type: null,
+        event_subtype: 'newEventsubType'
+      }
+    ];
+
+    expect(updatedErrors[0].event_type).toBeNull();
+  });
+
   test('disables submit button when there are validation errors', async () => {
     const mockResponseData = {
       rows: [

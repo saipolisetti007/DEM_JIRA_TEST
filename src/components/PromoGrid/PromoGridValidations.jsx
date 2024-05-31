@@ -73,6 +73,9 @@ const PromoGridValidationTable = () => {
     if (accessorKey === 'event_type' && updatedErrors[rowIndex]?.event_subtype) {
       updatedErrors[rowIndex].event_subtype = null;
     }
+    if (accessorKey === 'event_subtype' && updatedErrors[rowIndex]?.event_type) {
+      updatedErrors[rowIndex].event_type = null;
+    }
 
     setValidationErrors(updatedErrors);
     const updatedValues = [...updatedData.rows];
