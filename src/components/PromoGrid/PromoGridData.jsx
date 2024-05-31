@@ -143,7 +143,7 @@ const PromoGridData = () => {
   };
 
   const transformErrors = (response) => {
-    return response.errors.reduce((acc, { field, error }) => {
+    return response?.errors.reduce((acc, { field, error }) => {
       acc[field] = error;
       return acc;
     }, {});
@@ -153,6 +153,7 @@ const PromoGridData = () => {
   const handleCreate = async ({ values, table }) => {
     setIsSaving(true);
     const parsedValues = parseValues(values);
+    console.log('Values-------', parsedValues);
     if (validateValues(values)) {
       try {
         await addNewRowData(parsedValues);
@@ -169,9 +170,14 @@ const PromoGridData = () => {
       } catch (error) {
         setIsSaving(false);
         const response = error.response?.data;
-        const transformedErrors = transformErrors(response);
-
-        setValidationErrors(transformedErrors);
+        if (error.response?.status === 403) {
+          setValidationErrors({
+            golden_customer_id: "You don't have permissions to create/edit event for this customer"
+          });
+        } else {
+          const transformedErrors = transformErrors(response);
+          setValidationErrors(transformedErrors);
+        }
         setIsSnackOpen(true);
         setSnackBar({
           message: 'Error occured while adding the data !!!',
@@ -200,8 +206,12 @@ const PromoGridData = () => {
       } catch (error) {
         setIsSaving(false);
         const response = error.response?.data;
-        const transformedErrors = transformErrors(response);
-        setValidationErrors(transformedErrors);
+        if (error.response?.status === 403) {
+          setValidationErrors({ golden_customer_id: response.detail });
+        } else {
+          const transformedErrors = transformErrors(response);
+          setValidationErrors(transformedErrors);
+        }
         setIsSnackOpen(true);
         setSnackBar({
           message: 'Error occured while updating the data !!!',
@@ -242,6 +252,9 @@ const PromoGridData = () => {
   const handleChange = (event, validationType, accessorKey) => {
     const newValue = event.target.value;
     let errorMessage = handleChangeValidate(newValue, validationType);
+    if (accessorKey === 'event_type' && validationErrors?.event_subtype) {
+      validationErrors.event_subtype = null;
+    }
     setValidationErrors({
       ...validationErrors,
       [accessorKey]: errorMessage
@@ -344,12 +357,20 @@ const PromoGridData = () => {
         alert('Please select a file');
       }
     } catch (error) {
+      const response = error.response?.data;
       setIsSnackOpen(true);
-      setSnackBar({
-        message: 'Error occured while updating the data! Please try again!!!',
-        severity: 'error',
-        dataTestId: 'snackbar-error'
-      });
+      if (error.response?.status === 403) {
+        setSnackBar({
+          message: response.error,
+          severity: 'error'
+        });
+      } else {
+        setSnackBar({
+          message: 'Error occured while updating the data! Please try again!!!',
+          severity: 'error',
+          dataTestId: 'snackbar-error'
+        });
+      }
       event.target.value = null;
       setIsDataLoading(false);
     }

@@ -209,6 +209,45 @@ describe('PromoGridData Component', () => {
     });
   });
 
+  test('handles upload failure based on golden customer id', async () => {
+    const file = new File(['data'], 'example.xlsx', {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+    const errorResponse = {
+      response: {
+        status: 403,
+        data: {
+          error:
+            'Uploaded file contains customer without access. You cannot upload a file with this customer ID.'
+        }
+      }
+    };
+
+    uploadDataExcel.mockRejectedValueOnce(errorResponse);
+    render(
+      <BrowserRouter>
+        <PromoGridData />
+      </BrowserRouter>
+    );
+
+    await act(async () => {
+      const fileInput = screen.getByTestId('upload');
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+
+    await waitFor(() => {
+      expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData));
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          'Uploaded file contains customer without access. You cannot upload a file with this customer ID.'
+        )
+      ).toBeInTheDocument();
+    });
+  });
+
   test('handles successful data Excel file download', async () => {
     downloadDataExcel.mockResolvedValueOnce();
 
@@ -388,7 +427,6 @@ describe('PromoGridData Component', () => {
     });
 
     const golden_customer_id = screen.getByRole('textbox', { name: /Golden Customer ID/i });
-
     const event_type = screen.getByRole('textbox', { name: /Event Type/i });
     const event_subtype = screen.getByRole('textbox', { name: /Event Subtype/i });
     const event_sales_channel = screen.getByRole('textbox', { name: /Event Sales Channel/i });
@@ -587,6 +625,68 @@ describe('PromoGridData Component', () => {
 
     await act(async () => {
       fireEvent.click(EditButton);
+    });
+
+    const saveButton = screen.getByText('Save');
+    await act(async () => {
+      fireEvent.click(saveButton);
+    });
+  });
+
+  test('should failed to Update data based on golden cutomer id validation', async () => {
+    const errorResponse = {
+      response: {
+        status: 403,
+        data: {
+          error: 'do not have permission to perform this action'
+        }
+      }
+    };
+
+    updateRowData.mockRejectedValueOnce(errorResponse);
+
+    await act(async () =>
+      render(
+        <BrowserRouter>
+          <PromoGridData />
+        </BrowserRouter>
+      )
+    );
+
+    const EditButton = screen.getByLabelText('Edit');
+    expect(EditButton).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(EditButton);
+    });
+
+    const saveButton = screen.getByText('Save');
+    await act(async () => {
+      fireEvent.click(saveButton);
+    });
+
+    await waitFor(() => {
+      expect(updateRowData).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Error occured while updating the data !!!')).toBeInTheDocument();
+    });
+  });
+
+  test('should failed to add data based on golden cutomer id validation', async () => {
+    addNewRowData.mockRejectedValue();
+
+    await act(async () =>
+      render(
+        <BrowserRouter>
+          <PromoGridData />
+        </BrowserRouter>
+      )
+    );
+
+    const addRowButton = screen.getByText('Add New Record');
+    await act(async () => {
+      fireEvent.click(addRowButton);
     });
 
     const saveButton = screen.getByText('Save');
