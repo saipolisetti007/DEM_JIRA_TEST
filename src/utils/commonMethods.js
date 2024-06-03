@@ -33,6 +33,9 @@ const handleValidate = (validationType, isRequired, value) => {
 };
 
 const handleChangeValidate = (newValue, validationType) => {
+  if (!newValue) {
+    return undefined;
+  }
   let errorMessage;
   switch (validationType) {
     case 'stringValidation':

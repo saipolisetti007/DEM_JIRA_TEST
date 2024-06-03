@@ -33,8 +33,8 @@ jobs:
     name: SonarQube Scan
     runs-on: [self-hosted,Linux, cicdframework]
     steps:
-      - name: Clean up .scannerwork folder
-        run: docker run -v "$(pwd):/usr/src" sonarsource/sonar-scanner-cli rm -rf .scannerwork
+      # - name: Clean up .scannerwork folder
+      #   run: docker run -v "$(pwd):/usr/src" sonarsource/sonar-scanner-cli rm -rf .scannerwork
       - name: Checkout code
         uses: actions/checkout@v3
         with:
