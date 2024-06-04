@@ -24,10 +24,6 @@ on:
       - main
     types: [opened, synchronize, reopened]
 
-env:
-  REACT_APP_CLIENT_ID: ${{ secrets.APP_CLIENT_ID }}
-  REACT_APP_TENANT_ID: ${{ secrets.APP_TENANT_ID }}
-
 jobs:
   SonarQube_Scan:
     name: SonarQube Scan
@@ -110,6 +106,8 @@ jobs:
       name: ${{ needs.environment.outputs.env_name }}
     env:
       REACT_APP_BASE_API_URL: ${{ vars.BASE_API_URL }}
+      REACT_APP_CLIENT_ID: ${{ secrets.APP_CLIENT_ID }}
+      REACT_APP_TENANT_ID: ${{ secrets.APP_TENANT_ID }}
     steps:
         - name: Checkout repository
           uses: actions/checkout@v2
