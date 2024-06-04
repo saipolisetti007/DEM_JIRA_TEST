@@ -106,7 +106,7 @@ const PromoGridData = () => {
 
   useEffect(() => {
     fetchFilters();
-  }, [pagination]);
+  }, []);
 
   useEffect(() => {
     fetchData();
