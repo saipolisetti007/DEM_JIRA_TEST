@@ -28,6 +28,8 @@ const DatePickerComponent = ({
     const rowIndex = row.index;
     const tomarrow = moment().add(1, 'day');
     const startDate = moment(row._valuesCache[startDateField], 'MM/DD/YYYY');
+    const formatedDate = newValue ? selectedDate.format('MM/DD/YYYY') : null;
+    row._valuesCache[column.id] = formatedDate;
 
     if (validationType === 'startDate') {
       if (selectedDate?.isBefore(tomarrow, 'day')) {
@@ -52,10 +54,6 @@ const DatePickerComponent = ({
         return;
       }
     }
-
-    const formatedDate = newValue ? selectedDate.format('MM/DD/YYYY') : null;
-    row._valuesCache[column.id] = formatedDate;
-
     setError(false);
     setHelperMsg(null);
     if (handleInputChange) {
