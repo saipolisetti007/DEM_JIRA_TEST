@@ -8,7 +8,8 @@ import { Typography } from '@mui/material';
 
 function formatFilterKey(filterKey) {
   const customLabels = {
-    sku: 'SKU'
+    sku: 'SKU',
+    active: 'Status'
   };
   return customLabels[filterKey] || filterKey.charAt(0).toUpperCase() + filterKey.slice(1);
 }

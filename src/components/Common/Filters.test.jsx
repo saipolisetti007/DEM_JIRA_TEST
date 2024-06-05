@@ -31,7 +31,8 @@ describe('Filters Component', () => {
 
   const formatFilterKey = (filterKey) => {
     const customLabels = {
-      sku: 'SKU'
+      sku: 'SKU',
+      active: 'Status'
     };
     return customLabels[filterKey] || filterKey.charAt(0).toUpperCase() + filterKey.slice(1);
   };
@@ -45,7 +46,7 @@ describe('Filters Component', () => {
         onFilterChange={() => {}}
       />
     );
-    const labels = ['Subsector', 'Category', 'Brand', 'BrandForm', 'SKU', 'Active'];
+    const labels = ['Subsector', 'Category', 'Brand', 'BrandForm', 'SKU', 'Status'];
     for (const label of labels) {
       expect(screen.getByText(label)).toBeInTheDocument();
     }
