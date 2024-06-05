@@ -29,6 +29,13 @@ describe('Filters Component', () => {
     active: ''
   };
 
+  const formatFilterKey = (filterKey) => {
+    const customLabels = {
+      sku: 'SKU'
+    };
+    return customLabels[filterKey] || filterKey.charAt(0).toUpperCase() + filterKey.slice(1);
+  };
+
   test('should display the correct label for each filter', async () => {
     render(
       <Filters
@@ -38,7 +45,7 @@ describe('Filters Component', () => {
         onFilterChange={() => {}}
       />
     );
-    const labels = ['Subsector', 'Category', 'Brand', 'BrandForm', 'Sku', 'Active'];
+    const labels = ['Subsector', 'Category', 'Brand', 'BrandForm', 'SKU', 'Active'];
     for (const label of labels) {
       expect(screen.getByText(label)).toBeInTheDocument();
     }
@@ -103,7 +110,7 @@ describe('Filters Component', () => {
     );
 
     for (const filterKey of Object.keys(MOCK_OPTIONS)) {
-      const label = `${filterKey.charAt(0).toUpperCase() + filterKey.slice(1)}`;
+      const label = formatFilterKey(filterKey);
       const select = screen.getByLabelText(label);
       fireEvent.mouseDown(select);
 

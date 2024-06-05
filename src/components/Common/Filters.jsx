@@ -6,6 +6,13 @@ import Select from '@mui/material/Select';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 
+function formatFilterKey(filterKey) {
+  const customLabels = {
+    sku: 'SKU'
+  };
+  return customLabels[filterKey] || filterKey.charAt(0).toUpperCase() + filterKey.slice(1);
+}
+
 function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) {
   const handleFilterChange = (filterKey) => (event) => {
     const { value } = event.target;
@@ -25,9 +32,7 @@ function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
                 key={filterKey}
                 className="min-w-[120px] w-[160px]"
                 size="small">
-                <InputLabel id={`${filterKey}-label`}>
-                  {filterKey?.charAt(0).toUpperCase() + filterKey?.slice(1)}
-                </InputLabel>
+                <InputLabel id={`${filterKey}-label`}>{formatFilterKey(filterKey)}</InputLabel>
                 <Select
                   data-testid="filter-form-select-input"
                   disabled={isLoading}
