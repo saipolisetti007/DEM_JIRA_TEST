@@ -34,7 +34,7 @@ const DatePickerComponent = ({
         setError(true);
         setHelperMsg('Date Should be a future Date');
         return;
-      } else if (!selectedDate) {
+      } else if (!selectedDate && isRequired) {
         setError(true);
         setHelperMsg('Required');
         return;
@@ -46,7 +46,7 @@ const DatePickerComponent = ({
         setError(true);
         setHelperMsg('End Date Should be a greater than start date');
         return;
-      } else if (!selectedDate) {
+      } else if (!selectedDate && isRequired) {
         setError(true);
         setHelperMsg('Required');
         return;
