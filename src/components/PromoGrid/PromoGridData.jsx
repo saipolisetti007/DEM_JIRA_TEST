@@ -148,11 +148,33 @@ const PromoGridData = () => {
       return acc;
     }, {});
   };
+  const stringFields = [
+    'event_type',
+    'event_subtype',
+    'event_description',
+    'umbrella_event',
+    'comments',
+    'event_sales_channel',
+    'item_type',
+    'bu',
+    'product_id',
+    'id_type',
+    'country_code',
+    'promoted_product_group_id',
+    'distribution_profile',
+    'status',
+    'event_string_property_1',
+    'event_string_property_2',
+    'event_string_property_3',
+    'event_string_property_4',
+    'event_string_property_5',
+    'offer_type'
+  ];
 
   // CREATE action
   const handleCreate = async ({ values, table }) => {
     setIsSaving(true);
-    const parsedValues = parseValues(values);
+    const parsedValues = parseValues(values, stringFields);
     if (validateValues(values)) {
       try {
         await addNewRowData(parsedValues);

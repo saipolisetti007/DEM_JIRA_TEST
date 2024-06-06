@@ -63,17 +63,19 @@ const handleChangeValidate = (newValue, validationType) => {
   return errorMessage;
 };
 
-const parseValues = (values) => {
+const parseValues = (values, stringFields) => {
   const parsedValues = {};
   Object.keys(values).forEach((key) => {
     let parsedValue = values[key];
     if (parsedValue === '') {
       parsedValues[key] = null;
+    } else if (stringFields.includes(key)) {
+      parsedValues[key] = parsedValue.toString();
     } else if (validateInteger(parsedValue)) {
       parsedValues[key] = parseInt(parsedValue);
     } else if (validateFloat(parsedValue)) {
-      parsedValues[key] = parseFloat[parsedValue];
-    } else if (validateString(parsedValue)) {
+      parsedValues[key] = parseFloat(parsedValue);
+    } else {
       parsedValues[key] = parsedValue;
     }
   });
