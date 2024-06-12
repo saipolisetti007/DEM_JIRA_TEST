@@ -59,7 +59,7 @@ const PromoGridData = () => {
     brand: '',
     brandForm: '',
     sku: '',
-    active: ''
+    active: 'Active' // Set default value to "Active"
   });
 
   const fetchFilters = async () => {
@@ -85,16 +85,18 @@ const PromoGridData = () => {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = async (pageIndex, pageSize) => {
     setIsLoading(true);
     try {
       const filterParams = Object.keys(selectedFilters)
-        .filter((key) => selectedFilters[key].length > 0 && selectedFilters[key][0] !== 'All')
-        .map((key) => `${key}=${selectedFilters[key].join('.')}`)
+        .filter((key) => selectedFilters[key] && selectedFilters[key] !== 'All')
+        .map((key) => `${key}=${selectedFilters[key]}`)
         .join('&');
-      const response = await getData(pagination.pageIndex, pagination.pageSize, filterParams);
+      const response = await getData(pageIndex, pageSize, filterParams);
+
       setData(response.results);
       setRowCount(response.count);
+
       setIsLoading(false);
       setIsRefetching(false);
     } catch (error) {
@@ -109,7 +111,7 @@ const PromoGridData = () => {
   }, []);
 
   useEffect(() => {
-    fetchData();
+    fetchData(pagination.pageIndex, pagination.pageSize);
   }, [pagination, selectedFilters]);
 
   useEffect(() => {
@@ -127,6 +129,11 @@ const PromoGridData = () => {
     setSelectedFilters((prev) => ({
       ...prev,
       [filterKey]: values
+    }));
+
+    setPagination((prev) => ({
+      ...prev,
+      pageIndex: 0
     }));
   };
 
@@ -326,9 +333,9 @@ const PromoGridData = () => {
   const handleDataDownloadExcel = async () => {
     try {
       const filterParams = Object.keys(selectedFilters)
-        .filter((key) => selectedFilters[key].length > 0 && selectedFilters[key][0] !== 'All')
+        .filter((key) => selectedFilters[key] && selectedFilters[key] !== 'All')
         .reduce((acc, key) => {
-          acc[key] = selectedFilters[key].join('.');
+          acc[key] = selectedFilters[key];
           return acc;
         }, {});
       await downloadDataExcel(filterParams);
