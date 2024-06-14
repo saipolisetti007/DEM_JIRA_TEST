@@ -37,11 +37,10 @@ function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
                 <Select
                   data-testid="filter-form-select-input"
                   disabled={isLoading}
-                  className="flex h-[40px] items-center 
-                  overflow-hidden text-ellipsis whitespace-nowrap text-left"
+                  className="flex h-[40px] items-center overflow-hidden text-ellipsis whitespace-nowrap text-left"
                   labelId={`${filterKey}-label`}
                   id={`${filterKey}-select`}
-                  value={selectedFilters[filterKey]}
+                  value={selectedFilters[filterKey] || ''}
                   onChange={handleFilterChange(filterKey)}
                   label={filterKey}>
                   {filterKey !== 'active' && <MenuItem value="All">All</MenuItem>}

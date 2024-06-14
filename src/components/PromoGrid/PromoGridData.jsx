@@ -50,7 +50,7 @@ const PromoGridData = () => {
     brand: [],
     brandForm: [],
     sku: [],
-    active: []
+    active: ['Active']
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
@@ -59,7 +59,7 @@ const PromoGridData = () => {
     brand: '',
     brandForm: '',
     sku: '',
-    active: 'Active' // Set default value to "Active"
+    active: 'Active'
   });
 
   const fetchFilters = async () => {
@@ -71,11 +71,11 @@ const PromoGridData = () => {
         brand: response?.brand,
         brandForm: response?.prod_form_name,
         sku: response?.sku,
-        active: response?.active
+        active: response?.active || ['Active']
       });
       setIsDataLoading(false);
     } catch (error) {
-      setIsLoading(true);
+      setIsLoading(false);
       setIsError(true);
       setIsSnackOpen(true);
       setSnackBar({
@@ -100,10 +100,9 @@ const PromoGridData = () => {
       setIsLoading(false);
       setIsRefetching(false);
     } catch (error) {
-      setIsLoading(true);
+      setIsLoading(false);
       setIsError(true);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -186,9 +185,8 @@ const PromoGridData = () => {
       try {
         await addNewRowData(parsedValues);
         table.setCreatingRow(null);
-        setIsLoading(true);
         setIsRefetching(true);
-        await fetchData();
+        await fetchData(pagination.pageIndex, pagination.pageSize);
         setIsSaving(false);
         setIsSnackOpen(true);
         setSnackBar({
@@ -222,9 +220,8 @@ const PromoGridData = () => {
       try {
         await updateRowData(values);
         table.setEditingRow(null);
-        setIsLoading(true);
         setIsRefetching(true);
-        await fetchData();
+        await fetchData(pagination.pageIndex, pagination.pageSize);
         setIsSaving(false);
         setIsSnackOpen(true);
         setSnackBar({
@@ -257,7 +254,6 @@ const PromoGridData = () => {
     if (window.confirm('Are you sure want to cancel this promo data?')) {
       try {
         await cancelRowData(rowData);
-        setIsLoading(true);
         setIsRefetching(true);
         setIsSaving(false);
         setIsSnackOpen(true);
@@ -265,7 +261,7 @@ const PromoGridData = () => {
           message: 'Promo Cancelled successfully !!!',
           severity: 'success'
         });
-        await fetchData();
+        await fetchData(pagination.pageIndex, pagination.pageSize);
       } catch (error) {
         setIsSaving(false);
         setIsSnackOpen(true);
@@ -376,9 +372,8 @@ const PromoGridData = () => {
           navigate('/promo-grid-validations', {
             state: { responseData: validateResponse }
           });
-          setIsLoading(true);
           setIsRefetching(true);
-          await fetchData();
+          await fetchData(pagination.pageIndex, pagination.pageSize);
           setIsDataLoading(false);
           event.target.value = null;
         } else {
