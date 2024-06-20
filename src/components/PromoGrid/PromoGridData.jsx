@@ -89,7 +89,12 @@ const PromoGridData = () => {
     setIsLoading(true);
     try {
       const filterParams = Object.keys(selectedFilters)
-        .filter((key) => selectedFilters[key] && selectedFilters[key] !== 'All')
+        .filter(
+          (key) =>
+            selectedFilters[key] &&
+            Array.isArray(selectedFilters[key]) &&
+            !selectedFilters[key].includes('All')
+        )
         .map((key) => `${key}=${selectedFilters[key]}`)
         .join('&');
       const response = await getData(pageIndex, pageSize, filterParams);
