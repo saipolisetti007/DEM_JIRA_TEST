@@ -15,7 +15,7 @@ const PageHeader = ({
     <Box className="p-2">
       <div className="flex items-center justify-between gap-8 pb-3">
         <div>
-          <Typography variant="h6" as="h2" color="secondary">
+          <Typography variant="h6" as="h2" color="primary">
             {title}
           </Typography>
           <Typography variant="small">{subtitle}</Typography>

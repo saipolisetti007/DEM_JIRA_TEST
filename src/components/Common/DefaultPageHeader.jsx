@@ -4,7 +4,7 @@ import React from 'react';
 const DefaultPageHeader = ({ title, subtitle }) => {
   return (
     <div>
-      <Typography variant="h6" as="h2" color="secondary">
+      <Typography variant="h6" as="h2" color="primary">
         {title}
       </Typography>
       <Typography variant="small">{subtitle}</Typography>

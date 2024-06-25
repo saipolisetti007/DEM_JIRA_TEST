@@ -144,10 +144,20 @@ const PromoGridValidationTable = () => {
     editDisplayMode: 'table',
     enableColumnActions: false,
     muiTableContainerProps: { sx: { minHeight: '400px' } },
+    muiTableProps: {
+      sx: {
+        border: '1px solid rgba(81, 81, 81, 0.2)'
+      }
+    },
+    muiTableBodyCellProps: {
+      sx: {
+        border: '1px solid rgba(81, 81, 81, 0.2)'
+      }
+    },
     muiTableHeadCellProps: {
       sx: (theme) => ({
-        backgroundColor: theme.palette.secondary.main,
-        color: theme.palette.secondary.contrastText
+        backgroundColor: theme.palette.primary.dark,
+        color: theme.palette.primary.contrastText
       })
     },
     muiToolbarAlertBannerProps: isError
