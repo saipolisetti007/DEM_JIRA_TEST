@@ -70,15 +70,19 @@ const PromoGridValidationTable = () => {
 
     updatedErrors[rowIndex][accessorKey] = errorMessage !== undefined ? errorMessage : null;
 
+    const updatedValues = [...updatedData.rows];
+
     if (accessorKey === 'event_type' && updatedErrors[rowIndex]?.event_subtype) {
       updatedErrors[rowIndex].event_subtype = null;
     }
     if (accessorKey === 'event_subtype' && updatedErrors[rowIndex]?.event_type) {
       updatedErrors[rowIndex].event_type = null;
     }
+    if (accessorKey === 'event_type') {
+      updatedErrors[rowIndex].event_subtype = 'Required';
+    }
 
     setValidationErrors(updatedErrors);
-    const updatedValues = [...updatedData.rows];
     updatedValues[rowIndex][accessorKey] = newValue;
     return errorMessage;
   };

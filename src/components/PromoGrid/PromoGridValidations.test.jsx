@@ -3,6 +3,8 @@ import { screen, render, act, waitFor, fireEvent } from '@testing-library/react'
 import PromoGridValidations from './PromoGridValidations';
 import { BrowserRouter, useLocation } from 'react-router-dom';
 import { promoGridSubmit, promoGridValidate } from '../../api/promoGridApi';
+import { Provider } from 'react-redux';
+import store from '../../store/store';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -35,9 +37,11 @@ describe('PromoGridValidations', () => {
   test('should render without crashing', async () => {
     await act(async () =>
       render(
-        <BrowserRouter>
-          <PromoGridValidations />
-        </BrowserRouter>
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
       )
     );
   });
@@ -45,13 +49,15 @@ describe('PromoGridValidations', () => {
   test('fetches data from useLocation', async () => {
     await act(async () =>
       render(
-        <BrowserRouter>
-          <PromoGridValidations />
-        </BrowserRouter>
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
       )
     );
     await waitFor(() => {
-      const inputElement = screen.getByTestId('golden_customer_id');
+      const inputElement = screen.getByTestId('event_type');
       expect(inputElement).toBeInTheDocument();
     });
   });
@@ -60,9 +66,11 @@ describe('PromoGridValidations', () => {
     useLocation.mockReturnValue({ state: { responseData: null } });
     await act(async () =>
       render(
-        <BrowserRouter>
-          <PromoGridValidations />
-        </BrowserRouter>
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
       )
     );
     await waitFor(() => {
@@ -74,12 +82,14 @@ describe('PromoGridValidations', () => {
   test('updates state on input change', async () => {
     await act(async () =>
       render(
-        <BrowserRouter>
-          <PromoGridValidations />
-        </BrowserRouter>
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
       )
     );
-    const divElement = screen.getByTestId('golden_customer_id');
+    const divElement = screen.getByTestId('comments');
     const inputElement = divElement.querySelector('input');
     expect(inputElement).toBeInTheDocument();
     fireEvent.change(inputElement, { target: { value: 'newValue' } });
@@ -102,9 +112,11 @@ describe('PromoGridValidations', () => {
     promoGridValidate.mockResolvedValue(mockUpdatedState);
     await act(async () =>
       render(
-        <BrowserRouter>
-          <PromoGridValidations />
-        </BrowserRouter>
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
       )
     );
 
@@ -134,9 +146,11 @@ describe('PromoGridValidations', () => {
     promoGridValidate.mockRejectedValue({ response: { data: mockResponseData } });
     await act(async () =>
       render(
-        <BrowserRouter>
-          <PromoGridValidations />
-        </BrowserRouter>
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
       )
     );
 
@@ -170,9 +184,11 @@ describe('PromoGridValidations', () => {
 
     await act(async () =>
       render(
-        <BrowserRouter>
-          <PromoGridValidations />
-        </BrowserRouter>
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
       )
     );
     const validateButton = screen.getByText('Validate');
@@ -212,9 +228,11 @@ describe('PromoGridValidations', () => {
     promoGridSubmit.mockRejectedValue();
     await act(async () =>
       render(
-        <BrowserRouter>
-          <PromoGridValidations />
-        </BrowserRouter>
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
       )
     );
     const validateButton = screen.getByText('Validate');
@@ -235,94 +253,6 @@ describe('PromoGridValidations', () => {
         screen.getByText('Error occured while updating the data ! Please try again !!!')
       ).toBeInTheDocument();
     });
-  });
-
-  test('should clear event subtype error when event type changes', async () => {
-    const mockResponseData = {
-      rows: [
-        {
-          event_type: 'Test',
-          event_subtype: 'Subtype',
-          validations: {
-            event_type: 'Invalid',
-            event_subtype: 'Invalid'
-          }
-        }
-      ]
-    };
-    useLocation.mockReturnValue({
-      state: {
-        responseData: mockResponseData
-      }
-    });
-
-    await act(async () =>
-      render(
-        <BrowserRouter>
-          <PromoGridValidations />
-        </BrowserRouter>
-      )
-    );
-    const divElement = screen.getByTestId('event_type');
-    const inputElement = divElement.querySelector('input');
-    expect(inputElement).toBeInTheDocument();
-    fireEvent.change(inputElement, { target: { value: 'newEventType' } });
-    await waitFor(() => {
-      expect(inputElement.value).toBe('newEventType');
-    });
-
-    const updatedErrors = [
-      {
-        event_type: 'newEventType',
-        event_subtype: null
-      }
-    ];
-
-    expect(updatedErrors[0].event_subtype).toBeNull();
-  });
-
-  test('should clear event type error when event subtype changes', async () => {
-    const mockResponseData = {
-      rows: [
-        {
-          event_type: 'Test',
-          event_subtype: 'Subtype',
-          validations: {
-            event_type: 'Invalid',
-            event_subtype: 'Invalid'
-          }
-        }
-      ]
-    };
-    useLocation.mockReturnValue({
-      state: {
-        responseData: mockResponseData
-      }
-    });
-
-    await act(async () =>
-      render(
-        <BrowserRouter>
-          <PromoGridValidations />
-        </BrowserRouter>
-      )
-    );
-    const divElement = screen.getByTestId('event_subtype');
-    const inputElement = divElement.querySelector('input');
-    expect(inputElement).toBeInTheDocument();
-    fireEvent.change(inputElement, { target: { value: 'newEventsubType' } });
-    await waitFor(() => {
-      expect(inputElement.value).toBe('newEventsubType');
-    });
-
-    const updatedErrors = [
-      {
-        event_type: null,
-        event_subtype: 'newEventsubType'
-      }
-    ];
-
-    expect(updatedErrors[0].event_type).toBeNull();
   });
 
   test('disables submit button when there are validation errors', async () => {
@@ -347,9 +277,11 @@ describe('PromoGridValidations', () => {
 
     await act(async () =>
       render(
-        <BrowserRouter>
-          <PromoGridValidations />
-        </BrowserRouter>
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
       )
     );
 
@@ -362,7 +294,7 @@ describe('PromoGridValidations', () => {
       promo_header: '10',
       rows: [
         {
-          golden_customer_id: '1'
+          event_type: '1'
         }
       ]
     };
@@ -375,14 +307,16 @@ describe('PromoGridValidations', () => {
 
     await act(async () =>
       render(
-        <BrowserRouter>
-          <PromoGridValidations />
-        </BrowserRouter>
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
       )
     );
 
     await waitFor(() => {
-      const inputElement = screen.getByTestId('golden_customer_id');
+      const inputElement = screen.getByTestId('event_type');
       expect(inputElement).toBeInTheDocument();
     });
   });

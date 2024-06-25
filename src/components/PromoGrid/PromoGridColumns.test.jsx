@@ -1,11 +1,18 @@
 import { renderHook } from '@testing-library/react';
 import PromoGridColumns from './PromoGridColumns';
+import { Provider } from 'react-redux';
+import store from '../../store/store';
+
+const renderHookRedux = (hook) => {
+  const wrapper = ({ children }) => <Provider store={store}>{children}</Provider>;
+  return renderHook(hook, { wrapper });
+};
 
 describe('PromoGridColumns', () => {
   test('renders correct columns', () => {
     const validationErrors = {};
     const handleChange = jest.fn();
-    const { result } = renderHook(() => PromoGridColumns({ validationErrors, handleChange }));
+    const { result } = renderHookRedux(() => PromoGridColumns({ validationErrors, handleChange }));
 
     const columns = result.current;
 
@@ -64,7 +71,7 @@ describe('PromoGridColumns', () => {
   test('checks required fields', () => {
     const validationErrors = {};
     const handleChange = jest.fn();
-    const { result } = renderHook(() => PromoGridColumns({ validationErrors, handleChange }));
+    const { result } = renderHookRedux(() => PromoGridColumns({ validationErrors, handleChange }));
 
     const columns = result.current;
 
@@ -78,7 +85,7 @@ describe('PromoGridColumns', () => {
   test('checks for radio cell values', () => {
     const validationErrors = {};
     const handleChange = jest.fn();
-    const { result } = renderHook(() => PromoGridColumns({ validationErrors, handleChange }));
+    const { result } = renderHookRedux(() => PromoGridColumns({ validationErrors, handleChange }));
 
     const columns = result.current;
 

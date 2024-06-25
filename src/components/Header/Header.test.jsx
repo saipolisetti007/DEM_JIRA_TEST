@@ -3,13 +3,17 @@ import { BrowserRouter } from 'react-router-dom';
 import Logo from './Logo';
 import LogoImage from '../../assets/images/logo.png';
 import Header from './Header';
+import { Provider } from 'react-redux';
+import store from '../../store/store';
 
 describe('HeaderComponent', () => {
   test('render Header Component with Logo and Navbar', () => {
     render(
-      <BrowserRouter>
-        <Header />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Header />
+        </BrowserRouter>
+      </Provider>
     );
     const logoComponent = screen.getByTestId('logo');
     expect(logoComponent).toBeInTheDocument();
@@ -21,9 +25,11 @@ describe('HeaderComponent', () => {
 describe('LogoComponent', () => {
   test('renders without with correct elements and attributes', () => {
     render(
-      <BrowserRouter>
-        <Logo />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Logo />
+        </BrowserRouter>
+      </Provider>
     );
     const logoImage = screen.getByRole('img');
     expect(logoImage).toHaveAttribute('src', LogoImage);

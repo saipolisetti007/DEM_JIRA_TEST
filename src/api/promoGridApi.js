@@ -6,6 +6,16 @@ export const getData = async (pageIndex, pageSize, filters) => {
   return response;
 };
 
+export const getUserProfile = async () => {
+  return await performApiRequest('user-profile');
+};
+
+export const getEvents = async (customerId) => {
+  const url = `promo/event-types/?golden_customer_id=${customerId}`;
+  const response = await performApiRequest(url);
+  return response;
+};
+
 export const addNewRowData = async (rowData) => {
   const response = await performApiRequest('promo/promo-grid-add/', 'POST', rowData);
   return response;

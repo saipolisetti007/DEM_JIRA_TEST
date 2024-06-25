@@ -8,17 +8,14 @@ import {
   promoGridGetValidations,
   promoGridValidate,
   promoGridSubmit,
-  cancelRowData
+  cancelRowData,
+  promoGridFilters,
+  getUserProfile,
+  getEvents
 } from './promoGridApi';
 
 jest.mock('./apiUtils', () => ({
   performApiRequest: jest.fn()
-}));
-
-jest.mock('../components/PromoGrid/promoGridSlice', () => ({
-  addPromoData: jest.fn(),
-  deletePromoData: jest.fn(),
-  editPromoData: jest.fn()
 }));
 
 describe('promoGridApi', () => {
@@ -121,7 +118,7 @@ describe('promoGridApi', () => {
   });
 
   jest.mock('./apiUtils', () => ({
-    performApiRequest: jest.fn((url, method, body, responseType) => {
+    performApiRequest: jest.fn((url) => {
       if (url.includes('download')) {
         return Promise.resolve(new Blob(['test'], { type: 'application/vnd.ms-excel' }));
       }
@@ -165,5 +162,45 @@ describe('promoGridApi', () => {
     performApiRequest.mockResolvedValueOnce(data);
     await promoGridSubmit(promoHeader);
     expect(performApiRequest).toHaveBeenCalledWith('promo/promo-grid-submit/', 'POST', promoHeader);
+  });
+
+  test('get promo Grid Filters', async () => {
+    const mockFilters = {
+      subsector: ['Skin and Personal Care'],
+      category: ['Auto Dish'],
+      brand: ['Cascade'],
+      brandForm: ['brandForm4'],
+      sku: ['sku4']
+    };
+    performApiRequest.mockResolvedValueOnce(mockFilters);
+    const result = await promoGridFilters();
+    expect(result).toEqual(mockFilters);
+    expect(performApiRequest).toHaveBeenCalledWith('promo/filter/', 'GET');
+  });
+
+  test('get User Profile ', async () => {
+    const data = [{ username: 'test', customers: [1234567890] }];
+    performApiRequest.mockResolvedValueOnce(data);
+    const result = await getUserProfile();
+    expect(result).toEqual(data);
+
+    expect(performApiRequest).toHaveBeenCalledWith('user-profile');
+  });
+
+  test('get Events ', async () => {
+    const customerId = 2000038335;
+    const data = [
+      {
+        customer_id: 2000038335,
+        events: {
+          MVM: ['Single Item Discount', 'Regimen Discount', 'Future Value']
+        }
+      }
+    ];
+    performApiRequest.mockResolvedValueOnce(data);
+    const result = await getEvents(customerId);
+    expect(result).toEqual(data);
+    const url = `promo/event-types/?golden_customer_id=${customerId}`;
+    expect(performApiRequest).toHaveBeenCalledWith(url);
   });
 });

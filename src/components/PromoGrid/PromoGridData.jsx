@@ -26,6 +26,7 @@ import PageSection from '../Common/PageSection';
 import InfoSnackBar from '../Common/InfoSnackBar';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Filters from '../Common/Filters';
+import { useSelector } from 'react-redux';
 
 const PromoGridData = () => {
   const location = useLocation();
@@ -62,6 +63,8 @@ const PromoGridData = () => {
     active: 'Active'
   });
 
+  const { userData } = useSelector((state) => state.userProfileData);
+  const customerId = userData?.customers[0];
   const fetchFilters = async () => {
     try {
       const response = await promoGridFilters();
@@ -160,8 +163,6 @@ const PromoGridData = () => {
     }, {});
   };
   const stringFields = [
-    'event_type',
-    'event_subtype',
     'event_description',
     'umbrella_event',
     'comments',
@@ -184,9 +185,10 @@ const PromoGridData = () => {
 
   // CREATE action
   const handleCreate = async ({ values, table }) => {
+    const newValues = { ...values, golden_customer_id: customerId ?? '' };
     setIsSaving(true);
-    const parsedValues = parseValues(values, stringFields);
-    if (validateValues(values)) {
+    const parsedValues = parseValues(newValues, stringFields);
+    if (validateValues(newValues)) {
       try {
         await addNewRowData(parsedValues);
         table.setCreatingRow(null);
@@ -281,12 +283,26 @@ const PromoGridData = () => {
   const handleChange = (event, validationType, accessorKey) => {
     const newValue = event.target.value;
     let errorMessage = handleChangeValidate(newValue, validationType);
+
+    setValidationErrors({
+      ...validationErrors,
+      [accessorKey]: errorMessage
+    });
+  };
+
+  const clearEventErrors = (value, accessorKey) => {
     if (accessorKey === 'event_type' && validationErrors?.event_subtype) {
       validationErrors.event_subtype = null;
     }
     if (accessorKey === 'event_subtype' && validationErrors?.event_type) {
       validationErrors.event_type = null;
     }
+
+    if (accessorKey === 'event_type') {
+      validationErrors.event_subtype = 'Required';
+    }
+
+    let errorMessage = handleChangeValidate(value);
     setValidationErrors({
       ...validationErrors,
       [accessorKey]: errorMessage
@@ -296,8 +312,8 @@ const PromoGridData = () => {
   const validateData = (data) => {
     return {
       golden_customer_id: handleValidate('integerValidation', 'required', data.golden_customer_id),
-      event_type: handleValidate('stringValidation', 'required', data.event_type),
-      event_subtype: handleValidate('stringValidation', 'required', data.event_subtype),
+      event_type: handleValidate('', 'required', data.event_type),
+      event_subtype: handleValidate('', 'required', data.event_subtype),
       event_sales_channel: handleValidate('stringValidation', 'required', data.event_sales_channel),
       item_type: handleValidate('stringValidation', 'required', data.item_type),
       product_id: handleValidate('stringValidation', 'required', data.product_id),
@@ -413,7 +429,7 @@ const PromoGridData = () => {
   };
 
   const table = useMaterialReactTable({
-    columns: PromoGridColumns({ validationErrors, handleChange }),
+    columns: PromoGridColumns({ validationErrors, handleChange, clearEventErrors }),
     data,
     createDisplayMode: 'modal',
     editDisplayMode: 'modal',

@@ -1,9 +1,27 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import DatePickerComponent from '../Common/DatePickerComponent';
 import InputRadioComponent from '../Common/InputRadioComponent';
 import InputTextComponent from '../Common/InputTextComponent';
 
+import { useSelector } from 'react-redux';
+import DropdownComponent from '../Common/DropdownComponent';
+
 const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => {
+  const { eventsData, eventTypeOptions, isLoading } = useSelector((state) => state.eventsData);
+  const [selectedEvents, setSelectedEvents] = useState({});
+  const [eventSubTypeOptions, setEventSubTypeOptions] = useState({});
+  const [selectedOptions, setSelectedOptions] = useState({});
+
+  const handleEventChange = (newValue, rowIndex) => {
+    if (isLoading) return;
+    setSelectedEvents((prev) => ({ ...prev, [rowIndex]: newValue }));
+    setSelectedOptions((prev) => ({ ...prev, [rowIndex]: '' }));
+  };
+
+  const handleSubtypeChange = (newState, rowIndex) => {
+    setSelectedOptions((prev) => ({ ...prev, [rowIndex]: newState }));
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -15,16 +33,17 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
       {
         accessorKey: 'golden_customer_id',
         header: 'Golden Customer ID',
+        enableEditing: false,
         Edit: ({ column, row }) => {
           return (
             <InputTextComponent
               row={row}
               column={column}
+              isDisable={true}
               isRequired={true}
               isError={!!validationErrors[row.index]?.golden_customer_id}
               helperText={validationErrors[row.index]?.golden_customer_id}
               validationType="integerValidation"
-              handleInputChange={handleInputChange}
             />
           );
         }
@@ -109,13 +128,16 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
         header: 'Event Type',
         Edit: ({ column, row }) => {
           return (
-            <InputTextComponent
+            <DropdownComponent
               row={row}
               column={column}
               isRequired={true}
+              label="Event Type"
               isError={!!validationErrors[row.index]?.event_type}
               helperText={validationErrors[row.index]?.event_type}
-              validationType="stringValidation"
+              options={eventTypeOptions}
+              isEventSelected={true}
+              onChange={(newValue) => handleEventChange(newValue, row.index)}
               handleInputChange={handleInputChange}
             />
           );
@@ -125,15 +147,31 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
         accessorKey: 'event_subtype',
         header: 'Event Subtype',
         Edit: ({ column, row }) => {
+          const rowIndex = row.index;
+          const selectedEvent = row.original.event_type || selectedEvents[rowIndex];
+          const SubTypeOptions = eventSubTypeOptions[rowIndex] || [];
+
+          useEffect(() => {
+            if (selectedEvent && eventsData) {
+              setEventSubTypeOptions((prev) => ({
+                ...prev,
+                [rowIndex]: eventsData[selectedEvent] || []
+              }));
+            }
+          }, [selectedEvent, eventsData, rowIndex]);
           return (
-            <InputTextComponent
+            <DropdownComponent
               row={row}
               column={column}
               isRequired={true}
+              label="Event Subtype"
+              options={SubTypeOptions}
+              selectedState={selectedOptions[rowIndex]}
+              isEventSelected={!!selectedEvent}
               isError={!!validationErrors[row.index]?.event_subtype}
               helperText={validationErrors[row.index]?.event_subtype}
-              validationType="stringValidation"
               handleInputChange={handleInputChange}
+              onChange={(newState) => handleSubtypeChange(newState, rowIndex)}
             />
           );
         }
@@ -791,8 +829,16 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
         }
       }
     ],
-    [validationErrors]
+    [
+      validationErrors,
+      eventsData,
+      eventTypeOptions,
+      selectedEvents,
+      eventSubTypeOptions,
+      selectedOptions
+    ]
   );
+
   return columns;
 };
 export default PromoGridValidationColumns;

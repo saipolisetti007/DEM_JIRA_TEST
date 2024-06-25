@@ -1,11 +1,18 @@
 import { renderHook } from '@testing-library/react';
 import PromoGridValidationColumns from './PromoGridValidationColumns';
+import { Provider } from 'react-redux';
+import store from '../../store/store';
+
+const renderHookRedux = (hook) => {
+  const wrapper = ({ children }) => <Provider store={store}>{children}</Provider>;
+  return renderHook(hook, { wrapper });
+};
 
 describe('PromoGridColumns', () => {
   test('renders correct columns', () => {
     const validationErrors = {};
     const handleInputChange = jest.fn();
-    const { result } = renderHook(() =>
+    const { result } = renderHookRedux(() =>
       PromoGridValidationColumns({ validationErrors, handleInputChange })
     );
 
@@ -31,23 +38,5 @@ describe('PromoGridColumns', () => {
         )
       ])
     );
-  });
-
-  test('calls Edit function with correct arguments', () => {
-    const validationErrors = {};
-    const handleInputChange = jest.fn();
-    const { result } = renderHook(() =>
-      PromoGridValidationColumns({ validationErrors, handleInputChange })
-    );
-
-    const columns = result.current;
-
-    columns.forEach((column) => {
-      if (column.Edit) {
-        const mockRow = { id: 1 };
-        const mockColumn = { id: 'testColumn' };
-        column.Edit({ row: mockRow, column: mockColumn });
-      }
-    });
   });
 });

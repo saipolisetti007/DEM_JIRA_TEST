@@ -2,7 +2,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import NavBar from './NavBar';
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
-
+import { Provider } from 'react-redux';
+import store from '../../store/store';
 jest.mock('@azure/msal-react');
 
 describe('NavBar component', () => {
@@ -20,14 +21,22 @@ describe('NavBar component', () => {
 
   test('renders signin button when not authenticated', () => {
     useMsal.mockReturnValueOnce({ instance: null });
-    render(<NavBar />);
+    render(
+      <Provider store={store}>
+        <NavBar />
+      </Provider>
+    );
     const signinButton = screen.getByText(/Sign In/i);
     expect(signinButton).toBeInTheDocument();
   });
 
   test('renders signout button and username when authenticated', () => {
     useMsal.mockReturnValue({ instance: mockInstance });
-    render(<NavBar />);
+    render(
+      <Provider store={store}>
+        <NavBar />
+      </Provider>
+    );
     const signoutButton = screen.getByText(/Sign out/i);
     expect(signoutButton).toBeInTheDocument();
   });
@@ -40,7 +49,11 @@ describe('NavBar component', () => {
         loginRedirect: mockLoginRedirect
       }
     });
-    render(<NavBar />);
+    render(
+      <Provider store={store}>
+        <NavBar />
+      </Provider>
+    );
     const signinButton = screen.getByText(/Sign in/i);
     expect(signinButton).toBeInTheDocument();
     fireEvent.click(signinButton);
@@ -54,7 +67,11 @@ describe('NavBar component', () => {
         logoutRedirect: mockLogoutRedirect
       }
     });
-    render(<NavBar />);
+    render(
+      <Provider store={store}>
+        <NavBar />
+      </Provider>
+    );
     const signoutButton = screen.getByText(/Sign out/i);
     expect(signoutButton).toBeInTheDocument();
     fireEvent.click(signoutButton);
