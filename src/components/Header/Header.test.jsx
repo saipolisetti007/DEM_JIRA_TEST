@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Logo from './Logo';
-import LogoImage from '../../assets/images/logo.png';
+import LogoImage from '../../assets/images/logo.svg';
 import Header from './Header';
 import { Provider } from 'react-redux';
 import store from '../../store/store';

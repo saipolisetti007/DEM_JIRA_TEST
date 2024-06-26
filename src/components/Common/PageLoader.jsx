@@ -1,5 +1,5 @@
 import React from 'react';
-import LogoImage from '../../assets/images/logo.png';
+import LogoImage from '../../assets/images/logo.svg';
 
 const PageLoader = () => {
   return (

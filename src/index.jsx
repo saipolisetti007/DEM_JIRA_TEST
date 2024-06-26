@@ -10,7 +10,6 @@ import {
   createBrowserRouter,
   createRoutesFromElements
 } from 'react-router-dom';
-import msalInstance from './auth/msalInstance';
 import App from './App';
 import Home from './pages/Home';
 import { Provider } from 'react-redux';
@@ -24,7 +23,7 @@ import StoreToDcMapping from './pages/StoreToDcMapping';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App instance={msalInstance} />}>
+    <Route path="/" element={<App />}>
       <Route path="" element={<Home />} />
       <Route path="/signin" element={<SignIn />} />
       <Route path="/store-to-dc-mapping" element={<StoreToDcMapping />} />

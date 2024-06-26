@@ -1,38 +1,36 @@
-import {
-  AuthenticatedTemplate,
-  MsalProvider,
-  UnauthenticatedTemplate,
-  useMsal
-} from '@azure/msal-react';
+import { AuthenticatedTemplate, MsalProvider, UnauthenticatedTemplate } from '@azure/msal-react';
 import PageLayout from './components/PageLayout/PageLayout';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import SignIn from './components/SignIn/SignIn';
 import msalInstance, { getAccessToken } from './auth/msalInstance';
-import { useEffect } from 'react';
-const MainContent = () => {
-  const { instance } = useMsal();
-  const activeAccount = instance.getActiveAccount();
+import { useEffect, useState } from 'react';
+import DefaultPageLoader from './components/Common/DefaultPageLoader';
+
+const App = () => {
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  useEffect(() => {
+    msalInstance.handleRedirectPromise().then(() => {
+      setIsAuthenticated(true);
+      getAccessToken();
+      navigate('/');
+    });
+  }, [navigate]);
+
+  if (!isAuthenticated) {
+    return <DefaultPageLoader />;
+  }
+
   return (
-    <>
-      <AuthenticatedTemplate>{activeAccount ? <Outlet /> : null}</AuthenticatedTemplate>
+    <MsalProvider instance={msalInstance}>
       <UnauthenticatedTemplate>
         <SignIn />
       </UnauthenticatedTemplate>
-    </>
-  );
-};
-
-const App = ({ instance }) => {
-  useEffect(() => {
-    msalInstance.handleRedirectPromise().then(() => {
-      getAccessToken();
-    });
-  }, []);
-  return (
-    <MsalProvider instance={instance}>
-      <PageLayout>
-        <MainContent />
-      </PageLayout>
+      <AuthenticatedTemplate>
+        <PageLayout>
+          <Outlet />
+        </PageLayout>
+      </AuthenticatedTemplate>
     </MsalProvider>
   );
 };
