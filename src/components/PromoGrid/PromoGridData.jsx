@@ -354,8 +354,9 @@ const PromoGridData = () => {
         .filter(
           (key) =>
             selectedFilters[key] &&
-            Array.isArray(selectedFilters[key]) &&
-            !selectedFilters[key].includes('All')
+            (Array.isArray(selectedFilters[key])
+              ? !selectedFilters[key].includes('All')
+              : selectedFilters[key] !== 'All')
         )
         .reduce((acc, key) => {
           acc[key] = selectedFilters[key];
