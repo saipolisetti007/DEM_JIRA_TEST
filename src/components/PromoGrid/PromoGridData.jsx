@@ -95,8 +95,9 @@ const PromoGridData = () => {
         .filter(
           (key) =>
             selectedFilters[key] &&
-            Array.isArray(selectedFilters[key]) &&
-            !selectedFilters[key].includes('All')
+            (Array.isArray(selectedFilters[key])
+              ? !selectedFilters[key].includes('All')
+              : selectedFilters[key] !== 'All')
         )
         .map((key) => `${key}=${selectedFilters[key]}`)
         .join('&');
