@@ -351,7 +351,12 @@ const PromoGridData = () => {
   const handleDataDownloadExcel = async () => {
     try {
       const filterParams = Object.keys(selectedFilters)
-        .filter((key) => selectedFilters[key] && selectedFilters[key] !== 'All')
+        .filter(
+          (key) =>
+            selectedFilters[key] &&
+            Array.isArray(selectedFilters[key]) &&
+            !selectedFilters[key].includes('All')
+        )
         .reduce((acc, key) => {
           acc[key] = selectedFilters[key];
           return acc;
