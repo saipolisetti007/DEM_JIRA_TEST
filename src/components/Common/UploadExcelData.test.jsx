@@ -1,23 +1,17 @@
 import { render, fireEvent, screen } from '@testing-library/react';
 import UploadExcelData from './UploadExcelData';
 
-describe('UploadExcelComponent', () => {
+describe('Upload Excel Component', () => {
   test('render uplaod button', () => {
     render(<UploadExcelData />);
-    const ButtonComponent = screen.getByRole('button');
-    expect(ButtonComponent).toBeInTheDocument();
-    fireEvent.click(ButtonComponent);
+    const buttonComponent = screen.getByRole('button', { name: /Export files/i });
+    expect(buttonComponent).toBeInTheDocument();
+    fireEvent.click(buttonComponent);
   });
 
   test('render File Input', () => {
     render(<UploadExcelData />);
     const fileInput = screen.getByLabelText(/Upload File/i);
     expect(fileInput).toBeInTheDocument();
-  });
-
-  test('should display Uploading.. when isDataLoading is true', () => {
-    render(<UploadExcelData isDataLoading={true}> Upload </UploadExcelData>);
-    const buttonComponent = screen.getByText('Uploading...');
-    expect(buttonComponent).toBeInTheDocument();
   });
 });

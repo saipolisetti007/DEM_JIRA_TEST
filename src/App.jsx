@@ -13,7 +13,9 @@ const App = () => {
     msalInstance.handleRedirectPromise().then(() => {
       setIsAuthenticated(true);
       getAccessToken();
-      navigate('/');
+      if (location.pathname === '/signin') {
+        navigate('/');
+      }
     });
   }, [navigate]);
 

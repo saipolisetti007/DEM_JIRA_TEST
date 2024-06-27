@@ -440,7 +440,6 @@ const PromoGridData = () => {
     data,
     createDisplayMode: 'modal',
     editDisplayMode: 'modal',
-    muiTableContainerProps: { sx: { minHeight: '510px', maxHeight: '510px' } },
     muiTableProps: {
       sx: {
         border: '1px solid rgba(81, 81, 81, 0.2)'
@@ -468,6 +467,7 @@ const PromoGridData = () => {
     enableColumnActions: false,
     enableColumnPinning: true,
     manualPagination: true,
+    enableSorting: false,
     onCreatingRowSave: handleCreate,
     onCreatingRowCancel: () => setValidationErrors({}),
     onEditingRowSave: handleUpdate,
@@ -478,6 +478,7 @@ const PromoGridData = () => {
       density: 'compact',
       showGlobalFilter: true,
       columnPinning: {
+        left: ['unique_event_id'],
         right: ['mrt-row-actions']
       }
     },
@@ -515,8 +516,8 @@ const PromoGridData = () => {
       <PageSection>
         <PageHeader
           table={table}
-          title="Event Promo Grid"
-          subtitle="See information about events"
+          title="Event promo grid"
+          subtitle="Manage events "
           handleDataDownloadExcel={handleDataDownloadExcel}
           handleDownloadBlankExcel={handleDownloadBlankExcel}
           handleUploadDataExcel={handleUploadDataExcel}

@@ -5,6 +5,9 @@
 th.MuiTableCell-root[data-pinned='true']:before {
   background-color: #003da5 !important;
 }
+td.MuiTableCell-root[data-pinned='true']:before {
+  background-color: #ffffff !important;
+}
 td.MuiTableCell-root .Mui-disabled {
   display: none;
 }

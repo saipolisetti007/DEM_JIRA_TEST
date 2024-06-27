@@ -1,16 +1,14 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 
 const ExcelWithDataDownload = ({ handleDataDownloadExcel }) => {
   return (
-    <Button
-      size="small"
-      variant="contained"
-      color="info"
-      className="w-40"
-      onClick={handleDataDownloadExcel}>
-      Download Filled Template
-    </Button>
+    <Tooltip title="Downolad files" arrow placement="top">
+      <IconButton aria-label="Downolad files" color="primary" onClick={handleDataDownloadExcel}>
+        <DownloadForOfflineIcon />
+      </IconButton>
+    </Tooltip>
   );
 };
 

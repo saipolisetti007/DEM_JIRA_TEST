@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { blue } from '@mui/material/colors';
+import { blue, grey } from '@mui/material/colors';
 
 const customTheme = createTheme({
   palette: {
@@ -34,7 +34,7 @@ const customTheme = createTheme({
       contrastText: '#FFFFFF'
     },
     success: {
-      main: '#53AB57',
+      main: '#4CAF50',
       light: '#7BC67E',
       dark: '#3B873E',
       contrastText: '#FFFFFF'
@@ -80,13 +80,14 @@ const customTheme = createTheme({
           borderRadius: 15
         },
         sizeMedium: {
-          fontWeight: 500,
+          fontWeight: 700,
           fontSize: 14,
           borderRadius: 20
         },
         sizeLarge: {
-          fontWeight: 500,
+          fontWeight: 700,
           fontSize: 16,
+          padding: '8px 22px',
           borderRadius: 20
         }
       }
@@ -118,6 +119,30 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           padding: '0 0.5rem'
+        }
+      }
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          '&.MuiIconButton-colorPrimary': {
+            backgroundColor: grey[100],
+            color: grey[500],
+            '&:hover': {
+              backgroundColor: '#EDF1FD',
+              color: '#003DA5'
+            }
+          }
+        }
+      }
+    },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          backgroundColor: '#000000'
+        },
+        arrow: {
+          color: '#000000'
         }
       }
     },

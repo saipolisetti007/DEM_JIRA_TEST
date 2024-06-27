@@ -12,15 +12,15 @@ describe('PageHeader Component', () => {
   });
   test('render Create button correctly', () => {
     render(<PageHeader />);
-    const createButton = screen.getByRole('button', { name: 'Add New Record' });
+    const createButton = screen.getByRole('button', { name: 'Add New Event' });
     expect(createButton).toBeInTheDocument();
-    expect(createButton).toHaveTextContent('Add New Record');
+    expect(createButton).toHaveTextContent('Add New Event');
   });
   test('calls setCreatingRow function when create button is clicked', () => {
     const setCreatingRowMock = jest.fn();
     const table = { setCreatingRow: setCreatingRowMock };
     render(<PageHeader table={table} />);
-    const createButton = screen.getByRole('button', { name: 'Add New Record' });
+    const createButton = screen.getByRole('button', { name: 'Add New Event' });
     fireEvent.click(createButton);
     expect(setCreatingRowMock).toHaveBeenCalled();
   });

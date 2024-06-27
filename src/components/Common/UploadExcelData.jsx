@@ -1,15 +1,10 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { Tooltip, IconButton } from '@mui/material';
 import { useFileUpload } from '../../hooks/useFileUpload';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 
-const UploadExcelData = ({
-  color,
-  children,
-  handleUploadDataExcel,
-  isDataLoading,
-  isDisable,
-  testId
-}) => {
+const UploadExcelData = ({ handleUploadDataExcel, isDataLoading, isDisable, testId }) => {
   const { isLoading, fileInputRef, handleClick, handleFileUpload } = useFileUpload({
     isDataLoading,
     handleUploadDataExcel
@@ -17,15 +12,15 @@ const UploadExcelData = ({
 
   return (
     <>
-      <Button
-        variant="outlined"
-        color={color}
-        size="small"
-        disabled={isDisable}
-        className="w-40"
-        onClick={handleClick}>
-        {isLoading ? 'Uploading...' : children}
-      </Button>
+      <Tooltip title="Export files" arrow placement="top">
+        <IconButton
+          aria-label="Export files"
+          color="primary"
+          onClick={handleClick}
+          disabled={isDisable}>
+          {isLoading ? <RotateLeftIcon className="animate-spin" /> : <UploadFileIcon />}
+        </IconButton>
+      </Tooltip>
       <label style={{ display: 'none' }}>
         Upload File {''}
         <input

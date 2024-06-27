@@ -1,16 +1,17 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
+import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 
 const BlankExcelDownload = ({ handleDownloadBlankExcel }) => {
   return (
-    <Button
-      size="small"
-      variant="contained"
-      color="success"
-      className="w-40"
-      onClick={handleDownloadBlankExcel}>
-      Download Blank Template
-    </Button>
+    <Tooltip title="Download blank template" arrow placement="top">
+      <IconButton
+        aria-label="Download blank template"
+        color="primary"
+        onClick={handleDownloadBlankExcel}>
+        <SimCardDownloadIcon />
+      </IconButton>
+    </Tooltip>
   );
 };
 

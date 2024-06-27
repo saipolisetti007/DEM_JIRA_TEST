@@ -6,13 +6,13 @@ import CancelIcon from '@mui/icons-material/Cancel';
 const RowActions = ({ row, table, handleCancel }) => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', gap: '0.25rem' }}>
-      <Tooltip title="Edit">
-        <IconButton color="success" onClick={() => table.setEditingRow(row)}>
+      <Tooltip title="Edit" arrow placement="top">
+        <IconButton color="success" size="small" onClick={() => table.setEditingRow(row)}>
           <EditIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Cancel">
-        <IconButton color="error" onClick={() => handleCancel(row)}>
+      <Tooltip title="Cancel" arrow placement="top">
+        <IconButton color="error" size="small" onClick={() => handleCancel(row)}>
           <CancelIcon />
         </IconButton>
       </Tooltip>

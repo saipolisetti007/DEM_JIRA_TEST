@@ -278,7 +278,9 @@ describe('PromoGridData Component', () => {
       </Provider>
     );
     await act(async () => {
-      fireEvent.click(getByText(/Download Filled Template/i));
+      const buttonComponent = screen.getByRole('button', { name: /Downolad files/i });
+      expect(buttonComponent).toBeInTheDocument();
+      fireEvent.click(buttonComponent);
     });
     await waitFor(() => {
       expect(downloadDataExcel).toHaveBeenCalled();
@@ -299,7 +301,9 @@ describe('PromoGridData Component', () => {
       </Provider>
     );
     await act(async () => {
-      fireEvent.click(screen.getByText(/Download Filled Template/i));
+      const buttonComponent = screen.getByRole('button', { name: /Downolad files/i });
+      expect(buttonComponent).toBeInTheDocument();
+      fireEvent.click(buttonComponent);
     });
     await waitFor(() => {
       expect(downloadDataExcel).toHaveBeenCalled();
@@ -460,7 +464,7 @@ describe('PromoGridData Component', () => {
       )
     );
 
-    const addRowButton = screen.getByText('Add New Record');
+    const addRowButton = screen.getByText('Add New Event');
     await act(async () => {
       fireEvent.click(addRowButton);
     });
@@ -550,7 +554,7 @@ describe('PromoGridData Component', () => {
       )
     );
 
-    const addRowButton = screen.getByText('Add New Record');
+    const addRowButton = screen.getByText('Add New Event');
     await act(async () => {
       fireEvent.click(addRowButton);
     });
@@ -733,7 +737,7 @@ describe('PromoGridData Component', () => {
       )
     );
 
-    const addRowButton = screen.getByText('Add New Record');
+    const addRowButton = screen.getByText('Add New Event');
     await act(async () => {
       fireEvent.click(addRowButton);
     });

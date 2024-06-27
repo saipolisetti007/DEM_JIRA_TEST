@@ -2,6 +2,8 @@ import React from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import UploadExcelData from './UploadExcelData';
 import ExcelWithDataDownload from './ExcelWithDataDownload';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import BlankExcelDownload from './BlankExcelDownload';
 
 const PageHeader = ({
   table,
@@ -9,33 +11,38 @@ const PageHeader = ({
   subtitle,
   isDataLoading,
   handleDataDownloadExcel,
+  handleDownloadBlankExcel,
   handleUploadDataExcel
 }) => {
   return (
     <Box className="p-2">
       <div className="flex items-center justify-between gap-8 pb-3">
         <div>
-          <Typography variant="h6" as="h2" color="primary">
+          <Typography component="h1" variant="h5" color="primary">
             {title}
           </Typography>
-          <Typography variant="small">{subtitle}</Typography>
+          <Typography component="h2" variant="body1">
+            {subtitle}
+          </Typography>
         </div>
-        <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-          <ExcelWithDataDownload handleDataDownloadExcel={handleDataDownloadExcel} />
+        <div className="flex items-center gap-2">
           <UploadExcelData
-            color="info"
             testId="upload"
             handleUploadDataExcel={handleUploadDataExcel}
-            isDataLoading={isDataLoading}>
-            Re-Upload / Overwrite Data
-          </UploadExcelData>
+            isDataLoading={isDataLoading}
+          />
+          <ExcelWithDataDownload handleDataDownloadExcel={handleDataDownloadExcel} />
+          <BlankExcelDownload handleDownloadBlankExcel={handleDownloadBlankExcel} />
           <Button
-            color="primary"
+            variant="outlined"
+            color="success"
+            size="large"
+            className="rounded-full ml-4"
+            startIcon={<AddCircleIcon />}
             onClick={() => {
               table.setCreatingRow(true);
-            }}
-            variant="contained">
-            Add New Record
+            }}>
+            Add New Event
           </Button>
         </div>
       </div>
