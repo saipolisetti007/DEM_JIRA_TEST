@@ -14,6 +14,7 @@ const CPFForecastButton = () => {
   }, []);
   return (
     <Badge badgeContent={count} color="secondary">
+      <NavigationButton navUrl="/see-more"> See more </NavigationButton>
       <NavigationButton navUrl="/cpf-forecast"> Pending approval </NavigationButton>
     </Badge>
   );

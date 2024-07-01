@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getUserProfile } from '../../api/promoGridApi';
 
-export const fecthUserProfile = createAsyncThunk('api/fetchUserProfile', async () => {
+export const fetchUserProfile = createAsyncThunk('api/fetchUserProfile', async () => {
   const userData = await getUserProfile();
   return userData;
 });
@@ -16,14 +16,14 @@ const userProfileSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fecthUserProfile.pending, (state) => {
+      .addCase(fetchUserProfile.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(fecthUserProfile.fulfilled, (state, action) => {
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.userData = action.payload;
       })
-      .addCase(fecthUserProfile.rejected, (state, action) => {
+      .addCase(fetchUserProfile.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       });

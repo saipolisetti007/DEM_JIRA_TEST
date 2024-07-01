@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getEvents } from '../../api/promoGridApi';
 
-export const fecthEvents = createAsyncThunk(
+export const fetchEvents = createAsyncThunk(
   'api/fecthEvents',
   async (customerId, { rejectWithValue }) => {
     try {
@@ -24,16 +24,16 @@ const eventsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fecthEvents.pending, (state) => {
+      .addCase(fetchEvents.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(fecthEvents.fulfilled, (state, action) => {
+      .addCase(fetchEvents.fulfilled, (state, action) => {
         state.isLoading = false;
         state.eventsData = action.payload;
         state.eventTypeOptions = Object.keys(action.payload);
       })
-      .addCase(fecthEvents.rejected, (state, action) => {
+      .addCase(fetchEvents.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });

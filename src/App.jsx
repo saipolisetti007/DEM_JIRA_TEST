@@ -1,9 +1,10 @@
+import { useState, useEffect } from 'react';
 import { AuthenticatedTemplate, MsalProvider, UnauthenticatedTemplate } from '@azure/msal-react';
 import PageLayout from './components/PageLayout/PageLayout';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SignIn from './components/SignIn/SignIn';
 import msalInstance, { getAccessToken } from './auth/msalInstance';
-import { useEffect, useState } from 'react';
+import SecondaryNavBar from '../src/components/Header/SecondaryNavBar';
 import DefaultPageLoader from './components/Common/DefaultPageLoader';
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
       </UnauthenticatedTemplate>
       <AuthenticatedTemplate>
         <PageLayout>
+          <SecondaryNavBar />
           <Outlet />
         </PageLayout>
       </AuthenticatedTemplate>

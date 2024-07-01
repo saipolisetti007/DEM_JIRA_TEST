@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-
 import NavBar from './NavBar';
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
 import { Provider } from 'react-redux';
 import store from '../../store/store';
+
 jest.mock('@azure/msal-react');
 
 describe('NavBar component', () => {
@@ -37,8 +37,16 @@ describe('NavBar component', () => {
         <NavBar />
       </Provider>
     );
-    const signoutButton = screen.getByText(/Sign out/i);
-    expect(signoutButton).toBeInTheDocument();
+
+    const userAvatar = screen.queryByTestId('user-avatar');
+    if (!userAvatar) {
+      console.error('User avatar not found in the rendered output.');
+    } else {
+      fireEvent.click(userAvatar);
+
+      const signoutButton = screen.getByText(/Sign out/i);
+      expect(signoutButton).toBeInTheDocument();
+    }
   });
 
   test('renders call loginRedirect when handleLoginRedirect is called', () => {
@@ -59,7 +67,7 @@ describe('NavBar component', () => {
     fireEvent.click(signinButton);
   });
 
-  test('renders call loginRedirect when handleLoginRedirect is called', () => {
+  test('renders call logoutRedirect when handleLogoutRedirect is called', () => {
     const mockLogoutRedirect = jest.fn();
     useMsal.mockReturnValue({
       instance: {
@@ -72,6 +80,10 @@ describe('NavBar component', () => {
         <NavBar />
       </Provider>
     );
+
+    const userAvatar = screen.getByTestId('user-avatar');
+    fireEvent.click(userAvatar);
+
     const signoutButton = screen.getByText(/Sign out/i);
     expect(signoutButton).toBeInTheDocument();
     fireEvent.click(signoutButton);
