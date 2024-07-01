@@ -3,7 +3,7 @@ import React from 'react';
 
 const DefaultPageHeader = ({ title, subtitle }) => {
   return (
-    <div>
+    <div className="pt-4 pb-8">
       <Typography component="h1" variant="h5" color="primary">
         {title}
       </Typography>

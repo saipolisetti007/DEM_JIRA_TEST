@@ -1,27 +1,24 @@
 import React from 'react';
 import EventPromoGrid from '../components/Home/EventPromoGrid';
 import CPFForecast from '../components/Home/CPFForecast';
-import { Container, Typography } from '@mui/material';
+import DefaultPageHeader from '../components/Common/DefaultPageHeader';
+import PageSection from '../components/Common/PageSection';
 
 const Home = () => {
   return (
-    <div className="grid gap-24" data-testid="home">
-      <div></div>
-      <Container maxWidth="xl">
-        <div className="flex justify-between flex-wrap flex-col md:flex-row items-center">
-          <Typography variant="h5" color="primary">
-            Homepage
-          </Typography>
-        </div>
-        <Typography variant="subtitle1">Select filters to see more detailed promo grid </Typography>
-      </Container>
-      <Container maxWidth="xl">
-        <div className="flex justify-between flex-wrap flex-col md:flex-row items-center">
+    <PageSection>
+      <div data-testid="home">
+        <DefaultPageHeader
+          title="Homepage"
+          subtitle="Select filters to see more detailed promo grid"
+        />
+
+        <div className="flex justify-between flex-wrap flex-col md:flex-row items-center py-4">
           <EventPromoGrid />
           <CPFForecast />
         </div>
-      </Container>
-    </div>
+      </div>
+    </PageSection>
   );
 };
 

@@ -99,11 +99,10 @@ const CPFForescastMain = () => {
   return (
     <>
       <PageSection>
-        <Box className="p-2">
-          <DefaultPageHeader title="CPF Forecast" subtitle="Select the SKU to see the forecast" />
-        </Box>
+        <DefaultPageHeader title="CPF Forecast" subtitle="Select the SKU to see the forecast" />
+        <hr />
         <div className="relative min-h-80">
-          <Box className="p-2 border-t-2">
+          <Box className="p-2">
             <Filters
               isLoading={isLoading}
               filterOptions={filterOptions}
