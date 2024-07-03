@@ -35,7 +35,10 @@ const NavBar = () => {
 
   const getInitials = (name) => {
     const names = name.split(' ');
-    const initials = names.map((n) => n.charAt(0)).join('');
+    const initials = names
+      .slice(0, 2)
+      .map((n) => n.charAt(0))
+      .join('');
     return initials.toUpperCase();
   };
 
@@ -71,7 +74,7 @@ const NavBar = () => {
                 data-testid="user-avatar"
                 onClick={handleMenuOpen}
                 sx={{ cursor: 'pointer', bgcolor: 'primary.light', padding: 3 }}>
-                {getInitials(activeAccount.name) || 'Unkown'}
+                {getInitials(activeAccount.name) || 'Unknown'}
               </Avatar>
               <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                 <MenuItem data-testid="signout-button" onClick={handleLogoutRedirect}>
