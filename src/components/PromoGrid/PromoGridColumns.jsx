@@ -37,7 +37,9 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
     () => [
       {
         accessorKey: 'unique_event_id',
-        header: 'Unique Event Id',
+        header: 'Unique Event ID',
+        grow: false,
+        size: 150,
         enableEditing: false,
         muiEditTextFieldProps: {
           variant: 'outlined'
@@ -45,7 +47,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'golden_customer_id',
-        header: 'Golden Customer ID',
+        header: 'Golden Customer  ID  ',
+        size: 130,
         enableEditing: false,
         muiEditTextFieldProps: {
           required: true,
@@ -57,7 +60,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_in_store_start_date',
-        header: 'Event in Store Start Date',
+        header: 'Event in store start date',
         Edit: ({ column, row }) => {
           return (
             <DatePickerComponent
@@ -74,7 +77,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_in_store_end_date',
-        header: 'Event in Store End Date',
+        header: 'Event in store end date',
         Edit: ({ column, row }) => {
           return (
             <DatePickerComponent
@@ -91,7 +94,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'start_of_shipments',
-        header: 'Start Of Shipments',
+        header: 'Start of shipments   ',
+        size: 130,
         Edit: ({ column, row }) => {
           return (
             <DatePickerComponent
@@ -107,7 +111,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'end_of_shipments',
-        header: 'End Of Shipments',
+        header: 'End of shipments     ',
+        size: 130,
         Edit: ({ column, row }) => {
           return (
             <DatePickerComponent
@@ -124,7 +129,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_type',
-        header: 'Event Type',
+        header: 'Event type',
         Edit: ({ column, row }) => {
           return (
             <DropdownComponent
@@ -144,7 +149,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_subtype',
-        header: 'Event Subtype',
+        header: 'Event subtype',
         Edit: ({ column, row }) => {
           const selectEvent = row.original.event_type || selectedEvent;
           const subTypeOptions = eventSubTypeOptions || [];
@@ -172,7 +177,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_description',
-        header: 'Event Description',
+        header: 'Event description',
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.event_description,
@@ -184,7 +189,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'umbrella_event',
-        header: 'Umbrella Event',
+        header: 'Umbrella event',
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.umbrella_event,
@@ -209,7 +214,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
 
       {
         accessorKey: 'event_publish_to_demand',
-        header: 'Event Publish to Demand',
+        header: 'Event publish to demand',
         Cell: ({ row, column }) => RadioCellValue(row.original[column.id]),
         Edit: ({ row, column }) => {
           return (
@@ -225,7 +230,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_sales_channel',
-        header: 'Event Sales Channel',
+        header: 'Event sales channel',
         muiEditTextFieldProps: {
           required: true,
           variant: 'outlined',
@@ -238,7 +243,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'expected_shipments_forecast',
-        header: 'Expected Shipments Forecast',
+        header: 'Expected shipments forecast',
+        size: 200,
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.expected_shipments_forecast,
@@ -250,7 +256,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'expected_consumption_forecast',
-        header: 'Expected Consumption Forecast',
+        header: 'Expected consumption forecast',
+        size: 200,
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.expected_consumption_forecast,
@@ -262,7 +269,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'item_type',
-        header: 'Item Type',
+        header: 'Item type',
         muiEditTextFieldProps: {
           required: true,
           variant: 'outlined',
@@ -288,7 +295,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'product_id',
-        header: 'Product Id',
+        header: 'Product ID',
         muiEditTextFieldProps: {
           required: true,
           variant: 'outlined',
@@ -301,7 +308,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'id_type',
-        header: 'Id Type',
+        header: 'ID type',
         muiEditTextFieldProps: {
           required: true,
           variant: 'outlined',
@@ -314,7 +321,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'customer_item_number',
-        header: 'Customer Item Number',
+        header: 'Customer item number',
         muiEditTextFieldProps: {
           required: true,
           variant: 'outlined',
@@ -327,7 +334,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'proxy_like_item_number',
-        header: 'Proxy Like Item Number',
+        header: 'Proxy like item number',
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.proxy_like_item_number,
@@ -339,7 +346,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'pgp_flag',
-        header: 'PGP Flag',
+        header: 'PGP flag',
         Cell: ({ row, column }) => RadioCellValue(row.original[column.id]),
         Edit: ({ row, column }) => {
           return <InputRadioComponent row={row} column={column} isRequired={false} />;
@@ -347,7 +354,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'promoted_product_group_id',
-        header: 'Promoted Product Group Id',
+        header: 'Promoted product group ID',
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.promoted_product_group_id,
@@ -359,7 +366,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'country_code',
-        header: 'Country Code',
+        header: 'Country code',
         muiEditTextFieldProps: {
           required: true,
           variant: 'outlined',
@@ -373,7 +380,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
 
       {
         accessorKey: 'distribution_profile',
-        header: 'Distribution Profile',
+        header: 'Distribution profile',
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.distribution_profile,
@@ -385,7 +392,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'discount_amt',
-        header: 'Discount Amount',
+        header: 'Discount amount',
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.discount_amt,
@@ -397,7 +404,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'base_price',
-        header: 'Base Price',
+        header: 'Base price',
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.base_price,
@@ -409,7 +416,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'price_after_discount',
-        header: 'Price After Discount',
+        header: 'Price after discount',
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.price_after_discount,
@@ -433,7 +440,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_string_property_1',
-        header: 'Event String Property 1',
+        header: 'Event string property 1',
+        size: 150,
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.event_string_property_1,
@@ -445,7 +453,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_string_property_2',
-        header: 'Event String Property 2',
+        header: 'Event string property 2',
+        size: 150,
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.event_string_property_2,
@@ -457,7 +466,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_string_property_3',
-        header: 'Event String Property 3',
+        header: 'Event string property 3',
+        size: 150,
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.event_string_property_3,
@@ -469,7 +479,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_string_property_4',
-        header: 'Event String Property 4',
+        header: 'Event string property 4',
+        size: 150,
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.event_string_property_4,
@@ -481,7 +492,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_string_property_5',
-        header: 'Event String Property 5',
+        header: 'Event string property 5',
+        size: 150,
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.event_string_property_5,
@@ -493,7 +505,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_num_property_1',
-        header: 'Event Num  Property 1',
+        header: 'Event num  property 1',
+        size: 150,
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.event_num_property_1,
@@ -505,7 +518,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_num_property_2',
-        header: 'Event Num  Property 2',
+        header: 'Event num  property 2',
+        size: 150,
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.event_num_property_2,
@@ -517,7 +531,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_num_property_3',
-        header: 'Event Num  Property 3',
+        header: 'Event num  property 3',
+        size: 150,
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.event_num_property_3,
@@ -529,7 +544,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_num_property_4',
-        header: 'Event Num  Property 4',
+        header: 'Event num  property 4',
+        size: 150,
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.event_num_property_4,
@@ -541,7 +557,8 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'event_num_property_5',
-        header: 'Event Num  Property 5',
+        header: 'Event num  property 5',
+        size: 150,
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.event_num_property_5,
@@ -553,7 +570,7 @@ const PromoGridColumns = ({ validationErrors, handleChange, clearEventErrors }) 
       },
       {
         accessorKey: 'offer_type',
-        header: 'Offer Type',
+        header: 'Offer type',
         muiEditTextFieldProps: {
           variant: 'outlined',
           error: !!validationErrors?.offer_type,

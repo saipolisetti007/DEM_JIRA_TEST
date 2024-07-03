@@ -75,8 +75,10 @@ test('displays SnackBar on successful data update', async () => {
       </Provider>
     );
   });
+  const mockRow = screen.getAllByRole('row')[1];
+  fireEvent.mouseEnter(mockRow);
 
-  const editButton = screen.getByLabelText('Edit');
+  const editButton = screen.getByLabelText('Edit Event');
   fireEvent.click(editButton);
 
   const saveButton = screen.getByText('Save');
@@ -101,8 +103,10 @@ test('cancels row successfully', async () => {
       </Provider>
     );
   });
+  const mockRow = screen.getAllByRole('row')[1];
+  fireEvent.mouseEnter(mockRow);
 
-  const cancelButton = screen.getByLabelText('Cancel');
+  const cancelButton = screen.getByLabelText('Cancel Event');
 
   fireEvent.click(cancelButton);
 
@@ -415,7 +419,9 @@ describe('PromoGridData Component', () => {
         </Provider>
       )
     );
-    const cancelButton = screen.getByLabelText('Cancel');
+    const mockRow = screen.getAllByRole('row')[1];
+    fireEvent.mouseEnter(mockRow);
+    const cancelButton = screen.getByLabelText('Cancel Event');
     expect(cancelButton).toBeInTheDocument();
     await act(async () => {
       fireEvent.click(cancelButton);
@@ -439,7 +445,9 @@ describe('PromoGridData Component', () => {
         </Provider>
       )
     );
-    const cancelButton = screen.getByLabelText('Cancel');
+    const mockRow = screen.getAllByRole('row')[1];
+    fireEvent.mouseEnter(mockRow);
+    const cancelButton = screen.getByLabelText('Cancel Event');
     expect(cancelButton).toBeInTheDocument();
     await act(async () => {
       fireEvent.click(cancelButton);
@@ -576,7 +584,9 @@ describe('PromoGridData Component', () => {
         </Provider>
       )
     );
-    const EditButton = screen.getByLabelText('Edit');
+    const mockRow = screen.getAllByRole('row')[1];
+    fireEvent.mouseEnter(mockRow);
+    const EditButton = screen.getByLabelText('Edit Event');
     expect(EditButton).toBeInTheDocument();
 
     await act(async () => {
@@ -668,8 +678,10 @@ describe('PromoGridData Component', () => {
         </Provider>
       )
     );
+    const mockRow = screen.getAllByRole('row')[1];
+    fireEvent.mouseEnter(mockRow);
 
-    const EditButton = screen.getByLabelText('Edit');
+    const EditButton = screen.getByLabelText('Edit Event');
     expect(EditButton).toBeInTheDocument();
 
     await act(async () => {
@@ -703,8 +715,9 @@ describe('PromoGridData Component', () => {
         </Provider>
       )
     );
-
-    const EditButton = screen.getByLabelText('Edit');
+    const mockRow = screen.getAllByRole('row')[1];
+    fireEvent.mouseEnter(mockRow);
+    const EditButton = screen.getByLabelText('Edit Event');
     expect(EditButton).toBeInTheDocument();
 
     await act(async () => {

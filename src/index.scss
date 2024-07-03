@@ -2,12 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+/* IE */
+::-ms-scrollbar {
+  width: 12px;
+  height: 12px;
+  border-radius: 16px;
+  background-color: #eaeaea;
+}
+
+::-ms-scrollbar-thumb {
+  border-radius: 16px;
+  background-color: rgba(0, 0, 0, 0.65);
+  border: 2px solid #eaeaea;
+}
+
+::-ms-scrollbar-corner {
+  border-radius: 16px;
+  background-color: #eaeaea;
+}
+
+/* Safari */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  border-radius: 16px;
+  background-color: #eaeaea;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 16px;
+  background-color: rgba(0, 0, 0, 0.65);
+  border: 2px solid #eaeaea;
+}
+
+::-webkit-scrollbar-corner {
+  border-radius: 16px;
+  background-color: #eaeaea;
+}
+
 th.MuiTableCell-root[data-pinned='true']:before {
   background-color: #003da5 !important;
+  box-shadow: none !important;
 }
 td.MuiTableCell-root[data-pinned='true']:before {
   background-color: #ffffff !important;
+  box-shadow: none !important;
 }
+th.MuiTableCell-root[data-pinned='true'],
+td.MuiTableCell-root[data-pinned='true'] {
+  opacity: 1 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+
 td.MuiTableCell-root .Mui-disabled {
   display: none;
 }
@@ -16,4 +63,27 @@ th.MuiTableCell-head svg {
 }
 .MuiAlert-message {
   max-width: 100% !important;
+}
+.MuiTablePagination-root {
+  justify-content: end !important;
+}
+
+.custom-row-actions {
+  display: none !important;
+}
+.MuiTableBody-root tr:hover .custom-row-actions {
+  display: table-cell !important;
+}
+
+td.custom-row-actions.MuiTableCell-root[data-pinned='true']:before {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+th.custom-row-actions.MuiTableCell-root[data-pinned='true']:before {
+  background-color: transparent !important;
+  display: none !important;
+}
+
+.info-message.MuiAlert-colorInfo {
+  display: none;
 }

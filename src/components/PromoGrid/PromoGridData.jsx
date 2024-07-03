@@ -27,6 +27,8 @@ import InfoSnackBar from '../Common/InfoSnackBar';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Filters from '../Common/Filters';
 import { useSelector } from 'react-redux';
+import { grey } from '@mui/material/colors';
+import RowSelections from '../Common/RowSelections';
 
 const PromoGridData = () => {
   const location = useLocation();
@@ -40,6 +42,8 @@ const PromoGridData = () => {
   const [snackBar, setSnackBar] = useState({ message: '', severity: '', dataTestId: '' });
   const [isSaving, setIsSaving] = useState(false);
   const [rowCount, setRowCount] = useState(0);
+  const [rowSelection, setRowSelection] = useState({});
+  const [hoveredRow, setHoveredRow] = useState(null);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10
@@ -442,32 +446,44 @@ const PromoGridData = () => {
     editDisplayMode: 'modal',
     muiTableProps: {
       sx: {
-        border: '1px solid rgba(81, 81, 81, 0.2)'
+        borderCollapse: 'collapse',
+        border: '0.5px solid rgba(0, 0, 0, 0.23)'
       }
     },
-    muiTableBodyCellProps: {
+    muiTableBodyRowProps: ({ row }) => ({
+      onMouseEnter: () => setHoveredRow(row.id),
+      onMouseLeave: () => setHoveredRow(null)
+    }),
+    muiTableBodyCellProps: ({ cell }) => ({
+      className: cell.column.id === 'mrt-row-actions' ? 'custom-row-actions' : '',
+
       sx: {
-        border: '1px solid rgba(81, 81, 81, 0.2)'
+        border: '0.5px solid rgba(0, 0, 0, 0.23)',
+        backgroundColor: grey[100]
       }
-    },
-    muiTableHeadCellProps: {
+    }),
+    muiTableHeadCellProps: ({ column }) => ({
       sx: (theme) => ({
         backgroundColor: theme.palette.primary.dark,
-        color: theme.palette.primary.contrastText
-      })
-    },
+        color: theme.palette.primary.contrastText,
+        textTransform: 'initial',
+        verticalAlign: 'middle'
+      }),
+      className: column.id === 'mrt-row-actions' ? 'custom-row-actions' : ''
+    }),
     muiToolbarAlertBannerProps: isError
       ? {
           color: 'error',
           children: 'Network Error. Could not fetch the data.'
         }
       : undefined,
-    enableEditing: true,
     enableRowActions: true,
     enableColumnActions: false,
     enableColumnPinning: true,
     manualPagination: true,
     enableSorting: false,
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
     onCreatingRowSave: handleCreate,
     onCreatingRowCancel: () => setValidationErrors({}),
     onEditingRowSave: handleUpdate,
@@ -478,7 +494,7 @@ const PromoGridData = () => {
       density: 'compact',
       showGlobalFilter: true,
       columnPinning: {
-        left: ['unique_event_id'],
+        left: ['mrt-row-select', 'unique_event_id'],
         right: ['mrt-row-actions']
       }
     },
@@ -499,17 +515,29 @@ const PromoGridData = () => {
         internalEditComponents={internalEditComponents}
       />
     ),
+    defaultColumn: {
+      size: 150
+    },
+    displayColumnDefOptions: {
+      'mrt-row-actions': {
+        header: '',
+        size: 50
+      }
+    },
     renderRowActions: ({ row, table }) => (
-      <RowActions table={table} row={row} handleCancel={handleCancel} />
+      <RowActions table={table} row={row} hoveredRow={hoveredRow} handleCancel={handleCancel} />
     ),
     state: {
       isLoading: isLoading,
       isSaving: isSaving,
       showAlertBanner: isError,
       showProgressBars: isRefetching,
-      pagination
+      pagination,
+      rowSelection
     }
   });
+
+  const selectedRowCount = Object.keys(rowSelection).length;
 
   return (
     <>
@@ -529,7 +557,10 @@ const PromoGridData = () => {
           selectedFilters={selectedFilters}
           onFilterChange={handleFilterChange}
         />
-        <MRT_ToolbarAlertBanner table={table} />
+
+        <RowSelections selectedRowCount={selectedRowCount} rowCount={rowCount} />
+
+        <MRT_ToolbarAlertBanner table={table} className="info-message" />
         <MRT_TableContainer table={table} />
         <MRT_TablePagination table={table} />
       </PageSection>

@@ -4,7 +4,7 @@ import UploadExcelData from './UploadExcelData';
 describe('Upload Excel Component', () => {
   test('render uplaod button', () => {
     render(<UploadExcelData />);
-    const buttonComponent = screen.getByRole('button', { name: /Export files/i });
+    const buttonComponent = screen.getByRole('button', { name: /Import files/i });
     expect(buttonComponent).toBeInTheDocument();
     fireEvent.click(buttonComponent);
   });

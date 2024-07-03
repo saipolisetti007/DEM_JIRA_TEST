@@ -92,7 +92,13 @@ const customTheme = createTheme({
         }
       }
     },
-
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          border: '0.5px solid rgba(0, 0, 0, 0.23)'
+        }
+      }
+    },
     MuiTableRow: {
       styleOverrides: {
         root: {
@@ -101,7 +107,7 @@ const customTheme = createTheme({
           '&.Mui-selected': {
             '& td': {
               '&:after': {
-                backgroundColor: 'rgba(0, 61, 165, 0.05)'
+                backgroundColor: '#EDF1FD'
               }
             }
           }
@@ -127,7 +133,7 @@ const customTheme = createTheme({
         root: {
           '&.MuiIconButton-colorPrimary': {
             backgroundColor: grey[100],
-            color: grey[500],
+            color: 'rgba(0, 0, 0, 0.65)',
             '&:hover': {
               backgroundColor: '#EDF1FD',
               color: '#003DA5'

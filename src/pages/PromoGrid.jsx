@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
-import PromoGridData from '../components/PromoGrid/PromoGridData';
 import ErrorBoundary from '../errorHanlding/ErrorBoundary';
+import PromoGridData from '../components/PromoGrid/PromoGridData';
 
 const PromoGrid = () => {
   return (

@@ -12,9 +12,9 @@ const UploadExcelData = ({ handleUploadDataExcel, isDataLoading, isDisable, test
 
   return (
     <>
-      <Tooltip title="Export files" arrow placement="top">
+      <Tooltip title="Import files" arrow placement="top">
         <IconButton
-          aria-label="Export files"
+          aria-label="Import files"
           color="primary"
           onClick={handleClick}
           disabled={isDisable}>
