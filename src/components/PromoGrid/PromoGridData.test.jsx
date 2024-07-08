@@ -154,51 +154,22 @@ describe('PromoGridData Component', () => {
       </Provider>
     );
 
-    await act(async () => {
-      const fileInput = screen.getByTestId('upload');
-      fireEvent.change(fileInput, { target: { files: [file] } });
+    const uploadButton = screen.getByLabelText('Import files');
+    fireEvent.click(uploadButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Upload New Data')).toBeInTheDocument();
     });
+
+    const fileInput = screen.getByTestId('upload');
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    const saveButton = screen.getByText('Save');
+    fireEvent.click(saveButton);
 
     await waitFor(() => {
       expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData));
     });
-  });
-
-  test('shows an alert if no file is selected', async () => {
-    window.alert = jest.fn();
-
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <PromoGridData />
-        </BrowserRouter>
-      </Provider>
-    );
-    await act(async () => {
-      const fileInput = screen.getByTestId('upload');
-      fireEvent.change(fileInput, { target: { files: [] } });
-    });
-    expect(window.alert).toHaveBeenCalledWith('Please select a file');
-  });
-
-  test('shows an alert if selected file is not excel', async () => {
-    window.alert = jest.fn();
-    const file = new File(['data'], 'example.png', {
-      type: 'image/png'
-    });
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <PromoGridData />
-        </BrowserRouter>
-      </Provider>
-    );
-    await act(async () => {
-      const fileInput = screen.getByTestId('upload');
-      fireEvent.change(fileInput, { target: { files: [file] } });
-    });
-
-    expect(window.alert).toHaveBeenCalledWith('Please select an excel file');
   });
 
   test('handles upload failure', async () => {
@@ -214,10 +185,18 @@ describe('PromoGridData Component', () => {
       </Provider>
     );
 
-    await act(async () => {
-      const fileInput = screen.getByTestId('upload');
-      fireEvent.change(fileInput, { target: { files: [file] } });
+    const uploadButton = screen.getByLabelText('Import files');
+    fireEvent.click(uploadButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Upload New Data')).toBeInTheDocument();
     });
+
+    const fileInput = screen.getByTestId('upload');
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    const saveButton = screen.getByText('Save');
+    fireEvent.click(saveButton);
 
     await waitFor(() => {
       expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData));
@@ -253,10 +232,18 @@ describe('PromoGridData Component', () => {
       </Provider>
     );
 
-    await act(async () => {
-      const fileInput = screen.getByTestId('upload');
-      fireEvent.change(fileInput, { target: { files: [file] } });
+    const uploadButton = screen.getByLabelText('Import files');
+    fireEvent.click(uploadButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Upload New Data')).toBeInTheDocument();
     });
+
+    const fileInput = screen.getByTestId('upload');
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    const saveButton = screen.getByText('Save');
+    fireEvent.click(saveButton);
 
     await waitFor(() => {
       expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData));

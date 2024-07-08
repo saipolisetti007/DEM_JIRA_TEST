@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import UploadExcelData from './UploadExcelData';
 import ExcelWithDataDownload from './ExcelWithDataDownload';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import BlankExcelDownload from './BlankExcelDownload';
+import UploadFileDialog from './UploadFileDialog';
 
 const PageHeader = ({
   table,
@@ -14,6 +15,36 @@ const PageHeader = ({
   handleDownloadBlankExcel,
   handleUploadDataExcel
 }) => {
+  const [open, setOpen] = useState(false);
+  const [file, setFile] = useState(null);
+  const [fileTypeValid, setFileTypeValid] = useState(null);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setFile(null);
+    setFileTypeValid(null);
+  };
+
+  const handleFileChange = (e) => {
+    const newFile = e.target.files[0];
+    setFile(newFile);
+    setFileTypeValid(
+      newFile.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
+  };
+
+  const handleSave = async () => {
+    if (file) {
+      const event = { target: { files: [file] } };
+      await handleUploadDataExcel(event); // Upload the file when Save button is clicked
+      handleClose();
+    }
+  };
+
   return (
     <Box className="py-4">
       <div className="flex items-center justify-between gap-8 pb-8">
@@ -27,6 +58,7 @@ const PageHeader = ({
         </div>
         <div className="flex items-center gap-2">
           <UploadExcelData
+            handleClickOpen={handleClickOpen}
             testId="upload"
             handleUploadDataExcel={handleUploadDataExcel}
             isDataLoading={isDataLoading}
@@ -45,6 +77,13 @@ const PageHeader = ({
             Add New Event
           </Button>
         </div>
+        <UploadFileDialog
+          open={open}
+          handleClose={handleClose}
+          handleFileChange={handleFileChange}
+          handleSave={handleSave}
+          fileTypeValid={fileTypeValid}
+        />
       </div>
       <hr />
     </Box>
