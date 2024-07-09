@@ -63,6 +63,7 @@ const customTheme = createTheme({
     h4: { fontWeight: 700, fontSize: 34 },
     h5: { fontWeight: 700, fontSize: 24 },
     h6: { fontWeight: 700, fontSize: 20 },
+    h7: { fontWeight: 700, fontSize: 16 },
     subtitle1: { fontWeight: 400, fontSize: 16 },
     subtitle2: { fontWeight: 500, fontSize: 14 },
     body1: { fontWeight: 400, fontSize: 16 },

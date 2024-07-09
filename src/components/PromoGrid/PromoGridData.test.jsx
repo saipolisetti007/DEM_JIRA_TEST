@@ -107,8 +107,12 @@ test('cancels row successfully', async () => {
   fireEvent.mouseEnter(mockRow);
 
   const cancelButton = screen.getByLabelText('Cancel Event');
-
   fireEvent.click(cancelButton);
+
+  await waitFor(() => {
+    const confirmButton = screen.getByText('Cancel Event');
+    fireEvent.click(confirmButton);
+  });
 
   await waitFor(() => {
     expect(cancelRowData).toHaveBeenCalledTimes(1);
@@ -395,26 +399,30 @@ describe('PromoGridData Component', () => {
   });
 
   test('should Handlecancel Success', async () => {
-    cancelRowData.mockResolvedValue({});
-    window.confirm = jest.fn(() => true);
-    await act(async () =>
+    cancelRowData.mockResolvedValueOnce({});
+    getData.mockResolvedValueOnce(mockData);
+
+    await act(async () => {
       render(
         <Provider store={store}>
           <BrowserRouter>
             <PromoGridData />
           </BrowserRouter>
         </Provider>
-      )
-    );
+      );
+    });
     const mockRow = screen.getAllByRole('row')[1];
     fireEvent.mouseEnter(mockRow);
-    const cancelButton = screen.getByLabelText('Cancel Event');
-    expect(cancelButton).toBeInTheDocument();
-    await act(async () => {
-      fireEvent.click(cancelButton);
-    });
 
-    await waitFor(async () => expect(cancelRowData).toHaveBeenCalledTimes(1));
+    const cancelButton = screen.getByLabelText('Cancel Event');
+    fireEvent.click(cancelButton);
+
+    const confirmButton = screen.getByText('Cancel Event');
+    fireEvent.click(confirmButton);
+
+    await waitFor(() => {
+      expect(cancelRowData).toHaveBeenCalledTimes(1);
+    });
     await waitFor(() => {
       expect(screen.getByText('Promo Cancelled successfully !!!')).toBeInTheDocument();
     });
@@ -422,27 +430,28 @@ describe('PromoGridData Component', () => {
 
   test('should Handlecancel Failure', async () => {
     cancelRowData.mockRejectedValue({});
-    window.confirm = jest.fn(() => true);
-    await act(async () =>
+    getData.mockResolvedValueOnce(mockData);
+    await act(async () => {
       render(
         <Provider store={store}>
           <BrowserRouter>
             <PromoGridData />
           </BrowserRouter>
         </Provider>
-      )
-    );
+      );
+    });
     const mockRow = screen.getAllByRole('row')[1];
     fireEvent.mouseEnter(mockRow);
+
     const cancelButton = screen.getByLabelText('Cancel Event');
-    expect(cancelButton).toBeInTheDocument();
-    await act(async () => {
-      fireEvent.click(cancelButton);
-    });
+    fireEvent.click(cancelButton);
+
+    const confirmButton = screen.getByText('Cancel Event');
+    fireEvent.click(confirmButton);
 
     await waitFor(async () => expect(cancelRowData).toHaveBeenCalledTimes(1));
     await waitFor(() => {
-      expect(screen.getByText('Error occured while cancel the data !!!')).toBeInTheDocument();
+      expect(screen.getByText('Error occurred while cancelling the data !!!')).toBeInTheDocument();
     });
   });
 

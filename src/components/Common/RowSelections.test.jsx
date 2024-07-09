@@ -17,8 +17,10 @@ describe('RowSelection Component', () => {
     fireEvent.click(editButton);
   });
   test('Click Cancel events button', () => {
-    render(<RowSelections rowCount={10} selectedRowCount={3} />);
+    const handleCancel = jest.fn();
+    render(<RowSelections rowCount={10} selectedRowCount={3} handleCancel={handleCancel} />);
     const cancelButton = screen.getByRole('button', { name: /Cancel events/i });
     fireEvent.click(cancelButton);
+    expect(handleCancel).toHaveBeenCalled();
   });
 });

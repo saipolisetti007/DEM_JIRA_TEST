@@ -29,6 +29,7 @@ import Filters from '../Common/Filters';
 import { useSelector } from 'react-redux';
 import { grey } from '@mui/material/colors';
 import RowSelections from '../Common/RowSelections';
+import CancelEventDialog from '../Common/CancelEventDialog';
 
 const PromoGridData = () => {
   const location = useLocation();
@@ -44,6 +45,8 @@ const PromoGridData = () => {
   const [rowCount, setRowCount] = useState(0);
   const [rowSelection, setRowSelection] = useState({});
   const [hoveredRow, setHoveredRow] = useState(null);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [selectedEventIds, setSelectedEventIds] = useState([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10
@@ -258,30 +261,50 @@ const PromoGridData = () => {
     }
   };
 
-  const handleCancel = async (row) => {
-    const rowData = {
-      unique_event_id: row.original.unique_event_id,
-      golden_customer_id: row.original.golden_customer_id
-    };
-    if (window.confirm('Are you sure want to cancel this promo data?')) {
-      try {
-        await cancelRowData(rowData);
-        setIsRefetching(true);
-        setIsSaving(false);
-        setIsSnackOpen(true);
-        setSnackBar({
-          message: 'Promo Cancelled successfully !!!',
-          severity: 'success'
-        });
-        await fetchData(pagination.pageIndex, pagination.pageSize);
-      } catch (error) {
-        setIsSaving(false);
-        setIsSnackOpen(true);
-        setSnackBar({
-          message: 'Error occured while cancel the data !!!',
-          severity: 'error'
-        });
-      }
+  const handleCancel = (row = null) => {
+    if (Object.keys(rowSelection).length > 0) {
+      const selectedIds = Object.keys(rowSelection).map((key) => data[key].unique_event_id);
+      setSelectedEventIds(selectedIds);
+      setCancelDialogOpen(true);
+    } else if (row) {
+      setSelectedEventIds([row.original.unique_event_id]);
+      setCancelDialogOpen(true);
+    } else {
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Please select at least one event to cancel',
+        severity: 'warning'
+      });
+    }
+  };
+
+  const confirmCancel = async () => {
+    try {
+      const payload = {
+        unique_event_id: selectedEventIds,
+        golden_customer_id: customerId
+      };
+      await cancelRowData(payload);
+      // to clear the row selection state
+      setRowSelection({});
+
+      setIsRefetching(true);
+      setIsSaving(false);
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Promo Cancelled successfully !!!',
+        severity: 'success'
+      });
+      await fetchData(pagination.pageIndex, pagination.pageSize);
+    } catch (error) {
+      setIsSaving(false);
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Error occurred while cancelling the data !!!',
+        severity: 'error'
+      });
+    } finally {
+      setCancelDialogOpen(false);
     }
   };
 
@@ -557,13 +580,22 @@ const PromoGridData = () => {
           selectedFilters={selectedFilters}
           onFilterChange={handleFilterChange}
         />
-
-        <RowSelections selectedRowCount={selectedRowCount} rowCount={rowCount} />
+        <RowSelections
+          selectedRowCount={selectedRowCount}
+          rowCount={rowCount}
+          handleCancel={handleCancel}
+        />
 
         <MRT_ToolbarAlertBanner table={table} className="info-message" />
         <MRT_TableContainer table={table} />
         <MRT_TablePagination table={table} />
       </PageSection>
+      <CancelEventDialog
+        open={cancelDialogOpen}
+        onClose={() => setCancelDialogOpen(false)}
+        onConfirm={confirmCancel}
+        eventIds={selectedEventIds}
+      />
       {isSnackOpen && snackBar && (
         <InfoSnackBar
           isOpen={isSnackOpen}
