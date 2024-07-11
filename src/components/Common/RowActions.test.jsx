@@ -17,10 +17,11 @@ describe('RowActions Component', () => {
     expect(cancelButton).toBeInTheDocument();
   });
   test('Click Edit button calls setEditingRow with correct row', () => {
-    render(<RowActions row={row} table={table} hoveredRow={row.id} />);
+    const handleEdit = jest.fn();
+    render(<RowActions row={row} table={table} hoveredRow={row.id} handleEdit={handleEdit} />);
     const editButton = screen.getByRole('button', { name: /edit event/i });
     fireEvent.click(editButton);
-    expect(table.setEditingRow).toHaveBeenCalledWith(row);
+    expect(handleEdit).toHaveBeenCalledWith(row);
   });
   test('Click Cancel button calls handleCancel with correct row', () => {
     const handleCancel = jest.fn();

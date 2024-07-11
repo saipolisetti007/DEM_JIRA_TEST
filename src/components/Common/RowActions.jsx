@@ -3,7 +3,7 @@ import { Box, IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-const RowActions = ({ row, table, hoveredRow, handleCancel }) => {
+const RowActions = ({ row, hoveredRow, handleEdit, handleCancel }) => {
   return (
     <Box
       sx={{ display: 'flex', justifyContent: 'center', gap: '0.25rem' }}
@@ -11,7 +11,7 @@ const RowActions = ({ row, table, hoveredRow, handleCancel }) => {
       {hoveredRow === row.id && (
         <>
           <Tooltip title="Edit Event" arrow placement="top">
-            <IconButton color="primary" size="small" onClick={() => table.setEditingRow(row)}>
+            <IconButton color="primary" size="small" onClick={() => handleEdit(row)}>
               <EditIcon fontSize="inherit" />
             </IconButton>
           </Tooltip>

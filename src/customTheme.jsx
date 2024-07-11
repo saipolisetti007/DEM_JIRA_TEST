@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { blue, grey } from '@mui/material/colors';
+import { blue } from '@mui/material/colors';
 
 const customTheme = createTheme({
   palette: {
@@ -57,13 +57,12 @@ const customTheme = createTheme({
   },
   typography: {
     fontFamily: 'Montserrat, sans-serif;',
-    h1: { fontWeight: 700, fontSize: 96 },
-    h2: { fontWeight: 700, fontSize: 60 },
-    h3: { fontWeight: 700, fontSize: 48 },
-    h4: { fontWeight: 700, fontSize: 34 },
-    h5: { fontWeight: 700, fontSize: 24 },
-    h6: { fontWeight: 700, fontSize: 20 },
-    h7: { fontWeight: 700, fontSize: 16 },
+    h1: { fontWeight: 700, fontSize: 34 },
+    h2: { fontWeight: 700, fontSize: 24 },
+    h3: { fontWeight: 700, fontSize: 20 },
+    h4: { fontWeight: 700, fontSize: 18 },
+    h5: { fontWeight: 700, fontSize: 16 },
+    h6: { fontWeight: 700, fontSize: 14 },
     subtitle1: { fontWeight: 400, fontSize: 16 },
     subtitle2: { fontWeight: 500, fontSize: 14 },
     body1: { fontWeight: 400, fontSize: 16 },
@@ -75,6 +74,9 @@ const customTheme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
+        root: {
+          textTransform: 'none'
+        },
         sizeSmall: {
           fontWeight: 700,
           fontSize: 13,
@@ -122,6 +124,13 @@ const customTheme = createTheme({
         }
       }
     },
+    MuiDialogContentText: {
+      styleOverrides: {
+        root: {
+          color: '#000000'
+        }
+      }
+    },
     MuiRadio: {
       styleOverrides: {
         root: {
@@ -133,7 +142,7 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           '&.MuiIconButton-colorPrimary': {
-            backgroundColor: grey[100],
+            backgroundColor: '#FFFFFF',
             color: 'rgba(0, 0, 0, 0.65)',
             '&:hover': {
               backgroundColor: '#EDF1FD',
@@ -168,6 +177,31 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           padding: '0.5rem 1.5rem'
+        }
+      }
+    },
+    MuiTabs: {
+      styleOverrides: {
+        root: {
+          paddingRight: '1rem'
+        },
+        indicator: {
+          display: 'none'
+        }
+      }
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          justifyContent: 'start',
+          paddingRight: '1rem',
+          minHeight: 'auto',
+          '&.Mui-selected': {
+            backgroundColor: '#EDF1FD',
+            fontWeight: '700',
+            borderRadius: '20px'
+          }
         }
       }
     }

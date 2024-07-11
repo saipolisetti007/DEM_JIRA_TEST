@@ -19,12 +19,11 @@ describe('PageHeader Component', () => {
   });
 
   test('calls setCreatingRow function when create button is clicked', () => {
-    const setCreatingRowMock = jest.fn();
-    const table = { setCreatingRow: setCreatingRowMock };
-    render(<PageHeader table={table} />);
+    const handleAddEventOpen = jest.fn();
+    render(<PageHeader handleAddEventOpen={handleAddEventOpen} />);
     const createButton = screen.getByRole('button', { name: 'Add New Event' });
     fireEvent.click(createButton);
-    expect(setCreatingRowMock).toHaveBeenCalled();
+    expect(handleAddEventOpen).toHaveBeenCalled();
   });
 
   test('opens UploadFileDialog when upload button is clicked', () => {

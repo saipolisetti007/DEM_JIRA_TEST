@@ -7,10 +7,10 @@ import BlankExcelDownload from './BlankExcelDownload';
 import UploadFileDialog from './UploadFileDialog';
 
 const PageHeader = ({
-  table,
   title,
   subtitle,
   isDataLoading,
+  handleAddEventOpen,
   handleDataDownloadExcel,
   handleDownloadBlankExcel,
   handleUploadDataExcel
@@ -49,7 +49,7 @@ const PageHeader = ({
     <Box className="py-4">
       <div className="flex items-center justify-between gap-8 pb-8">
         <div>
-          <Typography component="h1" variant="h5" color="primary">
+          <Typography component="h1" variant="h2" color="primary">
             {title}
           </Typography>
           <Typography component="h2" variant="body1">
@@ -71,9 +71,7 @@ const PageHeader = ({
             size="large"
             className="rounded-full ml-4"
             startIcon={<AddCircleIcon />}
-            onClick={() => {
-              table.setCreatingRow(true);
-            }}>
+            onClick={handleAddEventOpen}>
             Add New Event
           </Button>
         </div>

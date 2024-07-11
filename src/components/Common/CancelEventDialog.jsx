@@ -12,23 +12,24 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const CancelEventDialog = ({ open, onClose, onConfirm, eventIds }) => (
   <Dialog open={open} onClose={onClose}>
-    <DialogTitle sx={{ marginBottom: 3, marginTop: 1 }} variant="h6" color="primary">
+    <DialogTitle sx={{ mb: 3, mt: 1 }} variant="h3" color="primary">
       Cancel Events
       <IconButton
         aria-label="close"
+        size="small"
+        color="primary"
         onClick={onClose}
         sx={{
           position: 'absolute',
           right: 8,
-          top: 8,
-          color: (theme) => theme.palette.grey[500]
+          top: 8
         }}>
         <CloseIcon />
       </IconButton>
     </DialogTitle>
-    <DialogContent>
-      <DialogContentText variant="h7" color="dark">
-        You are about to cancel the events:
+    <DialogContent sx={{ minWidth: '600px' }}>
+      <DialogContentText variant="h5" sx={{ mb: 1 }}>
+        You are about to cancel the events: &nbsp;
         {eventIds.slice(0, 3).map((id, index) => (
           <span key={id}>
             {id}
@@ -44,30 +45,10 @@ const CancelEventDialog = ({ open, onClose, onConfirm, eventIds }) => (
       </DialogContentText>
     </DialogContent>
     <DialogActions sx={{ marginBottom: 1 }}>
-      <Button
-        sx={{
-          borderRadius: '2rem',
-          border: '1px solid #3b82f6',
-          fontSize: '12px',
-          fontWeight: '700',
-
-          color: '#003DA5'
-        }}
-        onClick={onClose}
-        color="primary">
+      <Button variant="outlined" onClick={onClose} color="primary">
         Return to Manage Events
       </Button>
-      <Button
-        sx={{
-          borderRadius: '2rem',
-          border: '1px solid #3b82f6',
-          fontSize: '12px',
-          fontWeight: '700',
-          backgroundColor: '#003DA5',
-          color: 'white'
-        }}
-        onClick={onConfirm}
-        color="secondary">
+      <Button onClick={onConfirm} variant="contained" color="primary">
         Cancel Event
       </Button>
     </DialogActions>

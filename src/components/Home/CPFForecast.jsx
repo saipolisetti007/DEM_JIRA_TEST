@@ -31,7 +31,7 @@ const CPFForecast = () => {
         <img src={CPF_GRAPH} alt="DEM Logo" width={62} height={62} />
       </div>
       <div className="text-left mx-8">
-        <Typography variant="h5">CPF forecast</Typography>
+        <Typography variant="h2">CPF forecast</Typography>
         <Typography variant="subtitle1">Stay up to date with the shipping forecast</Typography>
       </div>
       <div className="text-right mx-8">
@@ -40,10 +40,10 @@ const CPFForecast = () => {
           color={'#DD7C3B'}
           textColor={'white'}
           loading={loading}>
-          {loading ? 'Loading...' : `Pending approval: ${count}`}
+          {loading ? 'Loading...' : `Pending Approval: ${count}`}
         </NavigationButton>
         <NavigationButton navUrl="/cpf-forecast" color={'white'} textColor={'primary'}>
-          See more
+          See More
         </NavigationButton>
       </div>
     </PromoCard>

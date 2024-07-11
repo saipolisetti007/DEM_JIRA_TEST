@@ -6,19 +6,15 @@ import {
   MRT_ToolbarAlertBanner
 } from 'material-react-table';
 import {
-  addNewRowData,
   cancelRowData,
   downloadBlankExcel,
   downloadDataExcel,
   getData,
   promoGridFilters,
   promoGridGetValidations,
-  updateRowData,
   uploadDataExcel
 } from '../../api/promoGridApi';
 
-import { handleChangeValidate, handleValidate, parseValues } from '../../utils/commonMethods';
-import AddEditRow from '../Common/AddEditRow';
 import PromoGridColumns from './PromoGridColumns';
 import RowActions from '../Common/RowActions';
 import PageHeader from '../Common/PageHeader';
@@ -30,6 +26,9 @@ import { useSelector } from 'react-redux';
 import { grey } from '@mui/material/colors';
 import RowSelections from '../Common/RowSelections';
 import CancelEventDialog from '../Common/CancelEventDialog';
+import AddEditEventDialog from './AddEditEventDialog';
+import EditEventDialog from './EditEventDialog';
+import moment from 'moment';
 
 const PromoGridData = () => {
   const location = useLocation();
@@ -47,11 +46,16 @@ const PromoGridData = () => {
   const [hoveredRow, setHoveredRow] = useState(null);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedEventIds, setSelectedEventIds] = useState([]);
+  const [openNewEventDialog, setOpenNewEventDialog] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [rowData, setRowData] = useState(null);
+  const [isEdit, setIsEdit] = useState(false);
+  const [isHistoricalEvent, setIsHistoricalEvent] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10
   });
-  const [validationErrors, setValidationErrors] = useState({});
+
   const [filterOptions, setFilterOptions] = useState({
     subsector: [],
     category: [],
@@ -152,115 +156,6 @@ const PromoGridData = () => {
     }));
   };
 
-  // Validate Values
-  const validateValues = (values) => {
-    const newValidationErrors = validateData(values);
-    if (Object.values(newValidationErrors).some((error) => error)) {
-      setValidationErrors(newValidationErrors);
-      setIsSaving(false);
-      return false;
-    }
-    setValidationErrors({});
-    return true;
-  };
-
-  const transformErrors = (response) => {
-    return response?.errors.reduce((acc, { field, error }) => {
-      acc[field] = error;
-      return acc;
-    }, {});
-  };
-  const stringFields = [
-    'event_description',
-    'umbrella_event',
-    'comments',
-    'event_sales_channel',
-    'item_type',
-    'bu',
-    'product_id',
-    'id_type',
-    'country_code',
-    'promoted_product_group_id',
-    'distribution_profile',
-    'status',
-    'event_string_property_1',
-    'event_string_property_2',
-    'event_string_property_3',
-    'event_string_property_4',
-    'event_string_property_5',
-    'offer_type'
-  ];
-
-  // CREATE action
-  const handleCreate = async ({ values, table }) => {
-    const newValues = { ...values, golden_customer_id: customerId ?? '' };
-    setIsSaving(true);
-    const parsedValues = parseValues(newValues, stringFields);
-    if (validateValues(newValues)) {
-      try {
-        await addNewRowData(parsedValues);
-        table.setCreatingRow(null);
-        setIsRefetching(true);
-        await fetchData(pagination.pageIndex, pagination.pageSize);
-        setIsSaving(false);
-        setIsSnackOpen(true);
-        setSnackBar({
-          message: 'New data added successfully !!!',
-          severity: 'success'
-        });
-      } catch (error) {
-        setIsSaving(false);
-        const response = error.response?.data;
-        if (error.response?.status === 403) {
-          setValidationErrors({
-            golden_customer_id: "You don't have permissions to create/edit event for this customer"
-          });
-        } else {
-          const transformedErrors = transformErrors(response);
-          setValidationErrors(transformedErrors);
-        }
-        setIsSnackOpen(true);
-        setSnackBar({
-          message: 'Error occured while adding the data !!!',
-          severity: 'error'
-        });
-      }
-    }
-  };
-
-  // UPDATE action
-  const handleUpdate = async ({ values, table }) => {
-    setIsSaving(true);
-    if (validateValues(values)) {
-      try {
-        await updateRowData(values);
-        table.setEditingRow(null);
-        setIsRefetching(true);
-        await fetchData(pagination.pageIndex, pagination.pageSize);
-        setIsSaving(false);
-        setIsSnackOpen(true);
-        setSnackBar({
-          message: 'Data Updated successfully !!!',
-          severity: 'success'
-        });
-      } catch (error) {
-        setIsSaving(false);
-        const response = error.response?.data;
-        if (error.response?.status === 403) {
-          setValidationErrors({ golden_customer_id: response.detail });
-        } else {
-          const transformedErrors = transformErrors(response);
-          setValidationErrors(transformedErrors);
-        }
-        setIsSnackOpen(true);
-        setSnackBar({
-          message: 'Error occured while updating the data !!!',
-          severity: 'error'
-        });
-      }
-    }
-  };
-
   const handleCancel = (row = null) => {
     if (Object.keys(rowSelection).length > 0) {
       const selectedIds = Object.keys(rowSelection).map((key) => data[key].unique_event_id);
@@ -306,56 +201,6 @@ const PromoGridData = () => {
     } finally {
       setCancelDialogOpen(false);
     }
-  };
-
-  const handleChange = (event, validationType, accessorKey) => {
-    const newValue = event.target.value;
-    let errorMessage = handleChangeValidate(newValue, validationType);
-
-    setValidationErrors({
-      ...validationErrors,
-      [accessorKey]: errorMessage
-    });
-  };
-
-  const clearEventErrors = (value, accessorKey) => {
-    if (accessorKey === 'event_type' && validationErrors?.event_subtype) {
-      validationErrors.event_subtype = null;
-    }
-    if (accessorKey === 'event_subtype' && validationErrors?.event_type) {
-      validationErrors.event_type = null;
-    }
-
-    if (accessorKey === 'event_type') {
-      validationErrors.event_subtype = 'Required';
-    }
-
-    let errorMessage = handleChangeValidate(value);
-    setValidationErrors({
-      ...validationErrors,
-      [accessorKey]: errorMessage
-    });
-  };
-
-  const validateData = (data) => {
-    return {
-      golden_customer_id: handleValidate('integerValidation', 'required', data.golden_customer_id),
-      event_type: handleValidate('', 'required', data.event_type),
-      event_subtype: handleValidate('', 'required', data.event_subtype),
-      event_sales_channel: handleValidate('stringValidation', 'required', data.event_sales_channel),
-      item_type: handleValidate('stringValidation', 'required', data.item_type),
-      product_id: handleValidate('stringValidation', 'required', data.product_id),
-      id_type: handleValidate('stringValidation', 'required', data.id_type),
-      customer_item_number: handleValidate(
-        'integerValidation',
-        'required',
-        data.customer_item_number
-      ),
-      country_code: handleValidate('stringValidation', 'required', data.country_code),
-      event_in_store_start_date: handleValidate('', 'required', data.event_in_store_start_date),
-      event_in_store_end_date: handleValidate('', 'required', data.event_in_store_end_date),
-      event_publish_to_demand: handleValidate('', 'required', data.event_publish_to_demand)
-    };
   };
 
   const handleDownloadBlankExcel = async () => {
@@ -463,7 +308,7 @@ const PromoGridData = () => {
   };
 
   const table = useMaterialReactTable({
-    columns: PromoGridColumns({ validationErrors, handleChange, clearEventErrors }),
+    columns: PromoGridColumns(),
     data,
     createDisplayMode: 'modal',
     editDisplayMode: 'modal',
@@ -507,10 +352,6 @@ const PromoGridData = () => {
     enableSorting: false,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
-    onCreatingRowSave: handleCreate,
-    onCreatingRowCancel: () => setValidationErrors({}),
-    onEditingRowSave: handleUpdate,
-    onEditingRowCancel: () => setValidationErrors({}),
     onPaginationChange: setPagination,
     rowCount: rowCount,
     initialState: {
@@ -521,23 +362,6 @@ const PromoGridData = () => {
         right: ['mrt-row-actions']
       }
     },
-    //optionally customize modal content
-    renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
-      <AddEditRow
-        title="Add New Record"
-        table={table}
-        row={row}
-        internalEditComponents={internalEditComponents}
-      />
-    ),
-    renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
-      <AddEditRow
-        title="Edit Record"
-        table={table}
-        row={row}
-        internalEditComponents={internalEditComponents}
-      />
-    ),
     defaultColumn: {
       size: 150
     },
@@ -548,7 +372,13 @@ const PromoGridData = () => {
       }
     },
     renderRowActions: ({ row, table }) => (
-      <RowActions table={table} row={row} hoveredRow={hoveredRow} handleCancel={handleCancel} />
+      <RowActions
+        table={table}
+        row={row}
+        hoveredRow={hoveredRow}
+        handleEdit={handleEdit}
+        handleCancel={handleCancel}
+      />
     ),
     state: {
       isLoading: isLoading,
@@ -561,6 +391,50 @@ const PromoGridData = () => {
   });
 
   const selectedRowCount = Object.keys(rowSelection).length;
+  const handleAddEventOpen = () => {
+    setOpenNewEventDialog(true);
+    setIsHistoricalEvent(false);
+  };
+  const handleAddEventClose = async (event, reason) => {
+    setIsEdit(false);
+    if (reason && reason === 'backdropClick') return;
+    setOpenNewEventDialog(false);
+    if (reason === 'add') {
+      await fetchData(pagination.pageIndex, pagination.pageSize);
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'New event has been added successfully',
+        severity: 'success'
+      });
+    }
+    if (reason === 'edit') {
+      await fetchData(pagination.pageIndex, pagination.pageSize);
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Changes saved successfully',
+        severity: 'success'
+      });
+    }
+  };
+  // Handle Edit
+  const handleEdit = (row) => {
+    setOpenDialog(true);
+    setRowData(row.original);
+    setIsEdit(true);
+    setSelectedEventIds([row.original.unique_event_id]);
+    const startDate = moment(row.original.event_in_store_start_date, 'MM/DD/YYYY');
+    const currentDate = moment();
+    if (startDate.isBefore(currentDate, 'day')) {
+      setIsHistoricalEvent(true);
+    }
+  };
+
+  const handleDialogClose = (event, reason) => {
+    if (reason && reason === 'backdropClick') return;
+    setOpenDialog(false);
+    setIsHistoricalEvent(false);
+    setCancelDialogOpen(false);
+  };
 
   return (
     <>
@@ -569,6 +443,7 @@ const PromoGridData = () => {
           table={table}
           title="Event promo grid"
           subtitle="Manage events "
+          handleAddEventOpen={handleAddEventOpen}
           handleDataDownloadExcel={handleDataDownloadExcel}
           handleDownloadBlankExcel={handleDownloadBlankExcel}
           handleUploadDataExcel={handleUploadDataExcel}
@@ -590,12 +465,31 @@ const PromoGridData = () => {
         <MRT_TableContainer table={table} />
         <MRT_TablePagination table={table} />
       </PageSection>
+
       <CancelEventDialog
         open={cancelDialogOpen}
-        onClose={() => setCancelDialogOpen(false)}
+        onClose={handleDialogClose}
         onConfirm={confirmCancel}
         eventIds={selectedEventIds}
       />
+
+      {openNewEventDialog && (
+        <AddEditEventDialog
+          open={openNewEventDialog}
+          handleClose={handleAddEventClose}
+          rowData={rowData}
+          isEdit={isEdit}
+        />
+      )}
+      {openDialog && (
+        <EditEventDialog
+          open={openDialog}
+          handleClose={handleDialogClose}
+          onConfirm={handleAddEventOpen}
+          isHistoricalEvent={isHistoricalEvent}
+          eventIds={selectedEventIds}
+        />
+      )}
       {isSnackOpen && snackBar && (
         <InfoSnackBar
           isOpen={isSnackOpen}

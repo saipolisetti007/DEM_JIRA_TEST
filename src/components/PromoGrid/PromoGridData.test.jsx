@@ -1,12 +1,10 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
 import {
-  addNewRowData,
   cancelRowData,
   downloadDataExcel,
   getData,
   promoGridFilters,
-  updateRowData,
   uploadDataExcel
 } from '../../api/promoGridApi';
 import PromoGridData from './PromoGridData';
@@ -14,6 +12,7 @@ import PromoGridData from './PromoGridData';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from '../../store/store';
+//import moment from 'moment';
 // Mocking the getData function
 jest.mock('../../api/promoGridApi');
 const mockData = {
@@ -59,33 +58,6 @@ test('displays SnackBar on network error', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Network Error. Could not fetch the data.')).toBeInTheDocument();
-  });
-});
-
-test('displays SnackBar on successful data update', async () => {
-  updateRowData.mockResolvedValueOnce({});
-  getData.mockResolvedValueOnce(mockData);
-
-  await act(async () => {
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <PromoGridData />
-        </BrowserRouter>
-      </Provider>
-    );
-  });
-  const mockRow = screen.getAllByRole('row')[1];
-  fireEvent.mouseEnter(mockRow);
-
-  const editButton = screen.getByLabelText('Edit Event');
-  fireEvent.click(editButton);
-
-  const saveButton = screen.getByText('Save');
-  fireEvent.click(saveButton);
-
-  await waitFor(() => {
-    expect(screen.getByText('Data Updated successfully !!!')).toBeInTheDocument();
   });
 });
 
@@ -455,9 +427,7 @@ describe('PromoGridData Component', () => {
     });
   });
 
-  test('should add new row data', async () => {
-    addNewRowData.mockResolvedValue(mockData.results);
-
+  test('should open AddEditDialog when add button clicked', async () => {
     await act(async () =>
       render(
         <Provider store={store}>
@@ -467,204 +437,68 @@ describe('PromoGridData Component', () => {
         </Provider>
       )
     );
+    const addRowButton = screen.getByText('Add New Event');
+    await act(async () => {
+      fireEvent.click(addRowButton);
+    });
+    expect(screen.getByTestId('newEvent')).toBeInTheDocument;
+  });
 
+  test('should handle closing with backdropclick reason', async () => {
+    await act(async () =>
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      )
+    );
+    const addRowButton = screen.getByText('Add New Event');
+    await act(async () => {
+      fireEvent.click(addRowButton);
+    });
+    const addDialog = screen.getByRole('dialog');
+    fireEvent.keyDown(addDialog, { key: 'Escape' });
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+  });
+
+  test('should handle closing with backdropclick reason add', async () => {
+    await act(async () =>
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      )
+    );
     const addRowButton = screen.getByText('Add New Event');
     await act(async () => {
       fireEvent.click(addRowButton);
     });
 
-    const golden_customer_id = screen.getByRole('textbox', { name: /Golden Customer ID/i });
-    // const event_type = screen.getByRole('textbox', { name: /Event Type/i });
-    // const event_subtype = screen.getByRole('textbox', { name: /Event Subtype/i });
-    const event_sales_channel = screen.getByRole('textbox', { name: /Event Sales Channel/i });
-    const item_type = screen.getByRole('textbox', { name: /Item Type/i });
-    const id_type = screen.getByRole('textbox', { name: /ID Type/i });
-    const country_code = screen.getByRole('textbox', { name: /Country Code/i });
-    const product_id = screen.getByRole('textbox', { name: /Product ID/i });
-    const customer_item_number = screen.getByRole('textbox', { name: /Customer Item Number/i });
-
-    const event_in_store_start_date = screen.getByRole('textbox', {
-      name: /Event in Store Start Date/i
-    });
-    const event_in_store_end_date = screen.getByRole('textbox', {
-      name: /Event in Store End Date/i
-    });
-    const event_publish_to_demand = screen
-      .getByTestId('event_publish_to_demand_radio')
-      .querySelector("input[value='yes']");
-    expect(golden_customer_id.value).toBe('');
     await act(async () => {
-      fireEvent.change(golden_customer_id, {
-        target: { value: mockData.results[0].golden_customer_id }
-      });
-
-      // fireEvent.change(event_type, { target: { value: mockData.results[0].event_type } });
-
-      // fireEvent.change(event_subtype, { target: { value: mockData.results[0].event_subtype } });
-
-      fireEvent.change(event_sales_channel, {
-        target: { value: mockData.results[0].event_sales_channel }
-      });
-
-      fireEvent.change(item_type, { target: { value: mockData.results[0].item_type } });
-
-      fireEvent.change(id_type, { target: { value: mockData.results[0].item_type } });
-
-      fireEvent.change(country_code, { target: { value: mockData.results[0].country_code } });
-
-      fireEvent.change(product_id, { target: { value: mockData.results[0].product_id } });
-
-      fireEvent.change(customer_item_number, {
-        target: { value: mockData.results[0].customer_item_number }
-      });
-
-      fireEvent.change(event_in_store_start_date, {
+      fireEvent.change(screen.getByLabelText(/Event in store start date/i), {
         target: { value: mockData.results[0].event_in_store_start_date }
       });
-
-      fireEvent.change(event_in_store_end_date, {
+      fireEvent.change(screen.getByLabelText(/Event in store end date/i), {
         target: { value: mockData.results[0].event_in_store_end_date }
       });
-      fireEvent.click(event_publish_to_demand);
-    });
-    await waitFor(() => {
-      expect(golden_customer_id.value).toBe(mockData.results[0].golden_customer_id.toString());
-      // expect(event_type.value).toBe(mockData.results[0].event_type);
-    });
 
-    const saveButton = screen.getByText('Save');
-    await act(async () => {
-      fireEvent.click(saveButton);
-    });
-  });
-  test('should failed to add data if addrowdata failed', async () => {
-    const errorResponse = {
-      response: {
-        data: {
-          errors: [{ field: 'name', error: 'Name is required' }]
-        }
-      }
-    };
-
-    addNewRowData.mockRejectedValueOnce(errorResponse);
-
-    await act(async () =>
-      render(
-        <Provider store={store}>
-          <BrowserRouter>
-            <PromoGridData />
-          </BrowserRouter>
-        </Provider>
-      )
-    );
-
-    const addRowButton = screen.getByText('Add New Event');
-    await act(async () => {
-      fireEvent.click(addRowButton);
-    });
-
-    const saveButton = screen.getByText('Save');
-    await act(async () => {
-      fireEvent.click(saveButton);
-    });
-  });
-  test('should Update row data', async () => {
-    updateRowData.mockResolvedValue(mockData.results);
-
-    await act(async () =>
-      render(
-        <Provider store={store}>
-          <BrowserRouter>
-            <PromoGridData />
-          </BrowserRouter>
-        </Provider>
-      )
-    );
-    const mockRow = screen.getAllByRole('row')[1];
-    fireEvent.mouseEnter(mockRow);
-    const EditButton = screen.getByLabelText('Edit Event');
-    expect(EditButton).toBeInTheDocument();
-
-    await act(async () => {
-      fireEvent.click(EditButton);
-    });
-
-    const golden_customer_id = screen.getByRole('textbox', { name: /Golden Customer ID/i });
-
-    // const event_type = screen.getByRole('textbox', { name: /Event Type/i });
-    // const event_subtype = screen.getByRole('textbox', { name: /Event Subtype/i });
-    const event_sales_channel = screen.getByRole('textbox', { name: /Event Sales Channel/i });
-    const item_type = screen.getByRole('textbox', { name: /Item Type/i });
-    const id_type = screen.getByRole('textbox', { name: /ID Type/i });
-    const country_code = screen.getByRole('textbox', { name: /Country Code/i });
-    const product_id = screen.getByRole('textbox', { name: /Product ID/i });
-    const customer_item_number = screen.getByRole('textbox', { name: /Customer Item Number/i });
-
-    const event_in_store_start_date = screen.getByRole('textbox', {
-      name: /Event in Store Start Date/i
-    });
-    const event_in_store_end_date = screen.getByRole('textbox', {
-      name: /Event in Store End Date/i
-    });
-    const event_publish_to_demand = screen
-      .getByTestId('event_publish_to_demand_radio')
-      .querySelector("input[value='yes']");
-
-    await act(async () => {
-      fireEvent.change(golden_customer_id, {
-        target: { value: mockData.results[0].golden_customer_id }
-      });
-
-      // fireEvent.change(event_type, { target: { value: mockData.results[0].event_type } });
-
-      // fireEvent.change(event_subtype, { target: { value: mockData.results[0].event_subtype } });
-
-      fireEvent.change(event_sales_channel, {
+      fireEvent.change(screen.getByLabelText(/event sales channel/i), {
         target: { value: mockData.results[0].event_sales_channel }
       });
-
-      fireEvent.change(item_type, { target: { value: mockData.results[0].item_type } });
-
-      fireEvent.change(id_type, { target: { value: mockData.results[0].item_type } });
-
-      fireEvent.change(country_code, { target: { value: mockData.results[0].country_code } });
-
-      fireEvent.change(product_id, { target: { value: mockData.results[0].product_id } });
-
-      fireEvent.change(customer_item_number, {
-        target: { value: mockData.results[0].customer_item_number }
-      });
-
-      fireEvent.change(event_in_store_start_date, {
-        target: { value: mockData.results[0].event_in_store_start_date }
-      });
-
-      fireEvent.change(event_in_store_end_date, {
-        target: { value: mockData.results[0].event_in_store_end_date }
-      });
-      fireEvent.click(event_publish_to_demand);
     });
-    await waitFor(() => {
-      expect(golden_customer_id.value).toBe(mockData.results[0].golden_customer_id.toString());
-      // expect(event_type.value).toBe(mockData.results[0].event_type);
-    });
-
-    const saveButton = screen.getByText('Save');
+    const nextButton = screen.getByText('Next Step');
     await act(async () => {
-      fireEvent.click(saveButton);
+      fireEvent.click(nextButton);
     });
   });
-  test('should failed to Update data if updaterowdata failed', async () => {
-    const errorResponse = {
-      response: {
-        data: {
-          errors: [{ field: 'name', error: 'Name is required' }]
-        }
-      }
-    };
 
-    updateRowData.mockRejectedValueOnce(errorResponse);
-
+  test('should open Edit Dialog when Edit button clicked', async () => {
     await act(async () =>
       render(
         <Provider store={store}>
@@ -678,82 +512,8 @@ describe('PromoGridData Component', () => {
     fireEvent.mouseEnter(mockRow);
 
     const EditButton = screen.getByLabelText('Edit Event');
-    expect(EditButton).toBeInTheDocument();
-
     await act(async () => {
       fireEvent.click(EditButton);
-    });
-
-    const saveButton = screen.getByText('Save');
-    await act(async () => {
-      fireEvent.click(saveButton);
-    });
-  });
-
-  test('should failed to Update data based on golden cutomer id validation', async () => {
-    const errorResponse = {
-      response: {
-        status: 403,
-        data: {
-          error: 'do not have permission to perform this action'
-        }
-      }
-    };
-
-    updateRowData.mockRejectedValueOnce(errorResponse);
-
-    await act(async () =>
-      render(
-        <Provider store={store}>
-          <BrowserRouter>
-            <PromoGridData />
-          </BrowserRouter>
-        </Provider>
-      )
-    );
-    const mockRow = screen.getAllByRole('row')[1];
-    fireEvent.mouseEnter(mockRow);
-    const EditButton = screen.getByLabelText('Edit Event');
-    expect(EditButton).toBeInTheDocument();
-
-    await act(async () => {
-      fireEvent.click(EditButton);
-    });
-
-    const saveButton = screen.getByText('Save');
-    await act(async () => {
-      fireEvent.click(saveButton);
-    });
-
-    await waitFor(() => {
-      expect(updateRowData).toHaveBeenCalled();
-    });
-    await waitFor(() => {
-      expect(screen.getByText('Error occured while updating the data !!!')).toBeInTheDocument();
-    });
-  });
-
-  test('should failed to add data based on golden cutomer id validation', async () => {
-    addNewRowData.mockRejectedValue();
-
-    await act(async () =>
-      render(
-        <Provider store={store}>
-          <BrowserRouter>
-            <PromoGridData />
-          </BrowserRouter>
-        </Provider>
-      )
-    );
-
-    const addRowButton = screen.getByText('Add New Event');
-    await act(async () => {
-      fireEvent.click(addRowButton);
-    });
-
-    const saveButton = screen.getByText('Save');
-    await act(async () => {
-      fireEvent.click(saveButton);
     });
   });
 });

@@ -40,7 +40,7 @@ describe('CPFForecast', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(screen.getByText('Pending approval: 5')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Pending Approval: 5')).toBeInTheDocument());
   });
 
   test('should handle error state correctly', async () => {
@@ -63,7 +63,7 @@ describe('CPFForecast', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('See more')).toBeInTheDocument();
+    expect(screen.getByText('See More')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Loading...' })).toBeInTheDocument();
   });
 });

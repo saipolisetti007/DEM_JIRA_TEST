@@ -20,13 +20,13 @@ const SignIn = () => {
         <div className="flex flex-col items-center h-full w-full ">
           <div className="flex-1 text-center p-8">
             <img src={LogoImage} alt="DEM Logo" width={100} height={100} className="m-auto" />
-            <Typography component="h1" variant="h6">
+            <Typography component="h1" variant="h5">
               Digital Event Manager
             </Typography>
           </div>
 
           <div className="flex-1 text-center">
-            <Typography component="h2" variant="h5" color="primary" className="mb-2">
+            <Typography component="h2" variant="h2" color="primary" className="mb-2">
               Sign in to Digital Event Manager
             </Typography>
 
@@ -35,7 +35,7 @@ const SignIn = () => {
             </Typography>
 
             <Button
-              size="small"
+              size="large"
               variant="contained"
               color="primary"
               endIcon={<ArrowForwardIcon />}

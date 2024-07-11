@@ -176,7 +176,7 @@ const SkuItem = ({
           aria-controls={`panel${index}-content`}
           id={`panel${index}-header`}>
           <div className="flex items-center justify-between w-full">
-            <Typography variant="h6" as="h3" color="primary">
+            <Typography variant="h5" as="h3" color="primary">
               SKU : {sku}
             </Typography>
             <Button

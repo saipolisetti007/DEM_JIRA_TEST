@@ -54,7 +54,7 @@ describe('EventPromoGrid', () => {
 
     const navigationButton = screen.getByTestId('navigation-button');
     expect(navigationButton).toBeInTheDocument();
-    expect(navigationButton).toHaveTextContent('See more');
+    expect(navigationButton).toHaveTextContent('See More');
     expect(navigationButton).toHaveAttribute('navUrl', '/promo-grid');
     expect(navigationButton).toHaveAttribute('color', 'white');
     expect(navigationButton).toHaveAttribute('textColor', 'primary');
