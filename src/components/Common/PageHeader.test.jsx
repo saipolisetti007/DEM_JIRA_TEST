@@ -29,7 +29,7 @@ describe('PageHeader Component', () => {
 
   test('opens UploadFileDialog when upload button is clicked', () => {
     render(<PageHeader />);
-    const uploadButton = screen.getByLabelText('Import files');
+    const uploadButton = screen.getByLabelText('Upload file');
     fireEvent.click(uploadButton);
     const dialogTitle = screen.getByText('Upload New Data');
     expect(dialogTitle).toBeInTheDocument();
@@ -39,7 +39,7 @@ describe('PageHeader Component', () => {
     const handleUploadDataExcel = jest.fn();
     render(<PageHeader handleUploadDataExcel={handleUploadDataExcel} />);
 
-    const uploadButton = screen.getByLabelText('Import files');
+    const uploadButton = screen.getByLabelText('Upload file');
     fireEvent.click(uploadButton);
 
     const file = new File(['data'], 'example.xlsx', {

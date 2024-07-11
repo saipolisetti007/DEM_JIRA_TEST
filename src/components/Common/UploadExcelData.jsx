@@ -6,9 +6,9 @@ import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 const UploadExcelData = ({ handleClickOpen, isLoading, isDisable }) => {
   return (
     <>
-      <Tooltip title="Import files" arrow placement="top">
+      <Tooltip title="Upload file" arrow placement="top">
         <IconButton
-          aria-label="Import files"
+          aria-label="Upload file"
           color="primary"
           onClick={handleClickOpen}
           disabled={isDisable}>

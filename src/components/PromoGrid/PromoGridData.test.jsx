@@ -158,7 +158,7 @@ describe('PromoGridData Component', () => {
       </Provider>
     );
 
-    const uploadButton = screen.getByLabelText('Import files');
+    const uploadButton = screen.getByLabelText('Upload file');
     fireEvent.click(uploadButton);
 
     await waitFor(() => {
@@ -189,7 +189,7 @@ describe('PromoGridData Component', () => {
       </Provider>
     );
 
-    const uploadButton = screen.getByLabelText('Import files');
+    const uploadButton = screen.getByLabelText('Upload file');
     fireEvent.click(uploadButton);
 
     await waitFor(() => {
@@ -236,7 +236,7 @@ describe('PromoGridData Component', () => {
       </Provider>
     );
 
-    const uploadButton = screen.getByLabelText('Import files');
+    const uploadButton = screen.getByLabelText('Upload file');
     fireEvent.click(uploadButton);
 
     await waitFor(() => {
@@ -273,7 +273,7 @@ describe('PromoGridData Component', () => {
       </Provider>
     );
     await act(async () => {
-      const buttonComponent = screen.getByRole('button', { name: /Downolad files/i });
+      const buttonComponent = screen.getByRole('button', { name: /Download file/i });
       expect(buttonComponent).toBeInTheDocument();
       fireEvent.click(buttonComponent);
     });
@@ -296,7 +296,7 @@ describe('PromoGridData Component', () => {
       </Provider>
     );
     await act(async () => {
-      const buttonComponent = screen.getByRole('button', { name: /Downolad files/i });
+      const buttonComponent = screen.getByRole('button', { name: /Download file/i });
       expect(buttonComponent).toBeInTheDocument();
       fireEvent.click(buttonComponent);
     });

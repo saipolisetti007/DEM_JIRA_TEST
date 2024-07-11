@@ -4,8 +4,8 @@ import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 
 const ExcelWithDataDownload = ({ handleDataDownloadExcel }) => {
   return (
-    <Tooltip title="Downolad files" arrow placement="top">
-      <IconButton aria-label="Downolad files" color="primary" onClick={handleDataDownloadExcel}>
+    <Tooltip title="Download file" arrow placement="top">
+      <IconButton aria-label="Download file" color="primary" onClick={handleDataDownloadExcel}>
         <DownloadForOfflineIcon />
       </IconButton>
     </Tooltip>
