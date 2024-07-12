@@ -10,12 +10,18 @@ export const cpfFilters = async () => {
   return response;
 };
 
-export const cpfGetForecast = async (filters) => {
-  let url = 'cpf/cpf-forecast/';
-  if (filters) {
-    url += `?${filters}`;
-  }
-  const response = await performApiRequest(url);
+export const cpfGetForecast = async (filters = {}) => {
+  const url = 'cpf/cpf-forecast-list/';
+
+  const body = {
+    brand: filters.brand || [],
+    category: filters.category || [],
+    subsector: filters.subsector || [],
+    brandForm: filters.brandForm || [],
+    sku: filters.sku || []
+  };
+
+  const response = await performApiRequest(url, 'POST', body);
   return response;
 };
 

@@ -65,10 +65,13 @@ const CPFForescastMain = () => {
   const fetchData = async () => {
     try {
       setIsPageLoading(true);
-      const filterParams = Object.keys(selectedFilters)
-        .filter((key) => selectedFilters[key].length > 0 && selectedFilters[key][0] !== 'All')
-        .map((key) => `${key}=${selectedFilters[key].join('.')}`)
-        .join('&');
+      const filterParams = Object.keys(selectedFilters).reduce((acc, key) => {
+        acc[key] =
+          selectedFilters[key].length > 0 && selectedFilters[key][0] !== 'All'
+            ? selectedFilters[key]
+            : [];
+        return acc;
+      }, {});
       const response = await cpfGetForecast(filterParams);
       setCpfData(response);
       setIsPageLoading(false);

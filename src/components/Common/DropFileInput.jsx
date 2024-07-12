@@ -16,13 +16,26 @@ const DropFileInput = ({ onFileChange, reset }) => {
     }
   }, [reset]);
 
-  const onDragEnter = () => wrapperRef.current.classList.add('dragover');
-  const onDragLeave = () => wrapperRef.current.classList.remove('dragover');
+  const onDragEnter = (e) => {
+    e.preventDefault();
+    if (wrapperRef.current) {
+      wrapperRef.current.classList.add('dragover');
+    }
+  };
+
+  const onDragLeave = (e) => {
+    e.preventDefault();
+    if (wrapperRef.current) {
+      wrapperRef.current.classList.remove('dragover');
+    }
+  };
 
   const onDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    wrapperRef.current.classList.remove('dragover');
+    if (wrapperRef.current) {
+      wrapperRef.current.classList.remove('dragover');
+    }
     if (!file) {
       const newFile = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
       handleFile(newFile);
@@ -55,6 +68,7 @@ const DropFileInput = ({ onFileChange, reset }) => {
   return (
     <div
       ref={wrapperRef}
+      data-testid="drop-area"
       onDragEnter={onDragEnter}
       onDragLeave={onDragLeave}
       onDragOver={(e) => e.preventDefault()}
@@ -65,7 +79,6 @@ const DropFileInput = ({ onFileChange, reset }) => {
         borderColor: file ? 'transparent' : '#399EE0',
         borderStyle: file ? 'none' : 'dashed',
         borderRadius: file ? 0 : '8px',
-
         marginTop: 20,
         marginBottom: 20,
         paddingBottom: file ? 0 : 10,
@@ -97,11 +110,14 @@ const DropFileInput = ({ onFileChange, reset }) => {
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               maxWidth: 'calc(100% - 100px)',
-              fontWeight: 700
+              fontWeight: 700,
+              color: fileTypeValid ? 'grey' : 'black'
             }}>
             {file.name}
           </p>
-          <p style={{ fontSize: '12px', fontWeight: 400 }}>{(file.size / 1024).toFixed(2)} KB</p>
+          <p style={{ fontSize: '12px', fontWeight: 400, color: fileTypeValid ? 'grey' : 'black' }}>
+            {(file.size / 1024).toFixed(2)} KB
+          </p>
         </div>
       ) : (
         <div

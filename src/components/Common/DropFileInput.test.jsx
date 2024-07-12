@@ -92,4 +92,27 @@ describe('DropFileInput Component', () => {
     expect(screen.getByText('example.xlsx')).toBeInTheDocument();
     expect(handleFileChange).toHaveBeenCalledWith({ target: { files: [file] } });
   });
+
+  test('adds and removes dragover class on drag events', () => {
+    render(<DropFileInput onFileChange={() => {}} />);
+
+    const dropArea = screen.getByTestId('drop-area');
+
+    fireEvent.dragEnter(dropArea);
+    expect(dropArea).toHaveClass('dragover');
+
+    fireEvent.dragLeave(dropArea);
+    expect(dropArea).not.toHaveClass('dragover');
+
+    fireEvent.drop(dropArea, {
+      dataTransfer: {
+        files: [
+          new File(['dummy content'], 'example.xlsx', {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          })
+        ]
+      }
+    });
+    expect(dropArea).not.toHaveClass('dragover');
+  });
 });

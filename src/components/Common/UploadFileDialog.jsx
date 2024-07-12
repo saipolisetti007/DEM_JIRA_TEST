@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -6,28 +6,61 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import DropFileInput from './DropFileInput';
-import { Box, IconButton } from '@mui/material';
+import { Box, IconButton, CircularProgress, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const UploadFileDialog = ({ open, handleClose, handleFileChange, handleSave, fileTypeValid }) => {
-  const [isFileUploaded, setIsFileUploaded] = useState(false);
+const UploadFileDialog = ({ open, handleClose, handleUploadDataExcel }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [abortController, setAbortController] = useState(null);
 
-  const onFileChange = (e) => {
-    handleFileChange(e);
-    setIsFileUploaded(true);
+  useEffect(() => {
+    return () => {
+      if (abortController) {
+        abortController.abort();
+      }
+    };
+  }, [abortController]);
+
+  useEffect(() => {
+    if (!open) {
+      setErrorMessage('');
+    }
+  }, [open]);
+
+  const onFileChange = async (e) => {
+    const newFile = e.target.files[0];
+    if (newFile.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+      setIsLoading(true);
+      const controller = new AbortController();
+      setAbortController(controller);
+
+      try {
+        const event = { target: { files: [newFile] } };
+        await handleUploadDataExcel(event, controller.signal);
+        handleDialogClose();
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          setErrorMessage('Error occurred while uploading the file. Please try again.');
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setErrorMessage('Invalid file format. Please upload an Excel file.');
+    }
   };
 
   const handleDialogClose = () => {
-    setIsFileUploaded(false); // Reset file upload state when dialog is closed
+    setErrorMessage('');
+    if (abortController) {
+      abortController.abort();
+    }
     handleClose();
-  };
-
-  const handleCancel = () => {
-    setIsFileUploaded(false); // Reset file upload state when cancel is clicked
   };
 
   return (
@@ -41,7 +74,7 @@ const UploadFileDialog = ({ open, handleClose, handleFileChange, handleSave, fil
       <Box sx={{ padding: 1 }}>
         <DialogTitle
           sx={{
-            color: '#003DA5',
+            color: isLoading ? 'grey' : '#003DA5',
             fontWeight: 700,
             fontSize: '22px',
             display: 'flex',
@@ -53,58 +86,43 @@ const UploadFileDialog = ({ open, handleClose, handleFileChange, handleSave, fil
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
-          <DropFileInput onFileChange={onFileChange} reset={!isFileUploaded} />
+        <DialogContent sx={{ position: 'relative' }}>
+          <DropFileInput onFileChange={onFileChange} reset={!open} />
+          {isLoading && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+              <CircularProgress />
+            </Box>
+          )}
+          {errorMessage && (
+            <Typography color="error" sx={{ mt: 2 }}>
+              {errorMessage}
+            </Typography>
+          )}
         </DialogContent>
         <DialogActions>
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-            {isFileUploaded && (
-              <span>
-                {fileTypeValid
-                  ? '1/1 files uploaded successfully'
-                  : '0/1 files uploaded successfully'}
-              </span>
-            )}
-          </Box>
-          {isFileUploaded && (
-            <>
-              {!fileTypeValid && (
-                <Button
-                  data-testid="cancel-button"
-                  style={{
-                    borderRadius: '2rem',
-                    border: '1px solid #3b82f6',
-                    fontSize: '12px',
-                    fontWeight: '700',
-                    backgroundColor: '#003DA5',
-                    color: 'white'
-                  }}
-                  onClick={handleCancel}>
-                  Cancel
-                </Button>
-              )}
-              {fileTypeValid && (
-                <Button
-                  style={{
-                    borderRadius: '2rem',
-                    border: '1px solid #3b82f6',
-                    fontSize: '12px',
-                    fontWeight: '700',
-                    backgroundColor: '#003DA5',
-                    color: 'white'
-                  }}
-                  onClick={handleSave}>
-                  Save
-                </Button>
-              )}
-            </>
-          )}
+          <Button
+            data-testid="cancel-button"
+            style={{
+              borderRadius: '2rem',
+              border: '1px solid #3b82f6',
+              fontSize: '12px',
+              fontWeight: '700',
+              backgroundColor: '#003DA5',
+              color: 'white'
+            }}
+            onClick={handleDialogClose}>
+            Cancel
+          </Button>
         </DialogActions>
       </Box>
     </Dialog>

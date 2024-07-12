@@ -6,11 +6,12 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
-  IconButton
+  IconButton,
+  CircularProgress
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-const CancelEventDialog = ({ open, onClose, onConfirm, eventIds }) => (
+const CancelEventDialog = ({ open, onClose, onConfirm, eventCount, isCanceling }) => (
   <Dialog open={open} onClose={onClose}>
     <DialogTitle sx={{ mb: 3, mt: 1 }} variant="h3" color="primary">
       Cancel Events
@@ -29,14 +30,7 @@ const CancelEventDialog = ({ open, onClose, onConfirm, eventIds }) => (
     </DialogTitle>
     <DialogContent sx={{ minWidth: '600px' }}>
       <DialogContentText variant="h5" sx={{ mb: 1 }}>
-        You are about to cancel the events: &nbsp;
-        {eventIds.slice(0, 3).map((id, index) => (
-          <span key={id}>
-            {id}
-            {index < eventIds.slice(0, 3).length - 1 && ', '}
-          </span>
-        ))}
-        {eventIds.length > 3 && '...'}
+        You are about to cancel {eventCount} event{eventCount > 1 ? 's' : ''}.
       </DialogContentText>
       <DialogContentText variant="body1">
         Are you sure you want to cancel these events?
@@ -45,11 +39,11 @@ const CancelEventDialog = ({ open, onClose, onConfirm, eventIds }) => (
       </DialogContentText>
     </DialogContent>
     <DialogActions sx={{ marginBottom: 1 }}>
-      <Button variant="outlined" onClick={onClose} color="primary">
+      <Button variant="outlined" onClick={onClose} color="primary" disabled={isCanceling}>
         Return to Manage Events
       </Button>
-      <Button onClick={onConfirm} variant="contained" color="primary">
-        Cancel Event
+      <Button onClick={onConfirm} variant="contained" color="primary" disabled={isCanceling}>
+        {isCanceling ? <CircularProgress size={24} /> : 'Cancel Event'}
       </Button>
     </DialogActions>
   </Dialog>

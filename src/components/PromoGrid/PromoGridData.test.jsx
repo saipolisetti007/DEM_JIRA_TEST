@@ -122,13 +122,15 @@ describe('PromoGridData Component', () => {
     });
 
     uploadDataExcel.mockResolvedValueOnce({ data: {} });
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <PromoGridData />
-        </BrowserRouter>
-      </Provider>
-    );
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
 
     const uploadButton = screen.getByLabelText('Upload file');
     fireEvent.click(uploadButton);
@@ -140,11 +142,8 @@ describe('PromoGridData Component', () => {
     const fileInput = screen.getByTestId('upload');
     fireEvent.change(fileInput, { target: { files: [file] } });
 
-    const saveButton = screen.getByText('Save');
-    fireEvent.click(saveButton);
-
     await waitFor(() => {
-      expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData));
+      expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData), expect.any(Object));
     });
   });
 
@@ -153,13 +152,15 @@ describe('PromoGridData Component', () => {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     });
     uploadDataExcel.mockRejectedValueOnce(new Error('Upload failed'));
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <PromoGridData />
-        </BrowserRouter>
-      </Provider>
-    );
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
 
     const uploadButton = screen.getByLabelText('Upload file');
     fireEvent.click(uploadButton);
@@ -171,11 +172,8 @@ describe('PromoGridData Component', () => {
     const fileInput = screen.getByTestId('upload');
     fireEvent.change(fileInput, { target: { files: [file] } });
 
-    const saveButton = screen.getByText('Save');
-    fireEvent.click(saveButton);
-
     await waitFor(() => {
-      expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData));
+      expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData), expect.any(Object));
     });
 
     await waitFor(() => {
@@ -200,13 +198,15 @@ describe('PromoGridData Component', () => {
     };
 
     uploadDataExcel.mockRejectedValueOnce(errorResponse);
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <PromoGridData />
-        </BrowserRouter>
-      </Provider>
-    );
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
 
     const uploadButton = screen.getByLabelText('Upload file');
     fireEvent.click(uploadButton);
@@ -218,11 +218,8 @@ describe('PromoGridData Component', () => {
     const fileInput = screen.getByTestId('upload');
     fireEvent.change(fileInput, { target: { files: [file] } });
 
-    const saveButton = screen.getByText('Save');
-    fireEvent.click(saveButton);
-
     await waitFor(() => {
-      expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData));
+      expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData), expect.any(Object));
     });
 
     await waitFor(() => {

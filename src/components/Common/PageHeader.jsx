@@ -16,8 +16,6 @@ const PageHeader = ({
   handleUploadDataExcel
 }) => {
   const [open, setOpen] = useState(false);
-  const [file, setFile] = useState(null);
-  const [fileTypeValid, setFileTypeValid] = useState(null);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -25,24 +23,6 @@ const PageHeader = ({
 
   const handleClose = () => {
     setOpen(false);
-    setFile(null);
-    setFileTypeValid(null);
-  };
-
-  const handleFileChange = (e) => {
-    const newFile = e.target.files[0];
-    setFile(newFile);
-    setFileTypeValid(
-      newFile.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    );
-  };
-
-  const handleSave = async () => {
-    if (file) {
-      const event = { target: { files: [file] } };
-      await handleUploadDataExcel(event); // Upload the file when Save button is clicked
-      handleClose();
-    }
   };
 
   return (
@@ -78,9 +58,7 @@ const PageHeader = ({
         <UploadFileDialog
           open={open}
           handleClose={handleClose}
-          handleFileChange={handleFileChange}
-          handleSave={handleSave}
-          fileTypeValid={fileTypeValid}
+          handleUploadDataExcel={handleUploadDataExcel}
         />
       </div>
       <hr />

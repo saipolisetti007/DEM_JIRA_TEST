@@ -12,10 +12,11 @@ jest.mock('./apiUtils', () => ({
   performApiRequest: jest.fn()
 }));
 
-describe('promoGridApi', () => {
+describe('cpfForecastApi', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
+
   test('get data with correct parameters', async () => {
     const data = [{ id: 1, product_id: 1 }];
     performApiRequest.mockResolvedValueOnce(data);
@@ -68,12 +69,17 @@ describe('promoGridApi', () => {
     performApiRequest.mockResolvedValueOnce(data);
     const result = await cpfGetForecast();
     expect(result).toEqual(data);
-    expect(performApiRequest).toHaveBeenCalledWith('cpf/cpf-forecast/');
+    expect(performApiRequest).toHaveBeenCalledWith('cpf/cpf-forecast-list/', 'POST', {
+      brand: [],
+      category: [],
+      subsector: [],
+      brandForm: [],
+      sku: []
+    });
   });
 
   test('should append filters to the URL when filters are provided', async () => {
-    const filters = 'brand=Dawn';
-    const url = 'cpf/cpf-forecast/?brand=Dawn';
+    const filters = { brand: ['Dawn'] };
     const data = {
       sku: '100123456',
       forecast: [
@@ -88,7 +94,13 @@ describe('promoGridApi', () => {
     performApiRequest.mockResolvedValueOnce(data);
     const result = await cpfGetForecast(filters);
     expect(result).toEqual(data);
-    expect(performApiRequest).toHaveBeenCalledWith(url);
+    expect(performApiRequest).toHaveBeenCalledWith('cpf/cpf-forecast-list/', 'POST', {
+      brand: ['Dawn'],
+      category: [],
+      subsector: [],
+      brandForm: [],
+      sku: []
+    });
   });
 
   test('Approve Data', async () => {

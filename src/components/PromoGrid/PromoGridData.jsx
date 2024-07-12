@@ -51,6 +51,7 @@ const PromoGridData = () => {
   const [rowData, setRowData] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
   const [isHistoricalEvent, setIsHistoricalEvent] = useState(false);
+  const [isCanceling, setIsCanceling] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10
@@ -102,16 +103,22 @@ const PromoGridData = () => {
   const fetchData = async (pageIndex, pageSize) => {
     setIsLoading(true);
     try {
-      const filterParams = Object.keys(selectedFilters)
-        .filter(
-          (key) =>
-            selectedFilters[key] &&
-            (Array.isArray(selectedFilters[key])
-              ? !selectedFilters[key].includes('All')
-              : selectedFilters[key] !== 'All')
-        )
-        .map((key) => `${key}=${selectedFilters[key]}`)
-        .join('&');
+      const filterParams = Object.keys(selectedFilters).reduce((acc, key) => {
+        if (
+          selectedFilters[key] &&
+          (Array.isArray(selectedFilters[key])
+            ? !selectedFilters[key].includes('All')
+            : selectedFilters[key] !== 'All')
+        ) {
+          acc[key] = Array.isArray(selectedFilters[key])
+            ? selectedFilters[key]
+            : [selectedFilters[key]];
+        } else {
+          acc[key] = [];
+        }
+        return acc;
+      }, {});
+
       const response = await getData(pageIndex, pageSize, filterParams);
 
       setData(response.results);
@@ -157,12 +164,14 @@ const PromoGridData = () => {
   };
 
   const handleCancel = (row = null) => {
-    if (Object.keys(rowSelection).length > 0) {
+    if (row) {
+      // Cancel specific row event
+      setSelectedEventIds([row.original.unique_event_id]);
+      setCancelDialogOpen(true);
+    } else if (Object.keys(rowSelection).length > 0) {
+      // Cancel selected rows events
       const selectedIds = Object.keys(rowSelection).map((key) => data[key].unique_event_id);
       setSelectedEventIds(selectedIds);
-      setCancelDialogOpen(true);
-    } else if (row) {
-      setSelectedEventIds([row.original.unique_event_id]);
       setCancelDialogOpen(true);
     } else {
       setIsSnackOpen(true);
@@ -174,32 +183,37 @@ const PromoGridData = () => {
   };
 
   const confirmCancel = async () => {
+    setIsCanceling(true);
+    setIsSaving(true); // Start saving
     try {
       const payload = {
         unique_event_id: selectedEventIds,
         golden_customer_id: customerId
       };
       await cancelRowData(payload);
-      // to clear the row selection state
-      setRowSelection({});
-
+      setRowSelection({}); // Clear row selection state
       setIsRefetching(true);
-      setIsSaving(false);
+
+      // Close the dialog before showing the success message
+      setCancelDialogOpen(false);
+      setIsCanceling(false);
+      setIsSaving(false); // End saving
+
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Promo Cancelled successfully !!!',
         severity: 'success'
       });
+
       await fetchData(pagination.pageIndex, pagination.pageSize);
     } catch (error) {
-      setIsSaving(false);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Error occurred while cancelling the data !!!',
         severity: 'error'
       });
-    } finally {
-      setCancelDialogOpen(false);
+      setIsCanceling(false);
+      setIsSaving(false); // End saving
     }
   };
 
@@ -231,9 +245,12 @@ const PromoGridData = () => {
               : selectedFilters[key] !== 'All')
         )
         .reduce((acc, key) => {
-          acc[key] = selectedFilters[key];
+          acc[key] = Array.isArray(selectedFilters[key])
+            ? selectedFilters[key]
+            : [selectedFilters[key]];
           return acc;
         }, {});
+
       await downloadDataExcel(filterParams);
       setIsSnackOpen(true);
       setSnackBar({
@@ -249,7 +266,7 @@ const PromoGridData = () => {
     }
   };
 
-  const handleUploadDataExcel = async (event) => {
+  const handleUploadDataExcel = async (event, signal) => {
     try {
       const file = event.target.files[0];
       if (file) {
@@ -257,9 +274,14 @@ const PromoGridData = () => {
           setIsDataLoading(true);
           const formData = new FormData();
           formData.append('file', file);
-          const uploadResponse = await uploadDataExcel(formData);
+          const uploadResponse = await uploadDataExcel(formData, { signal });
 
-          // Check for messages from the uploadResponse and show snackbar
+          if (signal.aborted) {
+            setIsDataLoading(false);
+            event.target.value = null;
+            return;
+          }
+
           if (uploadResponse.message) {
             setIsSnackOpen(true);
             setSnackBar({
@@ -269,6 +291,13 @@ const PromoGridData = () => {
           }
 
           const validateResponse = await promoGridGetValidations(uploadResponse.promo_header);
+
+          if (signal.aborted) {
+            setIsDataLoading(false);
+            event.target.value = null;
+            return;
+          }
+
           navigate('/promo-grid-validations', {
             state: { responseData: validateResponse }
           });
@@ -283,22 +312,24 @@ const PromoGridData = () => {
         alert('Please select a file');
       }
     } catch (error) {
-      const response = error.response?.data;
-      setIsSnackOpen(true);
-      if (error.response?.status === 403) {
-        setSnackBar({
-          message: response.error,
-          severity: 'error'
-        });
-      } else {
-        setSnackBar({
-          message: 'Error occured while updating the data! Please try again!!!',
-          severity: 'error',
-          dataTestId: 'snackbar-error'
-        });
+      if (error.name !== 'AbortError') {
+        const response = error.response?.data;
+        setIsSnackOpen(true);
+        if (error.response?.status === 403) {
+          setSnackBar({
+            message: response.error,
+            severity: 'error'
+          });
+        } else {
+          setSnackBar({
+            message: 'Error occured while updating the data! Please try again!!!',
+            severity: 'error',
+            dataTestId: 'snackbar-error'
+          });
+        }
+        event.target.value = null;
+        setIsDataLoading(false);
       }
-      event.target.value = null;
-      setIsDataLoading(false);
     }
   };
 
@@ -470,7 +501,8 @@ const PromoGridData = () => {
         open={cancelDialogOpen}
         onClose={handleDialogClose}
         onConfirm={confirmCancel}
-        eventIds={selectedEventIds}
+        eventCount={selectedEventIds.length}
+        isCanceling={isCanceling}
       />
 
       {openNewEventDialog && (

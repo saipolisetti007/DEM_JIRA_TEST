@@ -3,26 +3,26 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import PageHeader from './PageHeader';
 
 describe('PageHeader Component', () => {
-  test('render Title and Subtitle', () => {
+  test('renders Title and Subtitle', () => {
     render(<PageHeader title="Test Title" subtitle="Test Subtitle" />);
-    const TitleElement = screen.getByText('Test Title');
-    const SubtitleElement = screen.getByText('Test Subtitle');
-    expect(TitleElement).toBeInTheDocument();
-    expect(SubtitleElement).toBeInTheDocument();
+    const titleElement = screen.getByText('Test Title');
+    const subtitleElement = screen.getByText('Test Subtitle');
+    expect(titleElement).toBeInTheDocument();
+    expect(subtitleElement).toBeInTheDocument();
   });
 
-  test('render Create button correctly', () => {
+  test('renders Add New Event button correctly', () => {
     render(<PageHeader />);
-    const createButton = screen.getByRole('button', { name: 'Add New Event' });
-    expect(createButton).toBeInTheDocument();
-    expect(createButton).toHaveTextContent('Add New Event');
+    const addButton = screen.getByRole('button', { name: 'Add New Event' });
+    expect(addButton).toBeInTheDocument();
+    expect(addButton).toHaveTextContent('Add New Event');
   });
 
-  test('calls setCreatingRow function when create button is clicked', () => {
+  test('calls handleAddEventOpen function when Add New Event button is clicked', () => {
     const handleAddEventOpen = jest.fn();
     render(<PageHeader handleAddEventOpen={handleAddEventOpen} />);
-    const createButton = screen.getByRole('button', { name: 'Add New Event' });
-    fireEvent.click(createButton);
+    const addButton = screen.getByRole('button', { name: 'Add New Event' });
+    fireEvent.click(addButton);
     expect(handleAddEventOpen).toHaveBeenCalled();
   });
 
@@ -34,7 +34,7 @@ describe('PageHeader Component', () => {
     expect(dialogTitle).toBeInTheDocument();
   });
 
-  test('calls handleSave when save button is clicked with a valid file', async () => {
+  test('calls handleUploadDataExcel when a valid file is uploaded', async () => {
     const handleUploadDataExcel = jest.fn();
     render(<PageHeader handleUploadDataExcel={handleUploadDataExcel} />);
 
@@ -48,14 +48,12 @@ describe('PageHeader Component', () => {
     const fileInput = screen.getByTestId('upload');
     fireEvent.change(fileInput, { target: { files: [file] } });
 
-    const saveButton = screen.getByText('Save');
-    fireEvent.click(saveButton);
-
     await waitFor(() => {
       expect(handleUploadDataExcel).toHaveBeenCalledWith(
         expect.objectContaining({
           target: { files: [file] }
-        })
+        }),
+        expect.any(Object) // waiting abortsignal
       );
     });
   });

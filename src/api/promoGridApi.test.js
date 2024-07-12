@@ -22,16 +22,55 @@ describe('promoGridApi', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-  test('get data with correct parameters', async () => {
+
+  test('get data with no filters', async () => {
     const pageIndex = 0;
     const pageSize = 10;
-    const filters = 'undefined';
+    const filters = {};
     const data = [{ id: 1, name: 'test' }];
     performApiRequest.mockResolvedValueOnce(data);
-    const result = await getData(pageIndex, pageSize);
+    const result = await getData(pageIndex, pageSize, filters);
     expect(result).toEqual(data);
-    const url = `promo/promo-grid-list/?page=${pageIndex + 1}&page_size=${pageSize}&${filters}`;
-    expect(performApiRequest).toHaveBeenCalledWith(url);
+    const url = `promo/promo-grid-list/`;
+    expect(performApiRequest).toHaveBeenCalledWith(url, 'POST', {
+      page: pageIndex + 1,
+      page_size: pageSize,
+      ...filters
+    });
+  });
+
+  test('get data with array filters', async () => {
+    const pageIndex = 0;
+    const pageSize = 10;
+    const filters = { brand: ['testBrand'], category: ['testCategory'] };
+    const data = [{ id: 1, name: 'test' }];
+    performApiRequest.mockResolvedValueOnce(data);
+    const result = await getData(pageIndex, pageSize, filters);
+    expect(result).toEqual(data);
+    const url = `promo/promo-grid-list/`;
+    expect(performApiRequest).toHaveBeenCalledWith(url, 'POST', {
+      page: pageIndex + 1,
+      page_size: pageSize,
+      brand: ['testBrand'],
+      category: ['testCategory']
+    });
+  });
+
+  test('get data with single value filters', async () => {
+    const pageIndex = 0;
+    const pageSize = 10;
+    const filters = { brand: 'testBrand', category: 'testCategory' };
+    const data = [{ id: 1, name: 'test' }];
+    performApiRequest.mockResolvedValueOnce(data);
+    const result = await getData(pageIndex, pageSize, filters);
+    expect(result).toEqual(data);
+    const url = `promo/promo-grid-list/`;
+    expect(performApiRequest).toHaveBeenCalledWith(url, 'POST', {
+      page: pageIndex + 1,
+      page_size: pageSize,
+      brand: ['testBrand'],
+      category: ['testCategory']
+    });
   });
 
   test('adds new row data', async () => {
@@ -71,8 +110,15 @@ describe('promoGridApi', () => {
 
     expect(performApiRequest).toHaveBeenCalledWith(
       'promo/existing-data/download/',
-      'GET',
-      null,
+      'POST',
+      {
+        brand: [],
+        category: [],
+        subsector: [],
+        brandForm: [],
+        active: [],
+        sku: []
+      },
       'blob'
     );
     expect(window.URL.createObjectURL).toHaveBeenCalled();
@@ -97,13 +143,20 @@ describe('promoGridApi', () => {
     const appendChildSpy = jest.spyOn(document.body, 'appendChild');
     const removeChildSpy = jest.spyOn(document.body, 'removeChild');
 
-    const filters = { brand: 'testBrand', category: 'testCategory' };
+    const filters = { brand: ['testBrand'], category: ['testCategory'] };
     await downloadDataExcel(filters);
 
     expect(performApiRequest).toHaveBeenCalledWith(
-      'promo/existing-data/download/?brand=testBrand&category=testCategory',
-      'GET',
-      null,
+      'promo/existing-data/download/',
+      'POST',
+      {
+        brand: ['testBrand'],
+        category: ['testCategory'],
+        subsector: [],
+        brandForm: [],
+        active: [],
+        sku: []
+      },
       'blob'
     );
     expect(window.URL.createObjectURL).toHaveBeenCalled();
@@ -116,15 +169,6 @@ describe('promoGridApi', () => {
     appendChildSpy.mockRestore();
     removeChildSpy.mockRestore();
   });
-
-  jest.mock('./apiUtils', () => ({
-    performApiRequest: jest.fn((url) => {
-      if (url.includes('download')) {
-        return Promise.resolve(new Blob(['test'], { type: 'application/vnd.ms-excel' }));
-      }
-      return Promise.resolve([]);
-    })
-  }));
 
   test('Upload Excel file', async () => {
     const formData = { key: 'value' };
