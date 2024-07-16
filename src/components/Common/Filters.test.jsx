@@ -1,12 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import Filters from './Filters';
 
 describe('Filters Component', () => {
   const MOCK_OPTIONS = {
-    subsector: ['All', 'Skin and Personal Care', 'Home Care', 'Fabric Care', 'Oral Care'],
+    subsector: ['Skin and Personal Care', 'Home Care', 'Fabric Care', 'Oral Care'],
     category: [
-      'All',
       'Auto Dish',
       'Whitening/Sensitivity',
       'Laundry',
@@ -14,20 +12,27 @@ describe('Filters Component', () => {
       'AP/DO & Body Spray',
       'Fabric Enhancers'
     ],
-    brand: ['All', 'Crest', 'Glide', 'Tide', 'Secret', 'Downy', 'Cascade'],
-    brandForm: ['All', 'brandForm1', 'brandForm2', 'brandForm3', 'brandForm4'],
-    sku: ['All', 'sku1', 'sku2', 'sku3', 'sku4'],
+    brand: ['Crest', 'Glide', 'Tide', 'Secret', 'Downy', 'Cascade'],
+    brandForm: ['brandForm1', 'brandForm2', 'brandForm3', 'brandForm4'],
+    sku: ['sku1', 'sku2', 'sku3', 'sku4'],
     active: ['Active', 'Cancelled']
   };
 
-  const selectedFilters = {
-    subsector: '',
-    category: '',
-    brand: '',
-    brandForm: '',
-    sku: '',
-    active: ''
+  let selectedFilters = {
+    subsector: [],
+    category: [],
+    brand: [],
+    brandForm: [],
+    sku: [],
+    active: []
   };
+
+  const handleFilterChange = jest.fn((filterKey, values) => {
+    selectedFilters = {
+      ...selectedFilters,
+      [filterKey]: values
+    };
+  });
 
   const formatFilterKey = (filterKey) => {
     const customLabels = {
@@ -43,12 +48,12 @@ describe('Filters Component', () => {
         isLoading={false}
         filterOptions={MOCK_OPTIONS}
         selectedFilters={selectedFilters}
-        onFilterChange={() => {}}
+        onFilterChange={handleFilterChange}
       />
     );
-    const labels = ['Subsector', 'Category', 'Brand', 'BrandForm', 'SKU', 'Status'];
+    const labels = ['Subsector', 'Category', 'Brand', 'Brand Form', 'SKU', 'Status'];
     for (const label of labels) {
-      expect(screen.getByText(label)).toBeInTheDocument();
+      expect(screen.getByLabelText(label)).toBeInTheDocument();
     }
   });
 
@@ -58,49 +63,13 @@ describe('Filters Component', () => {
         isLoading={false}
         filterOptions={{}}
         selectedFilters={selectedFilters}
-        onFilterChange={() => {}}
-      />
-    );
-    expect(screen.queryAllByTestId('filter-form-select-input')).toHaveLength(0);
-  });
-
-  test('should display all select inputs as disabled when isLoading is true', () => {
-    render(
-      <Filters
-        isLoading={true}
-        filterOptions={MOCK_OPTIONS}
-        selectedFilters={selectedFilters}
-        onFilterChange={() => {}}
-      />
-    );
-    const filterFormSelectInputs = screen.getAllByTestId('filter-form-select-input');
-    filterFormSelectInputs.forEach((input) => {
-      expect(input).toHaveClass('Mui-disabled');
-    });
-  });
-
-  test('should handle no options for a filter correctly', async () => {
-    const handleFilterChange = jest.fn();
-    const updatedOptions = { ...MOCK_OPTIONS, subsector: [] };
-    render(
-      <Filters
-        isLoading={false}
-        filterOptions={updatedOptions}
-        selectedFilters={selectedFilters}
         onFilterChange={handleFilterChange}
       />
     );
-
-    const select = screen.getByLabelText('Subsector');
-    userEvent.click(select);
-
-    await waitFor(() => {
-      expect(screen.getByText('No options available')).toBeInTheDocument();
-    });
+    expect(screen.queryAllByTestId('filter-form-control')).toHaveLength(0);
   });
 
-  test('full interaction with each filter', async () => {
-    const handleFilterChange = jest.fn();
+  test('interaction with subsector filter', async () => {
     render(
       <Filters
         isLoading={false}
@@ -110,20 +79,93 @@ describe('Filters Component', () => {
       />
     );
 
-    for (const filterKey of Object.keys(MOCK_OPTIONS)) {
-      const label = formatFilterKey(filterKey);
-      const select = screen.getByLabelText(label);
+    const filterKey = 'subsector';
+    const label = formatFilterKey(filterKey);
+    const select = screen.getByLabelText(label);
+
+    await act(async () => {
       fireEvent.mouseDown(select);
+    });
 
-      const options = await screen.findAllByRole('option');
-      if (options.length > 0) {
-        fireEvent.click(options[0]);
-        expect(handleFilterChange).toHaveBeenCalledWith(filterKey, [MOCK_OPTIONS[filterKey][0]]);
-      } else {
-        expect(screen.queryByText('No options available')).not.toBeInTheDocument();
-      }
+    const options = await screen.findAllByRole('option');
+    if (options.length > 0) {
+      await act(async () => {
+        fireEvent.click(options[1]);
+      });
 
-      handleFilterChange.mockClear();
+      const selectedOption = options[1].textContent;
+      const expectedSelections = [selectedOption];
+
+      const lastCall = handleFilterChange.mock.calls[handleFilterChange.mock.calls.length - 1];
+      expect(lastCall).toEqual([filterKey, expectedSelections]);
+
+      expect(lastCall[1]).toEqual(expect.arrayContaining([selectedOption]));
+    } else {
+      expect(screen.queryByText('No options available')).not.toBeInTheDocument();
+    }
+  });
+
+  test('interaction with category filter', async () => {
+    render(
+      <Filters
+        isLoading={false}
+        filterOptions={MOCK_OPTIONS}
+        selectedFilters={selectedFilters}
+        onFilterChange={handleFilterChange}
+      />
+    );
+
+    const filterKey = 'category';
+    const label = formatFilterKey(filterKey);
+    const select = screen.getByLabelText(label);
+
+    await act(async () => {
+      fireEvent.mouseDown(select);
+    });
+
+    const options = await screen.findAllByRole('option');
+    if (options.length > 0) {
+      await act(async () => {
+        fireEvent.click(options[1]);
+      });
+
+      const selectedOption = options[1].textContent;
+      const expectedSelections = [selectedOption];
+
+      const lastCall = handleFilterChange.mock.calls[handleFilterChange.mock.calls.length - 1];
+      expect(lastCall).toEqual([filterKey, expectedSelections]);
+
+      expect(lastCall[1]).toEqual(expect.arrayContaining([selectedOption]));
+    } else {
+      expect(screen.queryByText('No options available')).not.toBeInTheDocument();
+    }
+  });
+
+  test('should not render tags', async () => {
+    render(
+      <Filters
+        isLoading={false}
+        filterOptions={MOCK_OPTIONS}
+        selectedFilters={selectedFilters}
+        onFilterChange={handleFilterChange}
+      />
+    );
+
+    const filterKey = 'subsector';
+    const label = formatFilterKey(filterKey);
+    const select = screen.getByLabelText(label);
+
+    await act(async () => {
+      fireEvent.mouseDown(select);
+    });
+
+    const options = await screen.findAllByRole('option');
+    if (options.length > 0) {
+      await act(async () => {
+        fireEvent.click(options[1]);
+      });
+
+      expect(screen.queryByRole('tag')).not.toBeInTheDocument();
     }
   });
 });

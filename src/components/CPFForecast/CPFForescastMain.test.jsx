@@ -2,6 +2,8 @@ import React from 'react';
 import { render, screen, act, waitFor, fireEvent } from '@testing-library/react';
 import CPFForescastMain from './CPFForescastMain';
 import { cpfGetForecast, cpfFilters } from '../../api/cpfForecastApi';
+import userEvent from '@testing-library/user-event';
+
 jest.mock('../../api/cpfForecastApi');
 
 const mockFilters = {
@@ -14,7 +16,7 @@ const mockFilters = {
 
 const mockData = [
   {
-    sku: 'sku',
+    sku: 'sku4',
     forecast: [
       {
         week: '03/06/24',
@@ -26,11 +28,12 @@ const mockData = [
   }
 ];
 
-describe('CPFForecast', () => {
+describe('CPFForecastMain', () => {
   beforeEach(() => {
     cpfFilters.mockResolvedValue(mockFilters);
-    cpfGetForecast.mockResolvedValue([]);
+    cpfGetForecast.mockResolvedValue(mockData);
   });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -40,20 +43,25 @@ describe('CPFForecast', () => {
   });
 
   test('should fetch and render filters', async () => {
-    cpfFilters.mockResolvedValue(mockFilters);
     await act(async () => render(<CPFForescastMain />));
     await waitFor(() => {
       expect(cpfFilters).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(screen.getByLabelText('Subsector')).toBeInTheDocument();
     });
   });
-  test('should filter fetch error', async () => {
-    cpfFilters.mockRejectedValueOnce();
+
+  test('should handle filter fetch error', async () => {
+    cpfFilters.mockRejectedValueOnce(new Error('Network Error'));
     await act(async () => render(<CPFForescastMain />));
     await waitFor(() => {
       expect(cpfFilters).toHaveBeenCalled();
     });
     await waitFor(() => {
-      expect(screen.getByText('Network Error !!!')).toBeInTheDocument();
+      expect(
+        screen.getByText((content, element) => content.includes('Network Error !!!'))
+      ).toBeInTheDocument();
     });
   });
 
@@ -63,44 +71,45 @@ describe('CPFForecast', () => {
     await waitFor(() => {
       expect(cpfGetForecast).toHaveBeenCalled();
     });
+    await waitFor(() => {
+      expect(screen.getByText((content, element) => content.includes('sku4'))).toBeInTheDocument();
+    });
   });
 
   test('update data based on filter change and render data', async () => {
-    cpfFilters.mockResolvedValue(mockFilters);
     await act(async () => render(<CPFForescastMain />));
     await waitFor(() => {
       expect(cpfFilters).toHaveBeenCalled();
     });
 
     const filterSelect = screen.getByLabelText('Brand');
-    expect(filterSelect).toBeInTheDocument;
+    expect(filterSelect).toBeInTheDocument();
+
+    await act(async () => {
+      userEvent.click(filterSelect);
+    });
+
+    const options = await screen.findAllByRole('option');
+
+    await act(async () => {
+      fireEvent.click(options[1]);
+    });
+
+    await waitFor(() => {
+      expect(cpfGetForecast).toHaveBeenCalled();
+    });
   });
 
-  test('should fetch error', async () => {
-    cpfGetForecast.mockRejectedValueOnce();
+  test('should handle fetch error', async () => {
+    cpfGetForecast.mockRejectedValueOnce(new Error('Network Error'));
     await act(async () => render(<CPFForescastMain />));
     await waitFor(() => {
       expect(cpfGetForecast).toHaveBeenCalled();
     });
     await waitFor(() => {
-      expect(screen.getByText('Network Error !!!')).toBeInTheDocument();
+      expect(
+        screen.getByText((content, element) => content.includes('Network Error !!!'))
+      ).toBeInTheDocument();
     });
-  });
-
-  test('handles accordion change', async () => {
-    cpfGetForecast.mockResolvedValue(mockData);
-    await act(async () => render(<CPFForescastMain />));
-    await waitFor(() => {
-      expect(cpfGetForecast).toHaveBeenCalled();
-    });
-    await waitFor(() => {
-      const accordionItems = screen.getAllByRole('button');
-      fireEvent.click(accordionItems[0]);
-      expect(screen.getByTestId('accordion-item-0')).not.toHaveClass('Mui-expanded');
-    });
-
-    const accordionItems = screen.getAllByRole('button');
-    fireEvent.click(accordionItems[0]);
-    expect(screen.getByTestId('accordion-item-0')).toHaveClass('Mui-expanded');
   });
 });

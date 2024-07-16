@@ -1,18 +1,14 @@
 import { performApiRequest } from './apiUtils';
 
 export const getData = async (pageIndex, pageSize, filters = {}) => {
-  const url = `promo/promo-grid-list/`;
+  const url = `promo/promo-grid-list/?page=${pageIndex + 1}&page_size=${pageSize}`;
 
   const filterParams = Object.keys(filters).reduce((acc, key) => {
     acc[key] = Array.isArray(filters[key]) ? filters[key] : [filters[key]];
     return acc;
   }, {});
 
-  const response = await performApiRequest(url, 'POST', {
-    page: pageIndex + 1,
-    page_size: pageSize,
-    ...filterParams
-  });
+  const response = await performApiRequest(url, 'POST', filterParams);
 
   return response;
 };
@@ -41,8 +37,8 @@ export const cancelRowData = async (rowData) => {
   await performApiRequest('promo/promo-grid-cancel/', 'POST', rowData);
 };
 
-const downloadExcel = async (endpoint, filename, body = null) => {
-  const response = await performApiRequest(endpoint, 'POST', body, 'blob');
+const downloadExcel = async (endpoint, request, filename, body = null) => {
+  const response = await performApiRequest(endpoint, request, body, 'blob');
   const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
 
   const downloadLink = document.createElement('a');
@@ -57,7 +53,7 @@ const downloadExcel = async (endpoint, filename, body = null) => {
 };
 
 export const downloadBlankExcel = async () => {
-  await downloadExcel('promo/excel-template/download/', 'DEM - Promo Grid Template.xlsx');
+  await downloadExcel('promo/excel-template/download/', 'GET', 'DEM - Promo Grid Template.xlsx');
 };
 
 export const downloadDataExcel = async (filters = {}) => {
@@ -71,7 +67,7 @@ export const downloadDataExcel = async (filters = {}) => {
   };
 
   const endpoint = 'promo/existing-data/download/';
-  await downloadExcel(endpoint, 'DEM - Promo Grid Data.xlsx', body);
+  await downloadExcel(endpoint, 'POST', 'DEM - Promo Grid Data.xlsx', body);
 };
 
 export const uploadDataExcel = async (formData) => {

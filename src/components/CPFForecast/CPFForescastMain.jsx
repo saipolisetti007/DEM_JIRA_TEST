@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PageSection from '../Common/PageSection';
 import DefaultPageHeader from '../Common/DefaultPageHeader';
 import { Alert, Box } from '@mui/material';
@@ -7,6 +7,7 @@ import { cpfFilters, cpfGetForecast } from '../../api/cpfForecastApi';
 import PageLoader from '../Common/PageLoader';
 import Filters from '../Common/Filters';
 import InfoSnackBar from '../Common/InfoSnackBar';
+import { debounce } from 'lodash';
 
 const CPFForescastMain = () => {
   const [cpfData, setCpfData] = useState([]);
@@ -14,7 +15,7 @@ const CPFForescastMain = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefetching, setIsRefetching] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [expandedIndex, setExpandedIndex] = useState(0);
+  const [expandedIndex, setExpandedIndex] = useState(-1);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
 
@@ -27,11 +28,11 @@ const CPFForescastMain = () => {
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
-    subsector: '',
-    category: '',
-    brand: '',
-    brandForm: '',
-    sku: ''
+    subsector: [],
+    category: [],
+    brand: [],
+    brandForm: [],
+    sku: []
   });
 
   const fetchFilters = async () => {
@@ -44,8 +45,9 @@ const CPFForescastMain = () => {
         brandForm: response?.prod_form_name,
         sku: response?.sku
       });
+      setIsLoading(false);
     } catch (error) {
-      setIsLoading(true);
+      setIsLoading(false);
       setIsError(true);
       setIsSnackOpen(true);
       setSnackBar({
@@ -55,21 +57,12 @@ const CPFForescastMain = () => {
     }
   };
 
-  const handleFilterChange = (filterKey, values) => {
-    setSelectedFilters((prev) => ({
-      ...prev,
-      [filterKey]: values
-    }));
-  };
-
-  const fetchData = async () => {
+  const fetchData = async (filters) => {
+    setIsPageLoading(true);
+    setIsError(false);
     try {
-      setIsPageLoading(true);
-      const filterParams = Object.keys(selectedFilters).reduce((acc, key) => {
-        acc[key] =
-          selectedFilters[key].length > 0 && selectedFilters[key][0] !== 'All'
-            ? selectedFilters[key]
-            : [];
+      const filterParams = Object.keys(filters).reduce((acc, key) => {
+        acc[key] = filters[key].length > 0 && filters[key][0] !== 'All' ? filters[key] : [];
         return acc;
       }, {});
       const response = await cpfGetForecast(filterParams);
@@ -87,13 +80,25 @@ const CPFForescastMain = () => {
     }
   };
 
+  const debouncedFetchData = useCallback(debounce(fetchData, 500), []);
+
+  useEffect(() => {
+    debouncedFetchData(selectedFilters);
+    return () => {
+      debouncedFetchData.cancel();
+    };
+  }, [selectedFilters]);
+
   useEffect(() => {
     fetchFilters();
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, [selectedFilters]);
+  const handleFilterChange = (filterKey, values) => {
+    setSelectedFilters((prev) => ({
+      ...prev,
+      [filterKey]: values
+    }));
+  };
 
   const handleAccordionChange = (index) => {
     setExpandedIndex((prevIndex) => (prevIndex === index ? -1 : index));
@@ -131,7 +136,7 @@ const CPFForescastMain = () => {
                     index={index}
                     sku={item.sku}
                     data={item.forecast}
-                    isExanped={index === expandedIndex}
+                    isExpanded={index === expandedIndex}
                     onAccordionChange={() => handleAccordionChange(index)}
                   />
                 ))

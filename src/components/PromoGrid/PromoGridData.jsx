@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   MRT_TablePagination,
   useMaterialReactTable,
@@ -29,6 +29,7 @@ import CancelEventDialog from '../Common/CancelEventDialog';
 import AddEditEventDialog from './AddEditEventDialog';
 import EditEventDialog from './EditEventDialog';
 import moment from 'moment';
+import { debounce } from 'lodash';
 
 const PromoGridData = () => {
   const location = useLocation();
@@ -67,12 +68,12 @@ const PromoGridData = () => {
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
-    subsector: '',
-    category: '',
-    brand: '',
-    brandForm: '',
-    sku: '',
-    active: 'Active'
+    subsector: [],
+    category: [],
+    brand: [],
+    brandForm: [],
+    sku: [],
+    active: ['Active']
   });
 
   const { userData } = useSelector((state) => state.userProfileData);
@@ -100,19 +101,16 @@ const PromoGridData = () => {
     }
   };
 
-  const fetchData = async (pageIndex, pageSize) => {
+  const fetchData = async (pageIndex, pageSize, filters) => {
     setIsLoading(true);
+    setIsError(false);
     try {
-      const filterParams = Object.keys(selectedFilters).reduce((acc, key) => {
+      const filterParams = Object.keys(filters).reduce((acc, key) => {
         if (
-          selectedFilters[key] &&
-          (Array.isArray(selectedFilters[key])
-            ? !selectedFilters[key].includes('All')
-            : selectedFilters[key] !== 'All')
+          filters[key] &&
+          (Array.isArray(filters[key]) ? !filters[key].includes('All') : filters[key] !== 'All')
         ) {
-          acc[key] = Array.isArray(selectedFilters[key])
-            ? selectedFilters[key]
-            : [selectedFilters[key]];
+          acc[key] = Array.isArray(filters[key]) ? filters[key] : [filters[key]];
         } else {
           acc[key] = [];
         }
@@ -132,13 +130,15 @@ const PromoGridData = () => {
     }
   };
 
+  const debouncedFetchData = useCallback(debounce(fetchData, 500), []);
+
+  useEffect(() => {
+    debouncedFetchData(pagination.pageIndex, pagination.pageSize, selectedFilters);
+  }, [pagination, selectedFilters]);
+
   useEffect(() => {
     fetchFilters();
   }, []);
-
-  useEffect(() => {
-    fetchData(pagination.pageIndex, pagination.pageSize);
-  }, [pagination, selectedFilters]);
 
   useEffect(() => {
     if (location.state && location.state.messageData) {
@@ -156,7 +156,6 @@ const PromoGridData = () => {
       ...prev,
       [filterKey]: values
     }));
-
     setPagination((prev) => ({
       ...prev,
       pageIndex: 0
@@ -184,20 +183,19 @@ const PromoGridData = () => {
 
   const confirmCancel = async () => {
     setIsCanceling(true);
-    setIsSaving(true); // Start saving
+    setIsSaving(true);
     try {
       const payload = {
         unique_event_id: selectedEventIds,
         golden_customer_id: customerId
       };
       await cancelRowData(payload);
-      setRowSelection({}); // Clear row selection state
+      setRowSelection({});
       setIsRefetching(true);
 
-      // Close the dialog before showing the success message
       setCancelDialogOpen(false);
       setIsCanceling(false);
-      setIsSaving(false); // End saving
+      setIsSaving(false);
 
       setIsSnackOpen(true);
       setSnackBar({
@@ -205,7 +203,7 @@ const PromoGridData = () => {
         severity: 'success'
       });
 
-      await fetchData(pagination.pageIndex, pagination.pageSize);
+      await fetchData(pagination.pageIndex, pagination.pageSize, selectedFilters);
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
@@ -213,7 +211,7 @@ const PromoGridData = () => {
         severity: 'error'
       });
       setIsCanceling(false);
-      setIsSaving(false); // End saving
+      setIsSaving(false);
     }
   };
 
@@ -426,12 +424,13 @@ const PromoGridData = () => {
     setOpenNewEventDialog(true);
     setIsHistoricalEvent(false);
   };
+
   const handleAddEventClose = async (event, reason) => {
     setIsEdit(false);
     if (reason && reason === 'backdropClick') return;
     setOpenNewEventDialog(false);
     if (reason === 'add') {
-      await fetchData(pagination.pageIndex, pagination.pageSize);
+      await fetchData(pagination.pageIndex, pagination.pageSize, selectedFilters);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'New event has been added successfully',
@@ -439,7 +438,7 @@ const PromoGridData = () => {
       });
     }
     if (reason === 'edit') {
-      await fetchData(pagination.pageIndex, pagination.pageSize);
+      await fetchData(pagination.pageIndex, pagination.pageSize, selectedFilters);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Changes saved successfully',
@@ -447,6 +446,7 @@ const PromoGridData = () => {
       });
     }
   };
+
   // Handle Edit
   const handleEdit = (row) => {
     setOpenDialog(true);

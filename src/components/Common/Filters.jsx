@@ -1,23 +1,58 @@
 import React from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
+import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 function formatFilterKey(filterKey) {
   const customLabels = {
     sku: 'SKU',
-    active: 'Status'
+    active: 'Status',
+    brandForm: 'Brand Form'
   };
   return customLabels[filterKey] || filterKey.charAt(0).toUpperCase() + filterKey.slice(1);
 }
 
+const StyledAutocomplete = styled(Autocomplete)(({ theme, disabled }) => ({
+  '& .MuiAutocomplete-tag': {
+    display: 'none'
+  },
+  '& .MuiInputBase-root': {
+    backgroundColor: disabled ? theme.palette.action.disabledBackground : 'inherit'
+  }
+}));
+
 function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) {
-  const handleFilterChange = (filterKey) => (event) => {
-    const { value } = event.target;
-    onFilterChange(filterKey, [value]);
+  const handleFilterChange = (filterKey) => (event, values, reason) => {
+    if (reason === 'selectOption' && values.includes('All')) {
+      // Select all options including 'All'
+      onFilterChange(filterKey, ['All', ...filterOptions[filterKey]]);
+    } else if (
+      reason === 'removeOption' &&
+      selectedFilters[filterKey]?.includes('All') &&
+      !values.includes('All')
+    ) {
+      // Deselect all options including 'All'
+      onFilterChange(filterKey, []);
+    } else if (reason === 'removeOption' && selectedFilters[filterKey]?.includes('All')) {
+      // If 'All' was previously selected but now a specific option is deselected
+      onFilterChange(
+        filterKey,
+        values.filter((value) => value !== 'All')
+      );
+    } else {
+      // Handle regular selection and deselection
+      onFilterChange(filterKey, values);
+    }
+  };
+
+  const renderLabel = (filterKey) => {
+    const count = selectedFilters[filterKey]?.length || 0;
+    const baseLabel = formatFilterKey(filterKey);
+    const label = count > 0 ? `${baseLabel} (${count})` : baseLabel;
+    return label;
   };
 
   return (
@@ -31,40 +66,56 @@ function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
                 data-testid="filter-form-control"
                 sx={{ mx: 0.7 }}
                 key={filterKey}
-                className="min-w-[120px] w-[160px]"
+                className="min-w-[120px] w-[200px]"
                 size="small">
-                <InputLabel id={`${filterKey}-label`}>{formatFilterKey(filterKey)}</InputLabel>
-                <Select
-                  data-testid="filter-form-select-input"
-                  disabled={isLoading}
-                  className="flex h-[40px] items-center overflow-hidden text-ellipsis whitespace-nowrap text-left"
-                  labelId={`${filterKey}-label`}
-                  id={`${filterKey}-select`}
-                  value={selectedFilters[filterKey] || ''}
+                <StyledAutocomplete
+                  multiple
+                  disableCloseOnSelect
+                  options={['All', ...(filterOptions[filterKey] || [])]}
+                  value={selectedFilters[filterKey] || []}
                   onChange={handleFilterChange(filterKey)}
-                  label={filterKey}>
-                  {filterKey !== 'active' && <MenuItem value="All">All</MenuItem>}
-                  {filterOptions[filterKey]?.length === 0 ? (
-                    <MenuItem disabled value="">
-                      <Typography variant="body2" color="textSecondary">
-                        No options available
-                      </Typography>
-                    </MenuItem>
-                  ) : (
-                    filterOptions[filterKey]?.map((option) => (
-                      <MenuItem
-                        key={option}
-                        value={option}
-                        className="whitespace-nowrap text-ellipsis overflow-hidden justify-start">
-                        <Box
-                          component="div"
-                          className="overflow-hidden text-ellipsis whitespace-nowrap w-full">
-                          {option}
-                        </Box>
-                      </MenuItem>
-                    ))
+                  loading={isLoading}
+                  noOptionsText="No options available"
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label={renderLabel(filterKey)}
+                      placeholder="Search..."
+                    />
                   )}
-                </Select>
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        style={{ marginRight: 8 }}
+                        checked={
+                          option === 'All'
+                            ? selectedFilters[filterKey]?.length ===
+                              filterOptions[filterKey]?.length + 1
+                            : selected
+                        }
+                      />
+                      {option}
+                    </li>
+                  )}
+                  getOptionLabel={(option) => option}
+                  isOptionEqualToValue={(option, value) => option === value}
+                  renderTags={() => null}
+                  ListboxProps={{
+                    className: 'with-search-bar',
+                    sx: {
+                      '& .MuiAutocomplete-groupLabel': {
+                        display: 'none'
+                      },
+                      '& .MuiAutocomplete-groupUl': {
+                        padding: 0
+                      },
+                      '& .MuiAutocomplete-inputRoot': {
+                        paddingBottom: '1rem'
+                      }
+                    }
+                  }}
+                />
               </FormControl>
             ))}
           </div>
