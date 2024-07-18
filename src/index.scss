@@ -87,3 +87,7 @@ th.custom-row-actions.MuiTableCell-root[data-pinned='true']:before {
 .info-message.MuiAlert-colorInfo {
   display: none;
 }
+
+.MuiFormControlLabel-label::first-letter {
+  text-transform: uppercase !important;
+}

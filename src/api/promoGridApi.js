@@ -95,3 +95,12 @@ export const promoGridFilters = async () => {
   const response = await performApiRequest(url, 'GET');
   return response;
 };
+
+export const promoGridColumnSettings = async () => {
+  const response = await performApiRequest('promo/promo-grid-column-settings/', 'GET');
+  return response;
+};
+
+export const promoGridColumnCreate = async (columnsData) => {
+  await performApiRequest('promo/promo-grid-column-settings/create/', 'POST', columnsData);
+};

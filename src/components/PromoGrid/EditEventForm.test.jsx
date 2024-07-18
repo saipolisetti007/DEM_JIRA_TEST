@@ -16,6 +16,44 @@ const initialState = {
       BSE: ['Single Item Discount', 'Future Value']
     },
     eventTypeOptions: ['MVM', 'BSE']
+  },
+  settingsData: {
+    settings: {
+      start_of_shipments: true,
+      end_of_shipments: true,
+      event_description: true,
+      umbrella_event: true,
+      comments: true,
+      expected_shipments_forecast: true,
+      expected_consumption_forecast: true,
+      bu: true,
+      proxy_like_item_number: true,
+      pgp_flag: true,
+      promoted_product_group_id: true,
+      distribution_profile: true,
+      discount_amt: true,
+      base_price: true,
+      price_after_discount: true,
+      status: true,
+      event_string_property_1: true,
+      event_string_property_2: true,
+      event_string_property_3: true,
+      event_string_property_4: true,
+      event_string_property_5: true,
+      event_num_property_1: true,
+      event_num_property_2: true,
+      event_num_property_3: true,
+      event_num_property_4: true,
+      event_num_property_5: true,
+      offer_type: true,
+      off: true,
+      limit: true,
+      tpr: true,
+      off_2: true,
+      gc_buy: true,
+      gc_save: true,
+      percentage: true
+    }
   }
 };
 const store = configureStore({
@@ -130,5 +168,23 @@ describe('Add Event Form Component', () => {
     });
 
     fireEvent.click(screen.getByTestId('CloseIcon'));
+  });
+  test('handles accordion panel change', async () => {
+    const handleClose = jest.fn();
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <EditEventForm rowData={mockData} handleClose={handleClose} />
+        </Provider>
+      );
+    });
+
+    fireEvent.click(screen.getByText('Event Main Parameters'));
+    const accordionDiv = screen.getByTestId('panel1');
+
+    expect(accordionDiv).toHaveAttribute('aria-expanded', 'false');
+
+    fireEvent.click(screen.getByText('Event Main Parameters'));
+    expect(accordionDiv).toHaveAttribute('aria-expanded', 'true');
   });
 });

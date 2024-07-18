@@ -5,7 +5,7 @@ import FormInputControl from '../Common/FormInputControl';
 import { useSelector } from 'react-redux';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-const StepEventMainParameters = ({ control }) => {
+const StepEventMainParameters = ({ control, settings }) => {
   const { setValue } = useFormContext();
   const { userData } = useSelector((state) => state.userProfileData);
   const customerId = userData?.customers[0];
@@ -69,7 +69,7 @@ const StepEventMainParameters = ({ control }) => {
               isDisabled={true}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={6}>
             <FormInputControl
               control={control}
               name="event_in_store_start_date"
@@ -78,7 +78,7 @@ const StepEventMainParameters = ({ control }) => {
               isRequired={true}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={6}>
             <FormInputControl
               control={control}
               name="event_in_store_end_date"
@@ -90,23 +90,28 @@ const StepEventMainParameters = ({ control }) => {
               }}
             />
           </Grid>
-          <Grid item xs={3}>
-            <FormInputControl
-              control={control}
-              name="start_of_shipments"
-              label="Start of shipments"
-              type="date"
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <FormInputControl
-              control={control}
-              name="end_of_shipments"
-              label="End of shipments"
-              type="date"
-              rules={{ validate: validateEndDate('End of shipments', 'start_of_shipments') }}
-            />
-          </Grid>
+          {settings.start_of_shipments && (
+            <Grid item xs={6}>
+              <FormInputControl
+                control={control}
+                name="start_of_shipments"
+                label="Start of shipments"
+                type="date"
+              />
+            </Grid>
+          )}
+
+          {settings.end_of_shipments && (
+            <Grid item xs={6}>
+              <FormInputControl
+                control={control}
+                name="end_of_shipments"
+                label="End of shipments"
+                type="date"
+                rules={{ validate: validateEndDate('End of shipments', 'start_of_shipments') }}
+              />
+            </Grid>
+          )}
         </Grid>
       </Box>
       <Box>
@@ -140,14 +145,16 @@ const StepEventMainParameters = ({ control }) => {
               }}
             />
           </Grid>
-          <Grid item xs={12}>
-            <FormInputControl
-              control={control}
-              name="event_description"
-              label="Event description"
-              type="text"
-            />
-          </Grid>
+          {settings.event_description && (
+            <Grid item xs={12}>
+              <FormInputControl
+                control={control}
+                name="event_description"
+                label="Event description"
+                type="text"
+              />
+            </Grid>
+          )}
           <Grid item xs={6}>
             <FormInputControl
               control={control}
@@ -157,14 +164,16 @@ const StepEventMainParameters = ({ control }) => {
               isRequired={true}
             />
           </Grid>
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="umbrella_event"
-              label="Umbrella event"
-              type="text"
-            />
-          </Grid>
+          {settings.event_description && (
+            <Grid item xs={6}>
+              <FormInputControl
+                control={control}
+                name="umbrella_event"
+                label="Umbrella event"
+                type="text"
+              />
+            </Grid>
+          )}
           <Grid item xs={12} sx={{}}>
             <FormInputControl
               control={control}
@@ -174,16 +183,18 @@ const StepEventMainParameters = ({ control }) => {
               isChecked={true}
             />
           </Grid>
-          <Grid item xs={12}>
-            <FormInputControl
-              control={control}
-              name="comments"
-              label="Comments"
-              type="text"
-              isMultiline={true}
-              rows="3"
-            />
-          </Grid>
+          {settings.comments && (
+            <Grid item xs={12}>
+              <FormInputControl
+                control={control}
+                name="comments"
+                label="Comments"
+                type="text"
+                isMultiline={true}
+                rows="3"
+              />
+            </Grid>
+          )}
         </Grid>
       </Box>
     </>

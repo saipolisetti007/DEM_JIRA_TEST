@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import moment from 'moment';
 import { useForm, FormProvider } from 'react-hook-form';
 import StepEventMainParameters from './StepEventMainParameters';
@@ -7,9 +7,10 @@ import StepEventAdditionalData from './StepEventAdditionalData';
 import { Box, Button, Step, StepLabel, Stepper } from '@mui/material';
 import { addNewRowData } from '../../api/promoGridApi';
 import InfoSnackBar from '../Common/InfoSnackBar';
-import { steps, stepFileds } from './FormStepFileds';
+import { steps, stepFields } from './FormStepFields';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useSelector } from 'react-redux';
 
 const AddEventForm = ({ handleClose }) => {
   const [activeStep, setActiveStep] = useState(0);
@@ -22,6 +23,12 @@ const AddEventForm = ({ handleClose }) => {
   const methods = useForm({ mode: 'onChange' });
   const { handleSubmit, trigger, control, setError, formState } = methods;
 
+  const { settings } = useSelector((state) => state.settingsData);
+
+  const visibleSteps = useMemo(() => {
+    return steps.filter((_, index) => stepFields[index].some((field) => settings[field]));
+  }, [settings]);
+
   const handleNext = async () => {
     setIsNextDisabled(true);
     const isValid = await trigger();
@@ -31,10 +38,13 @@ const AddEventForm = ({ handleClose }) => {
         ...prevErrors,
         [activeStep]: false
       }));
-      if (activeStep === steps.length - 1) {
+      if (activeStep === visibleSteps.length - 1) {
         handleSubmit(onSubmit)();
       } else {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setActiveStep((prevActiveStep) => {
+          const nextStep = prevActiveStep + 1;
+          return nextStep < visibleSteps.length ? nextStep : prevActiveStep;
+        });
       }
     } else {
       setStepErrors((prevErrors) => ({
@@ -44,10 +54,11 @@ const AddEventForm = ({ handleClose }) => {
     }
   };
 
-  const handleStep = (step) => {
-    if (!stepErrors[activeStep]) {
+  const handleStep = async (step) => {
+    const isValid = await trigger();
+    if (isValid) {
       setActiveStep(step);
-      setStepCompleted({ ...stepCompleted, [steps.length - 1]: false });
+      setStepCompleted({ ...stepCompleted, [visibleSteps.length - 1]: false });
     }
   };
 
@@ -99,8 +110,8 @@ const AddEventForm = ({ handleClose }) => {
       }
 
       const errorFiledIndices = [];
-      Object.keys(stepFileds).forEach((index) => {
-        if (stepFileds[index].some((field) => transformedErrors[field])) {
+      Object.keys(stepFields).forEach((index) => {
+        if (stepFields[index].some((field) => transformedErrors[field])) {
           errorFiledIndices.push(parseInt(index));
         }
       });
@@ -138,7 +149,7 @@ const AddEventForm = ({ handleClose }) => {
   return (
     <>
       <Stepper activeStep={activeStep} sx={{ mt: 2 }}>
-        {steps.map((label, index) => {
+        {visibleSteps.map((label, index) => {
           return (
             <Step
               key={label}
@@ -153,9 +164,9 @@ const AddEventForm = ({ handleClose }) => {
 
       <FormProvider {...methods}>
         <form>
-          {activeStep === 0 && <StepEventMainParameters control={control} />}
-          {activeStep === 1 && <StepEventAdditionalData control={control} />}
-          {activeStep === 2 && <StepEventProperties control={control} />}
+          {activeStep === 0 && <StepEventMainParameters control={control} settings={settings} />}
+          {activeStep === 1 && <StepEventAdditionalData control={control} settings={settings} />}
+          {activeStep === 2 && <StepEventProperties control={control} settings={settings} />}
           <Box
             sx={{
               display: 'flex',
@@ -179,8 +190,8 @@ const AddEventForm = ({ handleClose }) => {
               variant="contained"
               disabled={isNextDisabled && !formState.isValid}
               startIcon={isNextDisabled && !formState.isValid ? <UnpublishedIcon /> : ''}
-              endIcon={activeStep === steps.length - 1 ? '' : <ArrowForwardIcon />}>
-              {activeStep === steps.length - 1
+              endIcon={activeStep === visibleSteps.length - 1 ? '' : <ArrowForwardIcon />}>
+              {activeStep === visibleSteps.length - 1
                 ? isLoading
                   ? 'Saving Data...'
                   : 'Save New Event'

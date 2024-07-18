@@ -22,7 +22,7 @@ import PageSection from '../Common/PageSection';
 import InfoSnackBar from '../Common/InfoSnackBar';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Filters from '../Common/Filters';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { grey } from '@mui/material/colors';
 import RowSelections from '../Common/RowSelections';
 import CancelEventDialog from '../Common/CancelEventDialog';
@@ -30,6 +30,7 @@ import AddEditEventDialog from './AddEditEventDialog';
 import EditEventDialog from './EditEventDialog';
 import moment from 'moment';
 import { debounce } from 'lodash';
+import { getSettings } from './settingsSlice';
 
 const PromoGridData = () => {
   const location = useLocation();
@@ -75,6 +76,10 @@ const PromoGridData = () => {
     sku: [],
     active: ['Active']
   });
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getSettings());
+  }, [dispatch]);
 
   const { userData } = useSelector((state) => state.userProfileData);
   const customerId = userData?.customers[0];

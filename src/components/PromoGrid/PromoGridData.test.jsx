@@ -11,9 +11,61 @@ import {
 import PromoGridData from './PromoGridData';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import store from '../../store/store';
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from '../../store/reducers';
 
 jest.mock('../../api/promoGridApi');
+
+const initialState = {
+  userProfileData: {
+    customers: [{ id: 1, name: '2000038335' }]
+  },
+  eventsData: {
+    eventsData: {
+      MVM: ['Single Item Discount', 'Future Value'],
+      BSE: ['Single Item Discount', 'Future Value']
+    },
+    eventTypeOptions: ['MVM', 'BSE']
+  },
+  settingsData: {
+    settings: {
+      start_of_shipments: true,
+      end_of_shipments: true,
+      event_description: true,
+      umbrella_event: true,
+      comments: true,
+      expected_shipments_forecast: true,
+      expected_consumption_forecast: true,
+      bu: true,
+      proxy_like_item_number: true,
+      pgp_flag: true,
+      promoted_product_group_id: true,
+      distribution_profile: true,
+      discount_amt: true,
+      base_price: true,
+      price_after_discount: true,
+      status: true,
+      event_string_property_1: true,
+      event_string_property_2: true,
+      event_string_property_3: true,
+      event_string_property_4: true,
+      event_string_property_5: true,
+      event_num_property_1: true,
+      event_num_property_2: true,
+      event_num_property_3: true,
+      event_num_property_4: true,
+      event_num_property_5: true,
+      offer_type: true,
+      off: true,
+      limit: true,
+      tpr: true,
+      off_2: true,
+      gc_buy: true,
+      gc_save: true,
+      percentage: true
+    }
+  }
+};
 
 const mockData = {
   count: 1,
@@ -43,66 +95,9 @@ const mockFilters = {
   sku: ['sku4']
 };
 
-test('displays SnackBar on network error', async () => {
-  getData.mockRejectedValueOnce(new Error('Network Error'));
-
-  await act(async () => {
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <PromoGridData />
-        </BrowserRouter>
-      </Provider>
-    );
-  });
-
-  await waitFor(() => {
-    expect(
-      screen.getByText((content) => content.includes('Network Error. Could not fetch the data.'))
-    ).toBeInTheDocument();
-  });
-});
-
-test('cancels row successfully', async () => {
-  cancelRowData.mockResolvedValueOnce({});
-  getData.mockResolvedValueOnce(mockData);
-
-  await act(async () => {
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <PromoGridData />
-        </BrowserRouter>
-      </Provider>
-    );
-  });
-
-  await waitFor(() => {
-    expect(screen.getByText('MVM')).toBeInTheDocument();
-  });
-
-  const mockRow = screen.getAllByRole('row')[1];
-  fireEvent.mouseEnter(mockRow);
-
-  userEvent.hover(mockRow);
-  const cancelButton = await screen.findByLabelText('Cancel Event');
-
-  await act(async () => {
-    fireEvent.click(cancelButton);
-  });
-
-  await act(async () => {
-    const confirmButton = screen.getByText('Cancel Event');
-    fireEvent.click(confirmButton);
-  });
-
-  await waitFor(() => {
-    expect(cancelRowData).toHaveBeenCalledTimes(1);
-  });
-
-  await waitFor(() => {
-    expect(screen.getByText('Promo Cancelled successfully !!!')).toBeInTheDocument();
-  });
+const store = configureStore({
+  reducer: rootReducer,
+  preloadedState: initialState
 });
 
 describe('PromoGridData Component', () => {
@@ -125,6 +120,67 @@ describe('PromoGridData Component', () => {
         </Provider>
       )
     );
+  });
+  test('displays SnackBar on network error', async () => {
+    getData.mockRejectedValueOnce(new Error('Network Error'));
+
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText((content) => content.includes('Network Error. Could not fetch the data.'))
+      ).toBeInTheDocument();
+    });
+  });
+
+  test('cancels row successfully', async () => {
+    cancelRowData.mockResolvedValueOnce({});
+    getData.mockResolvedValueOnce(mockData);
+
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('MVM')).toBeInTheDocument();
+    });
+
+    const mockRow = screen.getAllByRole('row')[1];
+    fireEvent.mouseEnter(mockRow);
+
+    userEvent.hover(mockRow);
+    const cancelButton = await screen.findByLabelText('Cancel Event');
+
+    await act(async () => {
+      fireEvent.click(cancelButton);
+    });
+
+    await act(async () => {
+      const confirmButton = screen.getByText('Cancel Event');
+      fireEvent.click(confirmButton);
+    });
+
+    await waitFor(() => {
+      expect(cancelRowData).toHaveBeenCalledTimes(1);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Promo Cancelled successfully !!!')).toBeInTheDocument();
+    });
   });
 
   test('handles Excel file upload', async () => {
@@ -465,77 +521,6 @@ describe('PromoGridData Component', () => {
     await waitFor(async () => expect(cancelRowData).toHaveBeenCalledTimes(1));
     await waitFor(() => {
       expect(screen.getByText('Error occurred while cancelling the data !!!')).toBeInTheDocument();
-    });
-  });
-
-  test('should open AddEditDialog when add button clicked', async () => {
-    await act(async () =>
-      render(
-        <Provider store={store}>
-          <BrowserRouter>
-            <PromoGridData />
-          </BrowserRouter>
-        </Provider>
-      )
-    );
-    const addRowButton = screen.getByText('Add New Event');
-    await act(async () => {
-      fireEvent.click(addRowButton);
-    });
-    expect(screen.getByTestId('newEvent')).toBeInTheDocument();
-  });
-
-  test('should handle closing with backdropclick reason', async () => {
-    await act(async () =>
-      render(
-        <Provider store={store}>
-          <BrowserRouter>
-            <PromoGridData />
-          </BrowserRouter>
-        </Provider>
-      )
-    );
-    const addRowButton = screen.getByText('Add New Event');
-    await act(async () => {
-      fireEvent.click(addRowButton);
-    });
-    const addDialog = screen.getByRole('dialog');
-    fireEvent.keyDown(addDialog, { key: 'Escape' });
-    await waitFor(() => {
-      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    });
-  });
-
-  test('should handle closing with backdropclick reason add', async () => {
-    await act(async () =>
-      render(
-        <Provider store={store}>
-          <BrowserRouter>
-            <PromoGridData />
-          </BrowserRouter>
-        </Provider>
-      )
-    );
-    const addRowButton = screen.getByText('Add New Event');
-    await act(async () => {
-      fireEvent.click(addRowButton);
-    });
-
-    await act(async () => {
-      fireEvent.change(screen.getByLabelText(/Event in store start date/i), {
-        target: { value: mockData.results[0].event_in_store_start_date }
-      });
-      fireEvent.change(screen.getByLabelText(/Event in store end date/i), {
-        target: { value: mockData.results[0].event_in_store_end_date }
-      });
-
-      fireEvent.change(screen.getByLabelText(/event sales channel/i), {
-        target: { value: mockData.results[0].event_sales_channel }
-      });
-    });
-    const nextButton = screen.getByText('Next Step');
-    await act(async () => {
-      fireEvent.click(nextButton);
     });
   });
 

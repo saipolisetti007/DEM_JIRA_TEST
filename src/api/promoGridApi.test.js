@@ -12,6 +12,8 @@ import {
   promoGridFilters,
   getUserProfile,
   getEvents,
+  promoGridColumnCreate,
+  promoGridColumnSettings,
   downloadBlankExcel
 } from './promoGridApi';
 
@@ -337,5 +339,30 @@ describe('promoGridApi', () => {
     createElementSpy.mockRestore();
     appendChildSpy.mockRestore();
     removeChildSpy.mockRestore();
+  });
+
+  test('get promoGridColumnSettings ', async () => {
+    const mockSettings = {
+      start_of_shipments: true,
+      end_of_shipments: true
+    };
+    performApiRequest.mockResolvedValueOnce(mockSettings);
+    const result = await promoGridColumnSettings();
+    expect(result).toEqual(mockSettings);
+    expect(performApiRequest).toHaveBeenCalledWith('promo/promo-grid-column-settings/', 'GET');
+  });
+
+  test('promoGridColumnCreate settings', async () => {
+    const mockSettings = {
+      start_of_shipments: true,
+      end_of_shipments: true
+    };
+    performApiRequest.mockResolvedValueOnce(mockSettings);
+    await promoGridColumnCreate(mockSettings);
+    expect(performApiRequest).toHaveBeenCalledWith(
+      'promo/promo-grid-column-settings/create/',
+      'POST',
+      mockSettings
+    );
   });
 });

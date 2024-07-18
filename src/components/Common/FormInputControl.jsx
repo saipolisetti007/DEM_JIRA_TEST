@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import ErrorIcon from '@mui/icons-material/Error';
 const FormInputControl = ({
   control,
   name,
@@ -72,7 +73,15 @@ const FormInputControl = ({
             rows={rows}
             disabled={isDisabled}
             error={!!error}
-            helperText={error ? error.message : ''}
+            helperText={
+              error ? (
+                <span>
+                  <ErrorIcon fontSize="small" /> {error.message}
+                </span>
+              ) : (
+                ''
+              )
+            }
             value={field.value ?? ''}
             onChange={(e) => {
               field.onChange(e.target.value);
@@ -93,7 +102,15 @@ const FormInputControl = ({
             required={isRequired}
             size="small"
             error={!!error}
-            helperText={error ? error.message : ''}>
+            helperText={
+              error ? (
+                <span>
+                  <ErrorIcon fontSize="small" /> {error.message}
+                </span>
+              ) : (
+                ''
+              )
+            }>
             {options.map((option) => (
               <MenuItem key={option} value={option}>
                 {option}
@@ -146,7 +163,13 @@ const FormInputControl = ({
                   fullWidth: true,
                   required: isRequired,
                   error: !!error,
-                  helperText: error ? error.message : ''
+                  helperText: error ? (
+                    <span>
+                      <ErrorIcon fontSize="small" /> {error.message}
+                    </span>
+                  ) : (
+                    ''
+                  )
                 }
               }}
             />

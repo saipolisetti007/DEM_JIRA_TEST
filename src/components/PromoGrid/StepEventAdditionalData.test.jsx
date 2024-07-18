@@ -11,10 +11,23 @@ const Wrapper = ({ children }) => {
 
 describe('StepEventAdditionalData Component', () => {
   test('should render without crash', () => {
+    const settings = {
+      expected_shipments_forecast: true,
+      expected_consumption_forecast: true,
+      bu: true,
+      proxy_like_item_number: true,
+      pgp_flag: true,
+      promoted_product_group_id: true,
+      distribution_profile: true,
+      discount_amt: true,
+      base_price: true,
+      price_after_discount: true,
+      status: true
+    };
     render(
       <Provider store={store}>
         <Wrapper>
-          <StepEventAdditionalData />
+          <StepEventAdditionalData settings={settings} />
         </Wrapper>
       </Provider>
     );

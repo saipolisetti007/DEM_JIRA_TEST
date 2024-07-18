@@ -18,6 +18,44 @@ const initialState = {
       BSE: ['Single Item Discount', 'Future Value']
     },
     eventTypeOptions: ['MVM', 'BSE']
+  },
+  settingsData: {
+    settings: {
+      start_of_shipments: true,
+      end_of_shipments: true,
+      event_description: true,
+      umbrella_event: true,
+      comments: true,
+      expected_shipments_forecast: true,
+      expected_consumption_forecast: true,
+      bu: true,
+      proxy_like_item_number: true,
+      pgp_flag: true,
+      promoted_product_group_id: true,
+      distribution_profile: true,
+      discount_amt: true,
+      base_price: true,
+      price_after_discount: true,
+      status: true,
+      event_string_property_1: true,
+      event_string_property_2: true,
+      event_string_property_3: true,
+      event_string_property_4: true,
+      event_string_property_5: true,
+      event_num_property_1: true,
+      event_num_property_2: true,
+      event_num_property_3: true,
+      event_num_property_4: true,
+      event_num_property_5: true,
+      offer_type: true,
+      off: true,
+      limit: true,
+      tpr: true,
+      off_2: true,
+      gc_buy: true,
+      gc_save: true,
+      percentage: true
+    }
   }
 };
 const store = configureStore({
@@ -222,5 +260,68 @@ describe('Add Event Form Component', () => {
       expect(screen.getByTestId('CloseIcon')).toBeInTheDocument();
     });
     fireEvent.click(screen.getByTestId('CloseIcon'));
+  });
+  test('updates stepErrors correctly on validation failure', async () => {
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <AddEventForm handleClose={() => {}} />
+        </Provider>
+      );
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Next Step'));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Event Main Parameters')).toHaveClass('Mui-error');
+    });
+  });
+  test('changes active step correctly on step label click', async () => {
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <AddEventForm handleClose={() => {}} />
+        </Provider>
+      );
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/Event in store start date/i), {
+        target: { value: mockData.event_in_store_start_date }
+      });
+      fireEvent.change(screen.getByLabelText(/Event in store end date/i), {
+        target: { value: mockData.event_in_store_end_date }
+      });
+      fireEvent.change(screen.getByLabelText(/event sales channel/i), {
+        target: { value: mockData.event_sales_channel }
+      });
+    });
+
+    await act(async () => {
+      const eventType = screen.getByLabelText(/event type/i);
+      fireEvent.mouseDown(eventType);
+    });
+
+    await waitFor(() => {
+      const typeOption = screen.getByRole('listbox', { name: /event type/i });
+      fireEvent.click(within(typeOption).getByText(/MVM/i));
+    });
+
+    await act(async () => {
+      const eventSubtype = screen.getByLabelText(/event subtype/i);
+      fireEvent.mouseDown(eventSubtype);
+    });
+
+    await waitFor(() => {
+      const typeSubOption = screen.getByRole('listbox', { name: /event subtype/i });
+      fireEvent.click(within(typeSubOption).getByText(/Single Item Discount/i));
+    });
+
+    fireEvent.click(screen.getByText('Event Additional Data'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Event Additional Data')).toHaveClass('Mui-active');
+    });
   });
 });

@@ -15,6 +15,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AddEventForm from './AddEventForm';
 import EditEventForm from './EditEventForm';
 import EditIcon from '@mui/icons-material/Edit';
+import ColumnsSettings from './ColumnsSettings';
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
@@ -101,9 +102,15 @@ const AddEditEventDialog = ({ open, rowData, isEdit, handleClose }) => {
               )}
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <Typography component="h4" variant="h5" data-testid="settings">
-                Settings
-              </Typography>
+              <Box className="mt-4">
+                <Typography component="h4" variant="h5" data-testid="settings">
+                  Settings
+                </Typography>
+                <Typography component="p" variant="subtitle1">
+                  Manage your input fields in Event promo grid
+                </Typography>
+              </Box>
+              <ColumnsSettings />
             </TabPanel>
           </Box>
         </Box>

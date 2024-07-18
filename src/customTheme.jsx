@@ -204,6 +204,13 @@ const customTheme = createTheme({
           }
         }
       }
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          margin: '4px 0px 0px'
+        }
+      }
     }
   }
 });

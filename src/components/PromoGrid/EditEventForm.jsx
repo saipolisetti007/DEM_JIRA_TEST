@@ -14,13 +14,14 @@ import {
 } from '@mui/material';
 import { updateRowData } from '../../api/promoGridApi';
 import InfoSnackBar from '../Common/InfoSnackBar';
-import { steps, dateFileds } from './FormStepFileds';
+import { steps, dateFields, stepFields } from './FormStepFields';
 import { ArrowDropDown } from '@mui/icons-material';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
+import { useSelector } from 'react-redux';
 const formatRowData = (rowData) => {
   const formattedData = { ...rowData };
 
-  dateFileds.forEach((field) => {
+  dateFields.forEach((field) => {
     if (formattedData[field]) {
       formattedData[field] = moment(formattedData[field], 'MM/DD/YYYY');
     }
@@ -28,24 +29,35 @@ const formatRowData = (rowData) => {
   return formattedData;
 };
 
-const AccordionPanel = ({ panel, expanded, handleChange, title, children }) => (
-  <Accordion
-    disableGutters
-    elevation={0}
-    expanded={expanded === panel}
-    onChange={handleChange(panel)}>
-    <AccordionSummary
-      sx={{ flexDirection: 'row-reverse', padding: 0 }}
-      expandIcon={<ArrowDropDown sx={{ fontSize: '2rem' }} />}
-      aria-controls={`${panel}-content`}
-      id={`${panel}-header`}>
-      <Typography component="h4" variant="h5">
-        {title}
-      </Typography>
-    </AccordionSummary>
-    <AccordionDetails sx={{ marginTop: '-10px' }}>{children}</AccordionDetails>
-  </Accordion>
-);
+const AccordionPanel = ({ panel, index, expanded, handleChange, title, control, settings }) => {
+  const isVisible = stepFields[index].some((field) => settings[field]);
+  if (!isVisible) {
+    return null;
+  }
+  return (
+    <Accordion
+      disableGutters
+      elevation={0}
+      expanded={expanded === panel}
+      onChange={handleChange(panel)}>
+      <AccordionSummary
+        sx={{ flexDirection: 'row-reverse', padding: 0 }}
+        expandIcon={<ArrowDropDown sx={{ fontSize: '2rem' }} />}
+        aria-controls={`${panel}-content`}
+        data-testid={panel}
+        id={`${panel}-header`}>
+        <Typography component="h4" variant="h5">
+          {title}
+        </Typography>
+      </AccordionSummary>
+      <AccordionDetails sx={{ marginTop: '-10px' }}>
+        {panel === 'panel1' && <StepEventMainParameters control={control} settings={settings} />}
+        {panel === 'panel2' && <StepEventAdditionalData control={control} settings={settings} />}
+        {panel === 'panel3' && <StepEventProperties control={control} settings={settings} />}
+      </AccordionDetails>
+    </Accordion>
+  );
+};
 
 const EditEventForm = ({ rowData, handleClose }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -59,6 +71,8 @@ const EditEventForm = ({ rowData, handleClose }) => {
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
+
+  const { settings } = useSelector((state) => state.settingsData);
 
   const handleSave = async () => {
     handleSubmit(onSubmit)();
@@ -117,29 +131,18 @@ const EditEventForm = ({ rowData, handleClose }) => {
     <>
       <FormProvider {...methods}>
         <form>
-          <AccordionPanel
-            panel="panel1"
-            expanded={expanded}
-            handleChange={handleChange}
-            title={steps[0]}>
-            <StepEventMainParameters control={control} />
-          </AccordionPanel>
-
-          <AccordionPanel
-            panel="panel2"
-            expanded={expanded}
-            handleChange={handleChange}
-            title={steps[1]}>
-            <StepEventAdditionalData control={control} />
-          </AccordionPanel>
-
-          <AccordionPanel
-            panel="panel3"
-            expanded={expanded}
-            handleChange={handleChange}
-            title={steps[2]}>
-            <StepEventProperties control={control} />
-          </AccordionPanel>
+          {steps.map((step, index) => (
+            <AccordionPanel
+              key={step}
+              index={index}
+              expanded={expanded}
+              handleChange={handleChange}
+              panel={`panel${index + 1}`}
+              title={step}
+              control={control}
+              settings={settings}
+            />
+          ))}
 
           <Box
             sx={{
