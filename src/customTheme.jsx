@@ -211,6 +211,18 @@ const customTheme = createTheme({
           margin: '4px 0px 0px'
         }
       }
+    },
+    MuiButtonGroup: {
+      styleOverrides: {
+        grouped: {
+          '&:last-of-type': {
+            borderRadius: '0px 5px 5px 0px'
+          },
+          '&:first-of-type': {
+            borderRadius: '5px 0px 0px 5px'
+          }
+        }
+      }
     }
   }
 });

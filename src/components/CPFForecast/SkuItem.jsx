@@ -4,11 +4,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Grid,
   Typography
 } from '@mui/material';
@@ -21,9 +16,12 @@ import { ArrowDropDown } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
 import InfoSnackBar from '../Common/InfoSnackBar';
 import { cpfDecisions } from '../../api/cpfForecastApi';
+import NewForecastColumns from './NewForecastColumns';
+import ConfirmationDialog from './ConfirmationDialog';
 
 const SkuItem = ({
   sku,
+  prod_name,
   data,
   isExanped,
   isLoading,
@@ -31,11 +29,17 @@ const SkuItem = ({
   isRefetching,
   setIsRefetching,
   isError,
+  csFactor,
+  itFactor,
+  selectedUnit,
+  editedValues,
+  setEditedValues,
   index,
+  onSubmit,
   onAccordionChange
 }) => {
   const [rowSelection, setRowSelection] = useState({});
-  const [open, setOpen] = useState(false);
+  const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
@@ -59,28 +63,38 @@ const SkuItem = ({
 
   const handleSave = (event) => {
     event.stopPropagation();
-    setOpen(true);
+    setOpenSubmitDialog(true);
   };
 
   const handleSubmit = async () => {
-    setOpen(false);
+    setOpenSubmitDialog(false);
     try {
       const selectedRowIds = Object.keys(rowSelection).filter((key) => rowSelection[key]);
 
       const updatedRowData = data.map((row, index) => {
+        const editedValue = editedValues[index];
+        const hasEdits = editedValue !== undefined;
         if (selectedRowIds.includes(index.toString())) {
-          return { ...row, approved: true };
+          if (hasEdits) {
+            return { ...row, ...editedValue, approved: true };
+          } else {
+            const convertedRow = { ...row };
+            if (row.editedUnits !== undefined) {
+              convertedRow.editedUnits = convertedUnits(row.editedUnits, selectedUnit);
+            }
+            return { ...convertedRow, approved: true };
+          }
         }
         return { ...row, approved: false };
       });
 
       const updatedTableData = updatedRowData.map((row) => {
         // eslint-disable-next-line no-unused-vars
-        const { unit, ...rest } = row;
+        const { unit, unit_diff, prevUnits, percentChange, finalunits, ...rest } = row;
         return rest;
       });
 
-      const updatedData = { sku: sku, forecast: updatedTableData };
+      const updatedData = { sku: sku, units: selectedUnit, forecast: updatedTableData };
       setIsSaving(true);
       await cpfDecisions(updatedData);
       setIsSnackOpen(true);
@@ -88,8 +102,12 @@ const SkuItem = ({
         message: 'Data Submitted successfully !!!',
         severity: 'success'
       });
+      setEditedValues({});
       setIsRefetching(true);
       setIsSaving(false);
+      if (onSubmit) {
+        onSubmit();
+      }
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
@@ -100,9 +118,49 @@ const SkuItem = ({
     }
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const convertedUnits = (value, unit) => {
+    let convertedValue;
+    switch (unit) {
+      case 'cs':
+        convertedValue = Math.round(value / csFactor);
+        break;
+      case 'it':
+        convertedValue = Math.round(value / itFactor);
+        break;
+      case 'msu':
+        convertedValue = (value / 1000).toFixed(2).toString();
+        break;
+      default:
+        convertedValue = Math.round(value);
+    }
+    return convertedValue;
   };
+
+  const handleEditUnits = (rowIndex, columnId, value) => {
+    setEditedValues((prev) => ({
+      ...prev,
+      [rowIndex]: {
+        ...prev[rowIndex],
+        [columnId]: value
+      }
+    }));
+    const initialRowSelection = { ...rowSelection, [rowIndex]: true };
+    setRowSelection(initialRowSelection);
+  };
+
+  useEffect(() => {
+    if (Object.keys(editedValues).length === 0) {
+      const updatedRowSelection = { ...rowSelection };
+      data.forEach((row, index) => {
+        if (row.approved) {
+          updatedRowSelection[index] = true;
+        } else {
+          updatedRowSelection[index] = false;
+        }
+      });
+      setRowSelection(updatedRowSelection);
+    }
+  }, [editedValues]);
 
   const columns = useMemo(
     () => [
@@ -111,29 +169,78 @@ const SkuItem = ({
         header: 'Weeks'
       },
       {
-        accessorKey: 'unit',
-        header: 'Units'
+        accessorKey: 'prevUnits',
+        header: 'Units',
+        Cell: ({ row, column }) => convertedUnits(row.original[column.id], selectedUnit)
       }
     ],
-    []
+    [convertedUnits]
   );
-  const table = useMaterialReactTable({
+
+  const previousForecastTable = useMaterialReactTable({
     columns,
     data,
     muiTableProps: {
       sx: {
-        border: '1px solid rgba(81, 81, 81, 0.2)'
+        borderCollapse: 'collapse',
+        border: '0.5px solid rgba(0, 0, 0, 0.23)'
       }
     },
     muiTableBodyCellProps: {
       sx: {
-        border: '1px solid rgba(81, 81, 81, 0.2)'
+        border: '0.5px solid rgba(0, 0, 0, 0.23)'
+      }
+    },
+    muiTableHeadCellProps: {
+      sx: {
+        backgroundColor: '#E0E0E0',
+        textTransform: 'initial',
+        verticalAlign: 'middle'
+      }
+    },
+    enableEditing: false,
+    enableRowActions: false,
+    enableColumnActions: false,
+    enableColumnFilters: false,
+    enablePagination: false,
+    enableSorting: false,
+    muiTableBodyRowProps: { hover: false },
+    initialState: {
+      density: 'compact'
+    },
+    defaultColumn: {
+      size: 150
+    },
+    state: {
+      rowSelection
+    }
+  });
+
+  const NewForecastTable = useMaterialReactTable({
+    columns: NewForecastColumns({
+      selectedUnit,
+      convertedUnits,
+      handleEditUnits,
+      editedValues
+    }),
+    data,
+    muiTableProps: {
+      sx: {
+        borderCollapse: 'collapse',
+        border: '0.5px solid rgba(0, 0, 0, 0.23)'
+      }
+    },
+    muiTableBodyCellProps: {
+      sx: {
+        border: '0.5px solid rgba(0, 0, 0, 0.23)'
       }
     },
     muiTableHeadCellProps: {
       sx: (theme) => ({
         backgroundColor: theme.palette.primary.dark,
-        color: theme.palette.primary.contrastText
+        color: theme.palette.primary.contrastText,
+        textTransform: 'initial',
+        verticalAlign: 'middle'
       })
     },
     muiToolbarAlertBannerProps: isError
@@ -142,17 +249,27 @@ const SkuItem = ({
           children: 'Network Error. Could not fetch the data.'
         }
       : undefined,
-    enableEditing: false,
+    enableEditing: true,
+    editDisplayMode: 'table',
     enableRowActions: false,
     enableColumnActions: false,
     enableColumnFilters: false,
     enablePagination: false,
     enableSorting: false,
-    muiTableBodyRowProps: { hover: false },
     enableRowSelection: (row) => row.original.active,
     onRowSelectionChange: setRowSelection,
     initialState: {
       density: 'compact'
+    },
+    defaultColumn: {
+      size: 120
+    },
+    displayColumnDefOptions: {
+      'mrt-row-select': {
+        header: '',
+        size: 20,
+        border: 'none'
+      }
     },
     state: {
       rowSelection,
@@ -161,71 +278,79 @@ const SkuItem = ({
       showProgressBars: isRefetching
     }
   });
+
   return (
     <>
       <Accordion
         data-testid={`accordion-item-${index}`}
-        className="border"
         disableGutters
         elevation={0}
         expanded={isExanped}
         onChange={hanldeAccordionChange}>
         <AccordionSummary
+          sx={{ padding: 0 }}
           className="flex-row-reverse"
           expandIcon={<ArrowDropDown sx={{ fontSize: '2rem' }} />}
           aria-controls={`panel${index}-content`}
           id={`panel${index}-header`}>
-          <div className="flex items-center justify-between w-full">
-            <Typography variant="h5" as="h3" color="primary">
-              SKU : {sku}
-            </Typography>
+          <div className="flex items-center justify-between w-full gap-4">
+            <div className="flex gap-4">
+              <Typography variant="h3" color="primary" className="grow-0 min-w-64">
+                SKU : {sku}{' '}
+                <Typography variant="span" sx={{ fontWeight: 400 }}>
+                  ({prod_name})
+                </Typography>
+              </Typography>
+            </div>
             <Button
               variant="outlined"
-              color="success"
+              className="grow-0"
+              color="primary"
               size="small"
               startIcon={<CheckIcon />}
-              className="rounded"
               onClick={handleSave}>
               {isSaving ? 'Saving...' : 'Save Decision'}
             </Button>
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          <Grid container spacing={2}>
-            <Grid item md={6}>
-              <Typography variant="subtitle2" as="h4">
-                New Forecast
-              </Typography>
+          <Grid container spacing={4}>
+            <Grid item md={7}>
+              <div className="flex w-full justify-between items-center h-6">
+                <Typography variant="h5" component="h4">
+                  New Forecast
+                </Typography>
+              </div>
+
               <div className="mt-2">
-                <MRT_ToolbarAlertBanner table={table} />
-                <MRT_TableContainer table={table} />
+                <MRT_ToolbarAlertBanner table={NewForecastTable} className="info-message" />
+                <MRT_TableContainer table={NewForecastTable} />
+              </div>
+            </Grid>
+
+            <Grid item md={5}>
+              <Typography variant="h5" component="h4" className="h-6">
+                Previous Forecast
+              </Typography>
+
+              <div className="mt-2">
+                <MRT_ToolbarAlertBanner table={NewForecastTable} className="info-message" />
+                <MRT_TableContainer table={previousForecastTable} />
               </div>
             </Grid>
           </Grid>
         </AccordionDetails>
       </Accordion>
 
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-decision"
-        aria-describedby="alert-decision-confirmation">
-        <DialogTitle id="alert-decision">{'Are you sure.. ? save decision? '}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-decision-confirmation">
-            Please check the Forecast, Only Checked values are to be submitted, unchecked values
-            will be rejected.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button size="small" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button color="primary" size="small" variant="contained" onClick={handleSubmit} autoFocus>
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmationDialog
+        open={openSubmitDialog}
+        onClose={() => setOpenSubmitDialog(false)}
+        onConfirm={handleSubmit}
+        title="Are you sure.. ? Save decision?"
+        contentHeading="Please check the Forecast, Only Checked values are to be submitted, unchecked values
+              will be rejected."
+      />
+
       {isSnackOpen && snackBar && (
         <InfoSnackBar
           isOpen={isSnackOpen}

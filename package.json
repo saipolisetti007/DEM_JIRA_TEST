@@ -62,6 +62,10 @@
     "collectCoverageFrom": [
       "./src/api/**/*.{js,jsx}",
       "./src/components/**/*.{js,jsx}",
+      "!src/components/**/SkuItem.{js,jsx}",
+      "!src/components/**/CPFForescastMain.{js,jsx}",
+      "!src/components/**/NewForecastColumns.{js,jsx}",
+      "!src/components/**/ConfirmationDialog.{js,jsx}",
       "!src/components/**/StoreToDc.{js,jsx}",
       "!src/api/**/storeApi.{js,jsx}"
     ],

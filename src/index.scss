@@ -91,3 +91,10 @@ th.custom-row-actions.MuiTableCell-root[data-pinned='true']:before {
 .MuiFormControlLabel-label::first-letter {
   text-transform: uppercase !important;
 }
+.edited-unit .MuiInputBase-input {
+  background: #eef1fd;
+  margin: -6px;
+  padding: 6px 5px;
+  height: 100%;
+  font-size: 14px;
+}
