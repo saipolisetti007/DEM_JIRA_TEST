@@ -11,7 +11,8 @@ const mockColumnEvent = { id: 'event_type' };
 const mockColumnEventSubType = { id: 'event_subtype' };
 
 describe('DropdownComponent', () => {
-  test('renders without crashing', () => {
+  test('calls onChange with the correct value when an option is selected', () => {
+    const mockOnChange = jest.fn();
     render(
       <DropdownComponent
         row={mockEventRow}
@@ -20,12 +21,15 @@ describe('DropdownComponent', () => {
         options={mockOptions}
         isError={false}
         helpertext=""
-        onChange={jest.fn()}
+        onChange={mockOnChange}
         isEventSelected={true}
       />
     );
 
-    expect(screen.getByLabelText('Event Type')).toBeInTheDocument();
+    fireEvent.mouseDown(screen.getByLabelText('Event Type'));
+    fireEvent.click(screen.getByText(mockOptions[0]));
+
+    expect(mockOnChange).toHaveBeenCalledWith(mockOptions[0]);
   });
   test('displays "Please select a Event Type first" when event type is not selected', () => {
     render(

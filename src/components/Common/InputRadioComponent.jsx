@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FormControl,
   FormControlLabel,
@@ -7,6 +7,7 @@ import {
   Radio,
   RadioGroup
 } from '@mui/material';
+import ErrorIcon from '@mui/icons-material/Error';
 
 const InputRadioComponent = ({
   row,
@@ -63,7 +64,11 @@ const InputRadioComponent = ({
         <FormControlLabel value="yes" control={<Radio size="small" />} label="Yes" />
         <FormControlLabel value="no" control={<Radio size="small" />} label="No" />
       </RadioGroup>
-      {error && <FormHelperText>{helperText}</FormHelperText>}
+      {error && (
+        <FormHelperText>
+          <ErrorIcon fontSize="small" /> {helperText}
+        </FormHelperText>
+      )}
     </FormControl>
   );
 };

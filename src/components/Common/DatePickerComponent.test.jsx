@@ -8,7 +8,8 @@ import userEvent from '@testing-library/user-event';
 moment.locale('en');
 
 describe('DatePickerComponent', () => {
-  test('updates the value when a new date is selecetd', async () => {
+  test('updates the value when a new date is selected', async () => {
+    const handleInputChangeMock = jest.fn();
     const row = {
       original: {
         date: moment().format('MM/DD/YYYY')
@@ -22,7 +23,9 @@ describe('DatePickerComponent', () => {
       id: 'date'
     };
 
-    render(<DatePickerComponent row={row} column={column} />);
+    render(
+      <DatePickerComponent row={row} column={column} handleInputChange={handleInputChangeMock} />
+    );
 
     const newDate = moment().add(1, 'days').format('MM/DD/YYYY');
     const input = screen.getByPlaceholderText('MM/DD/YYYY');
@@ -31,6 +34,7 @@ describe('DatePickerComponent', () => {
     });
     await waitFor(() => {
       expect(row._valuesCache[column.id]).toBe(newDate);
+      expect(handleInputChangeMock).toHaveBeenCalledWith(newDate, row.index, column.id, null);
     });
   });
   test('Start Date validation', async () => {

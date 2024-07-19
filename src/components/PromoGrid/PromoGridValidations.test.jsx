@@ -1,17 +1,19 @@
 import React from 'react';
 import { screen, render, act, waitFor, fireEvent } from '@testing-library/react';
 import PromoGridValidations from './PromoGridValidations';
-import { BrowserRouter, useLocation } from 'react-router-dom';
+import { BrowserRouter, useLocation, useNavigate } from 'react-router-dom';
 import { promoGridSubmit, promoGridValidate } from '../../api/promoGridApi';
 import { Provider } from 'react-redux';
 import store from '../../store/store';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn()
+  useLocation: jest.fn(),
+  useNavigate: jest.fn()
 }));
 
 jest.mock('../../api/promoGridApi');
+
 describe('PromoGridValidations', () => {
   const mockLocation = {
     state: {
@@ -25,8 +27,11 @@ describe('PromoGridValidations', () => {
       }
     }
   };
+  const mockNavigate = jest.fn();
+
   beforeEach(() => {
     useLocation.mockReturnValue(mockLocation);
+    useNavigate.mockReturnValue(mockNavigate);
     jest.clearAllMocks();
   });
 
@@ -318,6 +323,88 @@ describe('PromoGridValidations', () => {
     await waitFor(() => {
       const inputElement = screen.getByTestId('event_type');
       expect(inputElement).toBeInTheDocument();
+    });
+  });
+
+  test('opens and closes the dialog on breadcrumb navigation', async () => {
+    await act(async () =>
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
+      )
+    );
+
+    const breadcrumbLink = screen.getByText('Homepage');
+    fireEvent.click(breadcrumbLink);
+
+    await waitFor(() => {
+      const dialog = screen.getByRole('dialog');
+      expect(dialog).toBeInTheDocument();
+    });
+
+    const closeButton = screen.getByLabelText('close');
+    fireEvent.click(closeButton);
+
+    await waitFor(() => {
+      const dialog = screen.queryByRole('dialog');
+      expect(dialog).not.toBeInTheDocument();
+    });
+  });
+
+  test('navigates to target page on dialog confirm', async () => {
+    await act(async () =>
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
+      )
+    );
+
+    const breadcrumbLink = screen.getByText('Homepage');
+    fireEvent.click(breadcrumbLink);
+
+    await waitFor(() => {
+      const dialog = screen.getByRole('dialog');
+      expect(dialog).toBeInTheDocument();
+    });
+
+    const confirmButton = screen.getByText('Leave this page');
+    fireEvent.click(confirmButton);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/');
+    });
+  });
+
+  test('navigates to promo grid page on dialog return', async () => {
+    await act(async () =>
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
+      )
+    );
+
+    const breadcrumbLink = screen.getByText('Homepage');
+    fireEvent.click(breadcrumbLink);
+
+    await waitFor(() => {
+      const dialog = screen.getByRole('dialog');
+      expect(dialog).toBeInTheDocument();
+    });
+
+    const returnButton = screen.getByText('Return to Promo Grid Validation');
+    fireEvent.click(returnButton);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/promo-grid');
     });
   });
 });

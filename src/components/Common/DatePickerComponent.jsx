@@ -2,6 +2,7 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import ErrorIcon from '@mui/icons-material/Error';
 
 const DatePickerComponent = ({
   row,
@@ -17,6 +18,7 @@ const DatePickerComponent = ({
   const initialValue = value ? moment(value, 'MM/DD/YYYY') : null;
   const [error, setError] = useState(isError);
   const [helperMsg, setHelperMsg] = useState(helperText);
+
   useEffect(() => {
     setError(isError);
     setHelperMsg(helperText);
@@ -68,14 +70,19 @@ const DatePickerComponent = ({
         aria-labelledby={`${column.id}-label`}
         label={column.columnDef.header}
         value={initialValue}
-        disablePast
         slotProps={{
           textField: {
             size: 'small',
             clearable: true,
             required: isRequired,
             error: error,
-            helperText: helperMsg
+            helperText: error ? (
+              <span>
+                <ErrorIcon fontSize="small" /> {helperMsg}
+              </span>
+            ) : (
+              ''
+            )
           }
         }}
       />

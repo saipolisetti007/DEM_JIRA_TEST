@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material';
+import ErrorIcon from '@mui/icons-material/Error';
 
 const DropdownComponent = ({
   row,
@@ -15,15 +16,13 @@ const DropdownComponent = ({
   selectedState
 }) => {
   const rowValue = row.original[column.id] || '';
-
   const [isInitValue, setIsInitValue] = useState(true);
-
   const [value, setValue] = useState(rowValue);
-
   const [error, setError] = useState(isError);
   const accessorKey = column.id;
   const rowIndex = row.index;
   const [helperMsg, setHelperMsg] = useState(helperText);
+
   useEffect(() => {
     setError(isError);
     setHelperMsg(helperText);
@@ -90,7 +89,11 @@ const DropdownComponent = ({
             ))
           )}
         </Select>
-        <FormHelperText>{helperMsg}</FormHelperText>
+        {error && (
+          <FormHelperText>
+            <ErrorIcon fontSize="small" /> {helperMsg}
+          </FormHelperText>
+        )}
       </FormControl>
     </div>
   );

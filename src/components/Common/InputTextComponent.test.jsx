@@ -23,6 +23,21 @@ describe('InputText Component', () => {
       <InputTextComponent row={row} column={column} handleInputChange={mockHandleInputChange} />
     );
   });
+  test('renders error message when error is true', () => {
+    render(
+      <InputTextComponent
+        row={row}
+        column={column}
+        isRequired={isRequired}
+        isError={true}
+        helperText="Error message"
+        validationType={validationType}
+        handleInputChange={mockHandleInputChange}
+      />
+    );
+
+    expect(screen.getByText('Error message')).toBeInTheDocument();
+  });
 
   test('initializes with correct initial state values', () => {
     render(

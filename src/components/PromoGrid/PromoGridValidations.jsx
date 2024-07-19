@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-undef */
 import React, { useEffect, useState } from 'react';
 import {
   MRT_TablePagination,
@@ -14,6 +13,8 @@ import { handleChangeValidate } from '../../utils/commonMethods';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { promoGridSubmit, promoGridValidate } from '../../api/promoGridApi';
 import InfoSnackBar from '../Common/InfoSnackBar';
+import BreadcrumbNavigation from '../Common/BreadcrumbNavigation';
+import ValidationPageDialog from '../Common/ValidationPageDialog'; // Make sure the path is correct
 
 const PromoGridValidationTable = () => {
   const location = useLocation();
@@ -30,6 +31,10 @@ const PromoGridValidationTable = () => {
 
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
+
+  // State for the dialog
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [navigateTarget, setNavigateTarget] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -116,6 +121,7 @@ const PromoGridValidationTable = () => {
       });
     }
   };
+
   const handleSubmit = async () => {
     try {
       const promoHeader = {
@@ -132,6 +138,24 @@ const PromoGridValidationTable = () => {
         severity: 'error'
       });
     }
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleDialogConfirm = () => {
+    setDialogOpen(false);
+    navigate(navigateTarget);
+  };
+
+  const handleNavigate = (target) => {
+    setNavigateTarget(target);
+    setDialogOpen(true);
+  };
+
+  const handleReturnToPromoGrid = () => {
+    navigate('/promo-grid');
   };
 
   const table = useMaterialReactTable({
@@ -180,6 +204,7 @@ const PromoGridValidationTable = () => {
   return (
     <>
       <PageSection>
+        <BreadcrumbNavigation onNavigate={handleNavigate} />
         <Box className="p-2">
           <div className="flex items-center justify-between">
             <DefaultPageHeader
@@ -196,8 +221,10 @@ const PromoGridValidationTable = () => {
             />
             <div className="flex items-center justify-between gap-2">
               <Button
+                variant="outlined"
                 color="success"
-                variant="contained"
+                size="medium"
+                className="rounded-full ml-4"
                 onClick={handleValidate}
                 disabled={!allErrorsNull}>
                 {isDataLoading ? 'Validating...' : 'Validate'}
@@ -225,6 +252,12 @@ const PromoGridValidationTable = () => {
           onClose={() => setIsSnackOpen(false)}
         />
       )}
+      <ValidationPageDialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        onConfirm={handleDialogConfirm}
+        onReturnToPromoGrid={handleReturnToPromoGrid}
+      />
     </>
   );
 };
