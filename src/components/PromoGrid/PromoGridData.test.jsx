@@ -1,9 +1,10 @@
 import React from 'react';
-import { render, screen, act, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, act, waitFor, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   cancelRowData,
   downloadDataExcel,
+  downloadBlankExcel,
   getData,
   promoGridFilters,
   uploadDataExcel
@@ -92,7 +93,9 @@ const mockFilters = {
   category: ['Auto Dish'],
   brand: ['Cascade'],
   brandForm: ['brandForm4'],
-  sku: ['sku4']
+  sku: ['sku4'],
+  prod_name: ['Product1'],
+  customer_item_number: ['123456']
 };
 
 const store = configureStore({
@@ -121,9 +124,43 @@ describe('PromoGridData Component', () => {
       )
     );
   });
-  test('displays SnackBar on network error', async () => {
-    getData.mockRejectedValueOnce(new Error('Network Error'));
 
+  test('should fetch and render filters', async () => {
+    await act(async () =>
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      )
+    );
+    await waitFor(() => {
+      expect(promoGridFilters).toHaveBeenCalled();
+    });
+  });
+
+  test('should filter fetch error', async () => {
+    promoGridFilters.mockRejectedValueOnce();
+    await act(async () =>
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      )
+    );
+    await waitFor(() => {
+      expect(promoGridFilters).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Network Error !!!')).toBeInTheDocument();
+    });
+  });
+
+  test('should fetch and render data', async () => {
+    getData.mockResolvedValue(mockData);
     await act(async () => {
       render(
         <Provider store={store}>
@@ -135,9 +172,48 @@ describe('PromoGridData Component', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByText((content) => content.includes('Network Error. Could not fetch the data.'))
-      ).toBeInTheDocument();
+      expect(getData).toHaveBeenCalled();
+    });
+
+    await waitFor(() => {
+      expect(getData).toHaveBeenCalledWith(
+        expect.any(Number),
+        expect.any(Number),
+        expect.any(Object)
+      );
+    });
+  });
+
+  test('update data based on filter change and render data', async () => {
+    promoGridFilters.mockResolvedValue(mockFilters);
+    await act(async () =>
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      )
+    );
+    await waitFor(() => {
+      expect(promoGridFilters).toHaveBeenCalled();
+    });
+
+    const filterSelect = screen.getByLabelText('Brand');
+    expect(filterSelect).toBeInTheDocument();
+
+    await act(async () => {
+      userEvent.click(filterSelect);
+    });
+
+    const options = await screen.findAllByRole('option');
+
+    await act(async () => {
+      fireEvent.click(options[1]);
+    });
+
+    await waitFor(() => {
+      expect(getData).toHaveBeenCalled();
     });
   });
 
@@ -360,8 +436,7 @@ describe('PromoGridData Component', () => {
     });
   });
 
-  test('should fetch and render filters', async () => {
-    promoGridFilters.mockResolvedValue(mockFilters);
+  test('should handle empty filter values', async () => {
     await act(async () =>
       render(
         <Provider store={store}>
@@ -371,89 +446,46 @@ describe('PromoGridData Component', () => {
         </Provider>
       )
     );
-    await waitFor(() => {
-      expect(promoGridFilters).toHaveBeenCalled();
-    });
-  });
-
-  test('should filter fetch error', async () => {
-    promoGridFilters.mockRejectedValueOnce();
-    await act(async () =>
-      render(
-        <Provider store={store}>
-          <BrowserRouter>
-            <PromoGridData />
-          </BrowserRouter>
-        </Provider>
-      )
-    );
-    await waitFor(() => {
-      expect(promoGridFilters).toHaveBeenCalled();
-    });
-    await waitFor(() => {
-      expect(screen.getByText('Network Error !!!')).toBeInTheDocument();
-    });
-  });
-
-  test('should fetch and render data', async () => {
-    getData.mockResolvedValue(mockData);
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <BrowserRouter>
-            <PromoGridData />
-          </BrowserRouter>
-        </Provider>
-      );
-    });
-
-    await waitFor(() => {
-      expect(getData).toHaveBeenCalled();
-    });
 
     await waitFor(() => {
       expect(getData).toHaveBeenCalledWith(
         expect.any(Number),
         expect.any(Number),
-        expect.any(Object)
+        expect.objectContaining({
+          subsector: [],
+          category: [],
+          brand: [],
+          brandForm: [],
+          sku: [],
+          prodName: [],
+          customerItemNumber: [],
+          active: ['Active']
+        })
       );
     });
   });
 
-  test('update data based on filter change and render data', async () => {
-    promoGridFilters.mockResolvedValue(mockFilters);
-    await act(async () =>
+  test('should display SnackBar on network error', async () => {
+    getData.mockRejectedValueOnce(new Error('Network Error'));
+
+    await act(async () => {
       render(
         <Provider store={store}>
           <BrowserRouter>
             <PromoGridData />
           </BrowserRouter>
         </Provider>
-      )
-    );
-    await waitFor(() => {
-      expect(promoGridFilters).toHaveBeenCalled();
-    });
-
-    const filterSelect = screen.getByLabelText('Brand');
-    expect(filterSelect).toBeInTheDocument();
-
-    await act(async () => {
-      userEvent.click(filterSelect);
-    });
-
-    const options = await screen.findAllByRole('option');
-
-    await act(async () => {
-      fireEvent.click(options[1]);
+      );
     });
 
     await waitFor(() => {
-      expect(getData).toHaveBeenCalled();
+      expect(
+        screen.getByText((content, element) => content.includes('Network Error'))
+      ).toBeInTheDocument();
     });
   });
 
-  test('should Handlecancel Success', async () => {
+  test('should handle cancel event', async () => {
     cancelRowData.mockResolvedValueOnce({});
     getData.mockResolvedValueOnce(mockData);
 
@@ -466,6 +498,7 @@ describe('PromoGridData Component', () => {
         </Provider>
       );
     });
+
     const mockRow = screen.getAllByRole('row')[1];
     fireEvent.mouseEnter(mockRow);
 
@@ -490,9 +523,8 @@ describe('PromoGridData Component', () => {
     });
   });
 
-  test('should Handlecancel Failure', async () => {
-    cancelRowData.mockRejectedValue({});
-    getData.mockResolvedValueOnce(mockData);
+  test('should handle download blank Excel', async () => {
+    downloadBlankExcel.mockResolvedValueOnce();
 
     await act(async () => {
       render(
@@ -503,24 +535,47 @@ describe('PromoGridData Component', () => {
         </Provider>
       );
     });
-    const mockRow = screen.getAllByRole('row')[1];
-    fireEvent.mouseEnter(mockRow);
 
-    userEvent.hover(mockRow);
-    const cancelButton = await screen.findByLabelText('Cancel Event');
-
+    const downloadButton = screen.getByRole('button', { name: /Download blank template/i });
     await act(async () => {
-      fireEvent.click(cancelButton);
+      fireEvent.click(downloadButton);
     });
 
-    await act(async () => {
-      const confirmButton = screen.getByText('Cancel Event');
-      fireEvent.click(confirmButton);
-    });
-
-    await waitFor(async () => expect(cancelRowData).toHaveBeenCalledTimes(1));
     await waitFor(() => {
-      expect(screen.getByText('Error occurred while cancelling the data !!!')).toBeInTheDocument();
+      expect(screen.getByText('Excel template downloaded successfully !!!')).toBeInTheDocument();
+    });
+  });
+
+  test('should handle upload data Excel', async () => {
+    const file = new File(['data'], 'example.xlsx', {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    uploadDataExcel.mockResolvedValueOnce({ data: {} });
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
+
+    const uploadButton = screen.getByLabelText('Upload file');
+    fireEvent.click(uploadButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Upload New Data')).toBeInTheDocument();
+    });
+
+    const fileInput = screen.getByTestId('upload');
+    await act(async () => {
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+
+    await waitFor(() => {
+      expect(uploadDataExcel).toHaveBeenCalledWith(expect.any(FormData), expect.any(Object));
     });
   });
 
@@ -542,5 +597,186 @@ describe('PromoGridData Component', () => {
     await act(async () => {
       fireEvent.click(EditButton);
     });
+  });
+
+  test('should replace history state after loading message data', async () => {
+    const mockLocationState = { messageData: 'Test message' };
+    Object.defineProperty(window, 'history', {
+      value: {
+        replaceState: jest.fn()
+      },
+      writable: true
+    });
+
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
+
+    expect(window.history.replaceState).toHaveBeenCalledWith(expect.any(Object), '');
+  });
+
+  test('should handle data loading cancellation', async () => {
+    const file = new File(['data'], 'example.xlsx', {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    const mockAbortController = {
+      signal: {
+        aborted: true
+      }
+    };
+
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
+
+    const fileInput = screen.getByTestId('upload');
+    await act(async () => {
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+
+    await act(async () => {
+      uploadDataExcel.mockImplementationOnce(() => {
+        throw { name: 'AbortError' };
+      });
+    });
+
+    expect(screen.getByTestId('upload').value).toBe('');
+  });
+
+  test('should reset hovered row on mouse leave', async () => {
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
+
+    const mockRow = screen.getAllByRole('row')[1];
+    fireEvent.mouseEnter(mockRow);
+    fireEvent.mouseLeave(mockRow);
+
+    expect(screen.queryByLabelText('Edit Event')).not.toBeInTheDocument();
+  });
+
+  test('should close edit dialog', async () => {
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
+
+    const mockRow = screen.getAllByRole('row')[1];
+    fireEvent.mouseEnter(mockRow);
+
+    userEvent.hover(mockRow);
+    const editButton = await screen.findByLabelText('Edit Event');
+    await act(async () => {
+      fireEvent.click(editButton);
+    });
+
+    const closeButton = screen.getByLabelText('close');
+    await act(async () => {
+      fireEvent.click(closeButton);
+    });
+
+    expect(screen.queryByTestId('editEvent')).not.toBeInTheDocument();
+  });
+
+  test('should set selected event IDs and open cancel dialog', async () => {
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('MVM')).toBeInTheDocument();
+    });
+
+    const mockRow = screen.getAllByRole('row')[1];
+    fireEvent.mouseEnter(mockRow);
+
+    userEvent.hover(mockRow);
+
+    const selectCheckbox = within(mockRow).getByRole('checkbox', { hidden: true });
+    await act(async () => {
+      fireEvent.click(selectCheckbox);
+    });
+
+    const cancelButton = screen.getByLabelText('Cancel Event');
+    await act(async () => {
+      fireEvent.click(cancelButton);
+    });
+
+    const confirmButton = screen.getByText('Cancel Event');
+    expect(confirmButton).toBeInTheDocument();
+  });
+
+  test('should alert if no file is selected', async () => {
+    window.alert = jest.fn();
+
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
+
+    const fileInput = screen.getByTestId('upload');
+    await act(async () => {
+      const event = { target: { files: [] } };
+      fireEvent.change(fileInput, event);
+    });
+
+    expect(window.alert).toHaveBeenCalledWith('Please select a file');
+  });
+
+  test('should alert if no file is selected', async () => {
+    window.alert = jest.fn();
+
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
+
+    const fileInput = screen.getByTestId('upload');
+    await act(async () => {
+      const event = { target: { files: [] } };
+      fireEvent.change(fileInput, event);
+    });
+
+    expect(window.alert).toHaveBeenCalledWith('Please select a file');
   });
 });

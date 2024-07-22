@@ -44,8 +44,12 @@ const DropFileInput = ({ onFileChange, reset }) => {
 
   const onFileDrop = (e) => {
     if (!file) {
-      const newFile = e.target.files[0];
-      handleFile(newFile);
+      const newFile = e.target.files && e.target.files[0];
+      if (newFile) {
+        handleFile(newFile);
+      } else {
+        window.alert('Please select a file');
+      }
     }
   };
 

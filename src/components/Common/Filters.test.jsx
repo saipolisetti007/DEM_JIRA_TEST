@@ -42,6 +42,8 @@ describe('Filters Component', () => {
     return customLabels[filterKey] || filterKey.charAt(0).toUpperCase() + filterKey.slice(1);
   };
 
+  const getLabelRegex = (label) => new RegExp(`^${label}`);
+
   test('should display the correct label for each filter', async () => {
     render(
       <Filters
@@ -166,6 +168,121 @@ describe('Filters Component', () => {
       });
 
       expect(screen.queryByRole('tag')).not.toBeInTheDocument();
+    }
+  });
+  test('should select all options when "All" is selected', async () => {
+    render(
+      <Filters
+        isLoading={false}
+        filterOptions={MOCK_OPTIONS}
+        selectedFilters={selectedFilters}
+        onFilterChange={handleFilterChange}
+      />
+    );
+
+    const filterKey = 'subsector';
+    const label = formatFilterKey(filterKey);
+    const select = screen.getByLabelText(getLabelRegex(label));
+
+    await act(async () => {
+      fireEvent.mouseDown(select);
+    });
+
+    const options = await screen.findAllByRole('option');
+    const allOption = options.find((option) => option.textContent === 'All');
+
+    if (allOption) {
+      await act(async () => {
+        fireEvent.click(allOption);
+      });
+
+      const expectedSelections = ['All', ...MOCK_OPTIONS[filterKey]];
+      const lastCall = handleFilterChange.mock.calls[handleFilterChange.mock.calls.length - 1];
+      expect(lastCall).toEqual([filterKey, expectedSelections]);
+    } else {
+      throw new Error('"All" option not found');
+    }
+  });
+
+  test('should deselect "All" and select specific options', async () => {
+    selectedFilters = {
+      ...selectedFilters,
+      subsector: ['All', ...MOCK_OPTIONS.subsector]
+    };
+
+    render(
+      <Filters
+        isLoading={false}
+        filterOptions={MOCK_OPTIONS}
+        selectedFilters={selectedFilters}
+        onFilterChange={handleFilterChange}
+      />
+    );
+
+    const filterKey = 'subsector';
+    const label = formatFilterKey(filterKey);
+    const select = screen.getByLabelText(getLabelRegex(label));
+
+    await act(async () => {
+      fireEvent.mouseDown(select);
+    });
+
+    const options = await screen.findAllByRole('option');
+    const specificOption = options.find(
+      (option) => option.textContent === MOCK_OPTIONS.subsector[0]
+    );
+
+    if (specificOption) {
+      await act(async () => {
+        fireEvent.click(specificOption);
+      });
+
+      const expectedSelections = MOCK_OPTIONS.subsector.filter(
+        (option) => option !== specificOption.textContent
+      );
+      const lastCall = handleFilterChange.mock.calls[handleFilterChange.mock.calls.length - 1];
+      expect(lastCall).toEqual([filterKey, expectedSelections]);
+    } else {
+      throw new Error('Specific option not found');
+    }
+  });
+
+  test('should deselect all options when "All" is deselected', async () => {
+    selectedFilters = {
+      ...selectedFilters,
+      subsector: ['All', ...MOCK_OPTIONS.subsector]
+    };
+
+    render(
+      <Filters
+        isLoading={false}
+        filterOptions={MOCK_OPTIONS}
+        selectedFilters={selectedFilters}
+        onFilterChange={handleFilterChange}
+      />
+    );
+
+    const filterKey = 'subsector';
+    const label = formatFilterKey(filterKey);
+    const select = screen.getByLabelText(getLabelRegex(label));
+
+    await act(async () => {
+      fireEvent.mouseDown(select);
+    });
+
+    const options = await screen.findAllByRole('option');
+    const allOption = options.find((option) => option.textContent === 'All');
+
+    if (allOption) {
+      await act(async () => {
+        fireEvent.click(allOption);
+      });
+
+      const expectedSelections = [];
+      const lastCall = handleFilterChange.mock.calls[handleFilterChange.mock.calls.length - 1];
+      expect(lastCall).toEqual([filterKey, expectedSelections]);
+    } else {
+      throw new Error('"All" option not found');
     }
   });
 });

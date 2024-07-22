@@ -10,8 +10,11 @@ function formatFilterKey(filterKey) {
   const customLabels = {
     sku: 'SKU',
     active: 'Status',
-    brandForm: 'Brand Form'
+    brandForm: 'Brand Form',
+    prodName: 'Product Name',
+    customerItemNumber: 'Customer Item Number'
   };
+
   return customLabels[filterKey] || filterKey.charAt(0).toUpperCase() + filterKey.slice(1);
 }
 
@@ -66,7 +69,7 @@ function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
                 data-testid="filter-form-control"
                 sx={{ mx: 0.7 }}
                 key={filterKey}
-                className="min-w-[120px] w-[200px]"
+                className="min-w-[120px] w-[152px]"
                 size="small">
                 <StyledAutocomplete
                   multiple
@@ -76,6 +79,7 @@ function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
                   onChange={handleFilterChange(filterKey)}
                   loading={isLoading}
                   noOptionsText="No options available"
+                  getOptionLabel={(option) => String(option)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -98,7 +102,6 @@ function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
                       {option}
                     </li>
                   )}
-                  getOptionLabel={(option) => option}
                   isOptionEqualToValue={(option, value) => option === value}
                   renderTags={() => null}
                   ListboxProps={{

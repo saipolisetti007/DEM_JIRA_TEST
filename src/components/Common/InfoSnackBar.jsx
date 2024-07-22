@@ -8,7 +8,8 @@ const InfoSnackBar = ({ isOpen, severity, message, onClose, dataTestId }) => {
       open={isOpen}
       onClose={onClose}
       autoHideDuration={5000}
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      data-testid="snackbar">
       <Alert onClose={onClose} severity={severity} data-testid={dataTestId}>
         {message}
       </Alert>

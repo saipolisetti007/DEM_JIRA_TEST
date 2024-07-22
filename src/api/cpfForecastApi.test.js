@@ -31,7 +31,9 @@ describe('cpfForecastApi', () => {
       category: ['Auto Dish'],
       brand: ['Cascade'],
       brandForm: ['brandForm4'],
-      sku: ['sku4']
+      sku: ['sku4'],
+      prod_name: ['Product1'],
+      customer_item_number: ['123456']
     };
     performApiRequest.mockResolvedValueOnce(mockFilters);
     const result = await cpfFilters();
@@ -74,12 +76,14 @@ describe('cpfForecastApi', () => {
       category: [],
       subsector: [],
       brandForm: [],
-      sku: []
+      sku: [],
+      prodName: [],
+      customerItemNumber: []
     });
   });
 
   test('should append filters to the URL when filters are provided', async () => {
-    const filters = { brand: ['Dawn'] };
+    const filters = { brand: ['Dawn'], prodName: ['Product1'], customerItemNumber: ['123456'] }; // Updated keys
     const data = {
       sku: '100123456',
       forecast: [
@@ -99,7 +103,9 @@ describe('cpfForecastApi', () => {
       category: [],
       subsector: [],
       brandForm: [],
-      sku: []
+      sku: [],
+      prodName: ['Product1'],
+      customerItemNumber: ['123456']
     });
   });
 

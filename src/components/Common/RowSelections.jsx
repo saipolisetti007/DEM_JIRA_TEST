@@ -3,7 +3,12 @@ import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-const RowSelections = ({ rowCount, selectedRowCount, handleCancel }) => {
+const RowSelections = ({
+  rowCount,
+  selectedRowCount,
+  handleCancel,
+  handleSelectedDataDownloadExcel
+}) => {
   return (
     <Box className="flex gap-2 items-center justify-end my-2">
       <Typography component="span" variant="body2">
@@ -15,7 +20,7 @@ const RowSelections = ({ rowCount, selectedRowCount, handleCancel }) => {
         </IconButton>
       </Tooltip>
       <Tooltip title="Export files" arrow placement="top">
-        <IconButton color="primary" size="small">
+        <IconButton color="primary" size="small" onClick={handleSelectedDataDownloadExcel}>
           <ImportExportIcon />
         </IconButton>
       </Tooltip>

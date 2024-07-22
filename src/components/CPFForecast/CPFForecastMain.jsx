@@ -17,17 +17,18 @@ import PageLoader from '../Common/PageLoader';
 import Filters from '../Common/Filters';
 import InfoSnackBar from '../Common/InfoSnackBar';
 import { debounce } from 'lodash';
-
 import ConfirmationDialog from './ConfirmationDialog';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CloseIcon from '@mui/icons-material/Close';
-const CPFForescastMain = () => {
+import { reduceFilters, mapFilterParams } from '../../utils/filterUtils';
+
+const CPFForecastMain = () => {
   const [cpfData, setCpfData] = useState([]);
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefetching, setIsRefetching] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [expandedIndex, setExpandedIndex] = useState(-1);
+  const [expandedIndex, setExpandedIndex] = useState(0);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
   const [selectedUnit, setSelectedUnit] = useState('su');
@@ -40,7 +41,9 @@ const CPFForescastMain = () => {
     category: [],
     brand: [],
     brandForm: [],
-    sku: []
+    sku: [],
+    prod_name: [],
+    customer_item_number: []
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
@@ -48,18 +51,22 @@ const CPFForescastMain = () => {
     category: [],
     brand: [],
     brandForm: [],
-    sku: []
+    sku: [],
+    prodName: [],
+    customerItemNumber: []
   });
 
   const fetchFilters = async () => {
     try {
       const response = await cpfFilters();
       setFilterOptions({
-        subsector: response?.subsector,
-        category: response?.category,
-        brand: response?.brand,
-        brandForm: response?.prod_form_name,
-        sku: response?.sku
+        subsector: response?.subsector || [],
+        category: response?.category || [],
+        brand: response?.brand || [],
+        brandForm: response?.prod_form_name || [],
+        sku: response?.sku || [],
+        prodName: response?.prod_name || [],
+        customerItemNumber: response?.customer_item_number || []
       });
       setIsLoading(false);
     } catch (error) {
@@ -77,11 +84,9 @@ const CPFForescastMain = () => {
     setIsPageLoading(true);
     setIsError(false);
     try {
-      const filterParams = Object.keys(filters).reduce((acc, key) => {
-        acc[key] = filters[key].length > 0 && filters[key][0] !== 'All' ? filters[key] : [];
-        return acc;
-      }, {});
-      const response = await cpfGetForecast(filterParams);
+      const filterParams = reduceFilters(filters);
+      const mappedFilterParams = mapFilterParams(filterParams);
+      const response = await cpfGetForecast(mappedFilterParams);
       setCpfData(response);
       setIsPageLoading(false);
     } catch (error) {
@@ -135,7 +140,7 @@ const CPFForescastMain = () => {
     setOpenDialog(false);
   };
 
-  const handleCloseUnitChnage = () => {
+  const handleCloseUnitChange = () => {
     setPendingUnitChange(null);
     setOpenDialog(false);
   };
@@ -232,6 +237,7 @@ const CPFForescastMain = () => {
                     csFactor={item.cs_factor}
                     itFactor={item.it_factor}
                     data={item.forecast}
+                    isExpanded={index === expandedIndex}
                     selectedUnit={selectedUnit}
                     editedValues={editedValues}
                     setEditedValues={setEditedValues}
@@ -247,7 +253,7 @@ const CPFForescastMain = () => {
       </PageSection>
       <ConfirmationDialog
         open={openDialog}
-        onClose={handleCloseUnitChnage}
+        onClose={handleCloseUnitChange}
         onConfirm={handleConfirmUnitChange}
         title="Are you sure.. ? Change units?"
         contentHeading=" Unsaved edited units wiil be reset"
@@ -265,4 +271,4 @@ const CPFForescastMain = () => {
   );
 };
 
-export default CPFForescastMain;
+export default CPFForecastMain;

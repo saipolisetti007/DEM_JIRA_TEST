@@ -63,11 +63,22 @@ export const downloadDataExcel = async (filters = {}) => {
     subsector: filters.subsector || [],
     brandForm: filters.brandForm || [],
     active: filters.active || [],
-    sku: filters.sku || []
+    sku: filters.sku || [],
+    customerItemNumber: filters.customerItemNumber || [],
+    prodName: filters.prodName || []
   };
 
   const endpoint = 'promo/existing-data/download/';
   await downloadExcel(endpoint, 'POST', 'DEM - Promo Grid Data.xlsx', body);
+};
+
+export const downloadSelectedDataExcel = async (selectedEventIds) => {
+  const body = {
+    events: selectedEventIds
+  };
+
+  const endpoint = 'promo/selected-data/download/';
+  await downloadExcel(endpoint, 'POST', 'Selected_Promo_Grid_Data.xlsx', body);
 };
 
 export const uploadDataExcel = async (formData) => {

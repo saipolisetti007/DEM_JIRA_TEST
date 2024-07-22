@@ -65,12 +65,10 @@ describe('DropFileInput Component', () => {
     expect(screen.getByText('example.xlsx')).toBeInTheDocument();
     expect(handleFileChange).toHaveBeenCalledWith({ target: { files: [file] } });
   });
-
   test('triggers file input click when upload button is clicked', () => {
     render(<DropFileInput onFileChange={() => {}} />);
 
     const uploadButton = screen.getByText('Upload');
-
     const fileInput = screen.getByTestId('upload');
     const handleClick = jest.spyOn(fileInput, 'click');
 
@@ -114,5 +112,73 @@ describe('DropFileInput Component', () => {
       }
     });
     expect(dropArea).not.toHaveClass('dragover');
+  });
+
+  test('adds dragover class on drag enter and removes on drag leave', () => {
+    render(<DropFileInput onFileChange={() => {}} />);
+
+    const dropArea = screen.getByTestId('drop-area');
+
+    fireEvent.dragEnter(dropArea);
+    expect(dropArea).toHaveClass('dragover');
+
+    fireEvent.dragLeave(dropArea);
+    expect(dropArea).not.toHaveClass('dragover');
+  });
+
+  test('removes dragover class on drop', () => {
+    render(<DropFileInput onFileChange={() => {}} />);
+
+    const dropArea = screen.getByTestId('drop-area');
+
+    fireEvent.dragEnter(dropArea);
+    fireEvent.drop(dropArea, {
+      dataTransfer: {
+        files: [
+          new File(['dummy content'], 'example.xlsx', {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          })
+        ]
+      }
+    });
+
+    expect(dropArea).not.toHaveClass('dragover');
+  });
+
+  test('handles file input change with a valid file', () => {
+    const handleFileChange = jest.fn();
+    render(<DropFileInput onFileChange={handleFileChange} />);
+
+    const fileInput = screen.getByTestId('upload');
+    const file = new File(['dummy content'], 'example.xlsx', {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    expect(screen.getByText('example.xlsx')).toBeInTheDocument();
+    expect(handleFileChange).toHaveBeenCalledWith({ target: { files: [file] } });
+  });
+
+  test('handles file input change with an invalid file', () => {
+    render(<DropFileInput onFileChange={() => {}} />);
+
+    const fileInput = screen.getByTestId('upload');
+    const file = new File(['dummy content'], 'example.txt', { type: 'text/plain' });
+
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    expect(screen.getByText('example.txt')).toBeInTheDocument();
+    expect(screen.getByTestId('ErrorIcon')).toBeInTheDocument();
+  });
+
+  test('alerts when no file is selected', () => {
+    window.alert = jest.fn();
+    render(<DropFileInput onFileChange={() => {}} />);
+
+    const fileInput = screen.getByTestId('upload');
+    fireEvent.change(fileInput, { target: { files: [] } });
+
+    expect(window.alert).toHaveBeenCalledWith('Please select a file');
   });
 });

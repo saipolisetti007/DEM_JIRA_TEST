@@ -14,7 +14,8 @@ import {
   getEvents,
   promoGridColumnCreate,
   promoGridColumnSettings,
-  downloadBlankExcel
+  downloadBlankExcel,
+  downloadSelectedDataExcel
 } from './promoGridApi';
 
 jest.mock('./apiUtils', () => ({
@@ -112,45 +113,9 @@ describe('promoGridApi', () => {
         subsector: [],
         brandForm: [],
         active: [],
-        sku: []
-      },
-      'blob'
-    );
-    expect(window.URL.createObjectURL).toHaveBeenCalled();
-    expect(createElementSpy).toHaveBeenCalledWith('a');
-    expect(appendChildSpy).toHaveBeenCalled();
-    expect(removeChildSpy).toHaveBeenCalled();
-    expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:test');
-
-    createElementSpy.mockRestore();
-    appendChildSpy.mockRestore();
-    removeChildSpy.mockRestore();
-  });
-
-  test('downloads Data Excel with filters', async () => {
-    const response = new Blob(['test'], { type: 'application/vnd.ms-excel' });
-    performApiRequest.mockResolvedValueOnce(response);
-
-    window.URL.createObjectURL = jest.fn(() => 'blob:test');
-    window.URL.revokeObjectURL = jest.fn();
-
-    const createElementSpy = jest.spyOn(document, 'createElement');
-    const appendChildSpy = jest.spyOn(document.body, 'appendChild');
-    const removeChildSpy = jest.spyOn(document.body, 'removeChild');
-
-    const filters = { brand: ['testBrand'], category: ['testCategory'] };
-    await downloadDataExcel(filters);
-
-    expect(performApiRequest).toHaveBeenCalledWith(
-      'promo/existing-data/download/',
-      'POST',
-      {
-        brand: ['testBrand'],
-        category: ['testCategory'],
-        subsector: [],
-        brandForm: [],
-        active: [],
-        sku: []
+        sku: [],
+        customerItemNumber: [],
+        prodName: []
       },
       'blob'
     );
@@ -242,66 +207,6 @@ describe('promoGridApi', () => {
     const url = `promo/event-types/?golden_customer_id=${customerId}`;
     expect(performApiRequest).toHaveBeenCalledWith(url);
   });
-  test('downloads blank Excel', async () => {
-    const response = new Blob(['test'], { type: 'application/vnd.ms-excel' });
-    performApiRequest.mockResolvedValueOnce(response);
-    window.URL.createObjectURL = jest.fn(() => 'blob:test');
-    window.URL.revokeObjectURL = jest.fn();
-    const createElementSpy = jest.spyOn(document, 'createElement');
-    const appendChildSpy = jest.spyOn(document.body, 'appendChild');
-    const removeChildSpy = jest.spyOn(document.body, 'removeChild');
-    await downloadBlankExcel();
-    expect(performApiRequest).toHaveBeenCalledWith(
-      'promo/excel-template/download/',
-      'GET',
-      null,
-      'blob'
-    );
-    expect(window.URL.createObjectURL).toHaveBeenCalled();
-    expect(createElementSpy).toHaveBeenCalledWith('a');
-    expect(appendChildSpy).toHaveBeenCalled();
-    expect(removeChildSpy).toHaveBeenCalled();
-    expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:test');
-    createElementSpy.mockRestore();
-    appendChildSpy.mockRestore();
-    removeChildSpy.mockRestore();
-  });
-  test('downloads Data Excel with no filters', async () => {
-    const response = new Blob(['test'], { type: 'application/vnd.ms-excel' });
-    performApiRequest.mockResolvedValueOnce(response);
-
-    window.URL.createObjectURL = jest.fn(() => 'blob:test');
-    window.URL.revokeObjectURL = jest.fn();
-
-    const createElementSpy = jest.spyOn(document, 'createElement');
-    const appendChildSpy = jest.spyOn(document.body, 'appendChild');
-    const removeChildSpy = jest.spyOn(document.body, 'removeChild');
-
-    await downloadDataExcel();
-
-    expect(performApiRequest).toHaveBeenCalledWith(
-      'promo/existing-data/download/',
-      'POST',
-      {
-        brand: [],
-        category: [],
-        subsector: [],
-        brandForm: [],
-        active: [],
-        sku: []
-      },
-      'blob'
-    );
-    expect(window.URL.createObjectURL).toHaveBeenCalled();
-    expect(createElementSpy).toHaveBeenCalledWith('a');
-    expect(appendChildSpy).toHaveBeenCalled();
-    expect(removeChildSpy).toHaveBeenCalled();
-    expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:test');
-
-    createElementSpy.mockRestore();
-    appendChildSpy.mockRestore();
-    removeChildSpy.mockRestore();
-  });
 
   test('downloads Data Excel with filters', async () => {
     const response = new Blob(['test'], { type: 'application/vnd.ms-excel' });
@@ -310,7 +215,14 @@ describe('promoGridApi', () => {
     window.URL.createObjectURL = jest.fn(() => 'blob:test');
     window.URL.revokeObjectURL = jest.fn();
 
-    const createElementSpy = jest.spyOn(document, 'createElement');
+    const mockAnchorElement = document.createElement('a');
+    mockAnchorElement.setAttribute = jest.fn();
+    mockAnchorElement.click = jest.fn();
+    mockAnchorElement.href = '';
+
+    const createElementSpy = jest
+      .spyOn(document, 'createElement')
+      .mockReturnValue(mockAnchorElement);
     const appendChildSpy = jest.spyOn(document.body, 'appendChild');
     const removeChildSpy = jest.spyOn(document.body, 'removeChild');
 
@@ -326,14 +238,99 @@ describe('promoGridApi', () => {
         subsector: [],
         brandForm: [],
         active: [],
-        sku: []
+        sku: [],
+        customerItemNumber: [],
+        prodName: []
       },
       'blob'
     );
     expect(window.URL.createObjectURL).toHaveBeenCalled();
     expect(createElementSpy).toHaveBeenCalledWith('a');
-    expect(appendChildSpy).toHaveBeenCalled();
-    expect(removeChildSpy).toHaveBeenCalled();
+    expect(appendChildSpy).toHaveBeenCalledWith(mockAnchorElement);
+    expect(removeChildSpy).toHaveBeenCalledWith(mockAnchorElement);
+    expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:test');
+
+    createElementSpy.mockRestore();
+    appendChildSpy.mockRestore();
+    removeChildSpy.mockRestore();
+  });
+
+  test('downloads blank Excel', async () => {
+    const response = new Blob(['test'], { type: 'application/vnd.ms-excel' });
+    performApiRequest.mockResolvedValueOnce(response);
+
+    window.URL.createObjectURL = jest.fn(() => 'blob:test');
+    window.URL.revokeObjectURL = jest.fn();
+
+    const mockAnchorElement = document.createElement('a');
+    mockAnchorElement.setAttribute = jest.fn();
+    mockAnchorElement.click = jest.fn();
+    mockAnchorElement.href = '';
+
+    const createElementSpy = jest
+      .spyOn(document, 'createElement')
+      .mockReturnValue(mockAnchorElement);
+    const appendChildSpy = jest.spyOn(document.body, 'appendChild');
+    const removeChildSpy = jest.spyOn(document.body, 'removeChild');
+
+    await downloadBlankExcel();
+
+    expect(performApiRequest).toHaveBeenCalledWith(
+      'promo/excel-template/download/',
+      'GET',
+      null,
+      'blob'
+    );
+    expect(window.URL.createObjectURL).toHaveBeenCalled();
+    expect(createElementSpy).toHaveBeenCalledWith('a');
+    expect(appendChildSpy).toHaveBeenCalledWith(mockAnchorElement);
+    expect(removeChildSpy).toHaveBeenCalledWith(mockAnchorElement);
+    expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:test');
+
+    createElementSpy.mockRestore();
+    appendChildSpy.mockRestore();
+    removeChildSpy.mockRestore();
+  });
+
+  test('downloads Data Excel with no filters', async () => {
+    const response = new Blob(['test'], { type: 'application/vnd.ms-excel' });
+    performApiRequest.mockResolvedValueOnce(response);
+
+    window.URL.createObjectURL = jest.fn(() => 'blob:test');
+    window.URL.revokeObjectURL = jest.fn();
+
+    const mockAnchorElement = document.createElement('a');
+    mockAnchorElement.setAttribute = jest.fn();
+    mockAnchorElement.click = jest.fn();
+    mockAnchorElement.href = '';
+
+    const createElementSpy = jest
+      .spyOn(document, 'createElement')
+      .mockReturnValue(mockAnchorElement);
+    const appendChildSpy = jest.spyOn(document.body, 'appendChild');
+    const removeChildSpy = jest.spyOn(document.body, 'removeChild');
+
+    await downloadDataExcel();
+
+    expect(performApiRequest).toHaveBeenCalledWith(
+      'promo/existing-data/download/',
+      'POST',
+      {
+        brand: [],
+        category: [],
+        subsector: [],
+        brandForm: [],
+        active: [],
+        sku: [],
+        customerItemNumber: [],
+        prodName: []
+      },
+      'blob'
+    );
+    expect(window.URL.createObjectURL).toHaveBeenCalled();
+    expect(createElementSpy).toHaveBeenCalledWith('a');
+    expect(appendChildSpy).toHaveBeenCalledWith(mockAnchorElement);
+    expect(removeChildSpy).toHaveBeenCalledWith(mockAnchorElement);
     expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:test');
 
     createElementSpy.mockRestore();
@@ -364,5 +361,44 @@ describe('promoGridApi', () => {
       'POST',
       mockSettings
     );
+  });
+
+  // New test case to cover downloadSelectedDataExcel
+  test('downloads selected Data Excel', async () => {
+    const response = new Blob(['test'], { type: 'application/vnd.ms-excel' });
+    performApiRequest.mockResolvedValueOnce(response);
+
+    window.URL.createObjectURL = jest.fn(() => 'blob:test');
+    window.URL.revokeObjectURL = jest.fn();
+
+    const mockAnchorElement = document.createElement('a');
+    mockAnchorElement.setAttribute = jest.fn();
+    mockAnchorElement.click = jest.fn();
+    mockAnchorElement.href = '';
+
+    const createElementSpy = jest
+      .spyOn(document, 'createElement')
+      .mockReturnValue(mockAnchorElement);
+    const appendChildSpy = jest.spyOn(document.body, 'appendChild');
+    const removeChildSpy = jest.spyOn(document.body, 'removeChild');
+
+    const selectedEventIds = [1, 2, 3];
+    await downloadSelectedDataExcel(selectedEventIds);
+
+    expect(performApiRequest).toHaveBeenCalledWith(
+      'promo/selected-data/download/',
+      'POST',
+      { events: selectedEventIds },
+      'blob'
+    );
+    expect(window.URL.createObjectURL).toHaveBeenCalled();
+    expect(createElementSpy).toHaveBeenCalledWith('a');
+    expect(appendChildSpy).toHaveBeenCalledWith(mockAnchorElement);
+    expect(removeChildSpy).toHaveBeenCalledWith(mockAnchorElement);
+    expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:test');
+
+    createElementSpy.mockRestore();
+    appendChildSpy.mockRestore();
+    removeChildSpy.mockRestore();
   });
 });

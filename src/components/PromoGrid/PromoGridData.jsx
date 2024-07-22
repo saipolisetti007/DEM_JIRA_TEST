@@ -12,9 +12,9 @@ import {
   getData,
   promoGridFilters,
   promoGridGetValidations,
-  uploadDataExcel
+  uploadDataExcel,
+  downloadSelectedDataExcel
 } from '../../api/promoGridApi';
-
 import PromoGridColumns from './PromoGridColumns';
 import RowActions from '../Common/RowActions';
 import PageHeader from '../Common/PageHeader';
@@ -31,6 +31,7 @@ import EditEventDialog from './EditEventDialog';
 import moment from 'moment';
 import { debounce } from 'lodash';
 import { getSettings } from './settingsSlice';
+import { reduceFilters, mapFilterParams } from '../../utils/filterUtils';
 
 const PromoGridData = () => {
   const location = useLocation();
@@ -65,6 +66,8 @@ const PromoGridData = () => {
     brand: [],
     brandForm: [],
     sku: [],
+    prodName: [],
+    customerItemNumber: [],
     active: ['Active']
   });
 
@@ -74,8 +77,11 @@ const PromoGridData = () => {
     brand: [],
     brandForm: [],
     sku: [],
+    prodName: [],
+    customerItemNumber: [],
     active: ['Active']
   });
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getSettings());
@@ -83,6 +89,7 @@ const PromoGridData = () => {
 
   const { userData } = useSelector((state) => state.userProfileData);
   const customerId = userData?.customers[0];
+
   const fetchFilters = async () => {
     try {
       const response = await promoGridFilters();
@@ -92,6 +99,8 @@ const PromoGridData = () => {
         brand: response?.brand,
         brandForm: response?.prod_form_name,
         sku: response?.sku,
+        prodName: response?.prod_name,
+        customerItemNumber: response?.customer_item_number,
         active: response?.active || ['Active']
       });
       setIsDataLoading(false);
@@ -110,19 +119,9 @@ const PromoGridData = () => {
     setIsLoading(true);
     setIsError(false);
     try {
-      const filterParams = Object.keys(filters).reduce((acc, key) => {
-        if (
-          filters[key] &&
-          (Array.isArray(filters[key]) ? !filters[key].includes('All') : filters[key] !== 'All')
-        ) {
-          acc[key] = Array.isArray(filters[key]) ? filters[key] : [filters[key]];
-        } else {
-          acc[key] = [];
-        }
-        return acc;
-      }, {});
-
-      const response = await getData(pageIndex, pageSize, filterParams);
+      const filterParams = reduceFilters(filters);
+      const mappedFilterParams = mapFilterParams(filterParams);
+      const response = await getData(pageIndex, pageSize, mappedFilterParams);
 
       setData(response.results);
       setRowCount(response.count);
@@ -139,6 +138,7 @@ const PromoGridData = () => {
 
   useEffect(() => {
     debouncedFetchData(pagination.pageIndex, pagination.pageSize, selectedFilters);
+    return () => debouncedFetchData.cancel();
   }, [pagination, selectedFilters]);
 
   useEffect(() => {
@@ -239,22 +239,9 @@ const PromoGridData = () => {
 
   const handleDataDownloadExcel = async () => {
     try {
-      const filterParams = Object.keys(selectedFilters)
-        .filter(
-          (key) =>
-            selectedFilters[key] &&
-            (Array.isArray(selectedFilters[key])
-              ? !selectedFilters[key].includes('All')
-              : selectedFilters[key] !== 'All')
-        )
-        .reduce((acc, key) => {
-          acc[key] = Array.isArray(selectedFilters[key])
-            ? selectedFilters[key]
-            : [selectedFilters[key]];
-          return acc;
-        }, {});
-
-      await downloadDataExcel(filterParams);
+      const filterParams = reduceFilters(selectedFilters);
+      const mappedFilterParams = mapFilterParams(filterParams);
+      await downloadDataExcel(mappedFilterParams);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Excel data downloaded successfully !!!',
@@ -264,6 +251,34 @@ const PromoGridData = () => {
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Error occured while data downloading ! Please try again !!!',
+        severity: 'error'
+      });
+    }
+  };
+
+  const handleSelectedDataDownloadExcel = async () => {
+    const selectedIds = Object.keys(rowSelection).map((key) => data[key].unique_event_id);
+
+    if (selectedIds.length === 0) {
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Please select at least one event to export',
+        severity: 'warning'
+      });
+      return;
+    }
+
+    try {
+      await downloadSelectedDataExcel(selectedIds);
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Selected Excel data downloaded successfully !!!',
+        severity: 'success'
+      });
+    } catch (error) {
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Error occurred while downloading selected data! Please try again !!!',
         severity: 'error'
       });
     }
@@ -495,6 +510,7 @@ const PromoGridData = () => {
           selectedRowCount={selectedRowCount}
           rowCount={rowCount}
           handleCancel={handleCancel}
+          handleSelectedDataDownloadExcel={handleSelectedDataDownloadExcel}
         />
 
         <MRT_ToolbarAlertBanner table={table} className="info-message" />

@@ -1,12 +1,12 @@
 import React, { Suspense } from 'react';
 import ErrorBoundary from '../errorHanlding/ErrorBoundary';
-import CPFForescastMain from '../components/CPFForecast/CPFForescastMain';
+import CPFForecastMain from '../components/CPFForecast/CPFForecastMain';
 
 const CPFForecast = () => {
   return (
     <ErrorBoundary>
       <Suspense fallback={<div>Loading...</div>}>
-        <CPFForescastMain />
+        <CPFForecastMain />
       </Suspense>
     </ErrorBoundary>
   );

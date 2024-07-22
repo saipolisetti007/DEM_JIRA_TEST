@@ -18,7 +18,9 @@ export const cpfGetForecast = async (filters = {}) => {
     category: filters.category || [],
     subsector: filters.subsector || [],
     brandForm: filters.brandForm || [],
-    sku: filters.sku || []
+    sku: filters.sku || [],
+    prodName: filters.prodName || [],
+    customerItemNumber: filters.customerItemNumber || []
   };
 
   const response = await performApiRequest(url, 'POST', body);
