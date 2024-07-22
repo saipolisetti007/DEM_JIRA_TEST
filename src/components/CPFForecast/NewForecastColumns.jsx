@@ -1,6 +1,22 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 const NewForecastColumns = ({ selectedUnit, convertedUnits, editedValues, handleEditUnits }) => {
+  const [localEditValues, setLocalEditValues] = useState({});
+  const handleEditChange = (rowIndex, columnId, value) => {
+    setLocalEditValues((prev) => ({
+      ...prev,
+      [rowIndex]: {
+        ...prev[rowIndex],
+        [columnId]: value
+      }
+    }));
+  };
+
+  const handleBlur = (rowIndex, columnId) => {
+    if (localEditValues[rowIndex] && localEditValues[rowIndex][columnId] !== undefined) {
+      handleEditUnits(rowIndex, columnId, localEditValues[rowIndex][columnId]);
+    }
+  };
   const columns = useMemo(
     () => [
       {
@@ -41,11 +57,14 @@ const NewForecastColumns = ({ selectedUnit, convertedUnits, editedValues, handle
           size: 'small',
           className: 'edited-unit',
           value:
-            editedValues?.[row.index]?.[column.id] !== undefined
-              ? editedValues?.[row.index]?.[column.id]
+            localEditValues?.[row.index]?.[column.id] !== undefined
+              ? localEditValues?.[row.index]?.[column.id]
               : convertedUnits(row.original[column.id], selectedUnit) || '',
           onChange: (event) => {
-            handleEditUnits(row.index, column.id, event.target.value);
+            handleEditChange(row.index, column.id, event.target.value);
+          },
+          onBlur: () => {
+            handleBlur(row.index, column.id);
           }
         })
       },

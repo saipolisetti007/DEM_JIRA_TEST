@@ -154,6 +154,10 @@ const CPFForecastMain = () => {
     setAnchorEl(null);
   };
 
+  const handleSubmit = async () => {
+    await fetchData(selectedFilters);
+  };
+
   return (
     <>
       <PageSection>
@@ -243,7 +247,7 @@ const CPFForecastMain = () => {
                     setEditedValues={setEditedValues}
                     isExanped={index === expandedIndex}
                     onAccordionChange={() => handleAccordionChange(index)}
-                    onSubmit={fetchData}
+                    onSubmit={handleSubmit}
                   />
                 ))
               )}

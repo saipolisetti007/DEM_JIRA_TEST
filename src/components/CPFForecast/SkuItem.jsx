@@ -105,9 +105,11 @@ const SkuItem = ({
       setEditedValues({});
       setIsRefetching(true);
       setIsSaving(false);
-      if (onSubmit) {
-        onSubmit();
-      }
+      setTimeout(() => {
+        if (onSubmit) {
+          onSubmit();
+        }
+      }, 1000);
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
