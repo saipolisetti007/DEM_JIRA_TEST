@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const NewForecastColumns = ({ selectedUnit, convertedUnits, editedValues, handleEditUnits }) => {
   const [localEditValues, setLocalEditValues] = useState({});
@@ -17,6 +17,10 @@ const NewForecastColumns = ({ selectedUnit, convertedUnits, editedValues, handle
       handleEditUnits(rowIndex, columnId, localEditValues[rowIndex][columnId]);
     }
   };
+  useEffect(() => {
+    setLocalEditValues({});
+  }, [selectedUnit]);
+
   const columns = useMemo(
     () => [
       {
