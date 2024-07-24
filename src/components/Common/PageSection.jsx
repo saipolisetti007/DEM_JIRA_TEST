@@ -3,7 +3,7 @@ import React from 'react';
 
 const PageSection = ({ children }) => {
   return (
-    <Container maxWidth="xl" className="py-8">
+    <Container maxWidth="xl" className="py-4">
       <div className="h-full w-full">{children}</div>
     </Container>
   );

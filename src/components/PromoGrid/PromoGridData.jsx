@@ -32,6 +32,7 @@ import moment from 'moment';
 import { debounce } from 'lodash';
 import { getSettings } from './settingsSlice';
 import { reduceFilters, mapFilterParams } from '../../utils/filterUtils';
+import ManageColumns from './ManageColumns';
 
 const PromoGridData = () => {
   const location = useLocation();
@@ -59,7 +60,7 @@ const PromoGridData = () => {
     pageIndex: 0,
     pageSize: 10
   });
-
+  const [columnVisibility, setColumnVisibility] = useState({});
   const [filterOptions, setFilterOptions] = useState({
     subsector: [],
     category: [],
@@ -356,6 +357,13 @@ const PromoGridData = () => {
     setSnackBar(null);
   };
 
+  const handleColumnVisibilityChange = (changedColumnId, newVisibility) => {
+    setColumnVisibility((prevColumnVisibility) => ({
+      ...prevColumnVisibility,
+      [changedColumnId]: newVisibility
+    }));
+  };
+
   const table = useMaterialReactTable({
     columns: PromoGridColumns(),
     data,
@@ -401,6 +409,7 @@ const PromoGridData = () => {
     enableSorting: false,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
+    onColumnVisibilityChange: handleColumnVisibilityChange,
     onPaginationChange: setPagination,
     rowCount: rowCount,
     initialState: {
@@ -435,7 +444,8 @@ const PromoGridData = () => {
       showAlertBanner: isError,
       showProgressBars: isRefetching,
       pagination,
-      rowSelection
+      rowSelection,
+      columnVisibility
     }
   });
 
@@ -500,6 +510,15 @@ const PromoGridData = () => {
           handleUploadDataExcel={handleUploadDataExcel}
           isDataLoading={isDataLoading}
         />
+        <div className="flex items-end justify-end mt-4 mb-2">
+          <ManageColumns
+            table={table}
+            columns={table.options.columns}
+            columnVisibility={columnVisibility}
+            onColumnVisibilityChange={handleColumnVisibilityChange}
+          />
+        </div>
+        <hr />
         <Filters
           isLoading={isLoading}
           filterOptions={filterOptions}
@@ -512,7 +531,6 @@ const PromoGridData = () => {
           handleCancel={handleCancel}
           handleSelectedDataDownloadExcel={handleSelectedDataDownloadExcel}
         />
-
         <MRT_ToolbarAlertBanner table={table} className="info-message" />
         <MRT_TableContainer table={table} />
         <MRT_TablePagination table={table} />

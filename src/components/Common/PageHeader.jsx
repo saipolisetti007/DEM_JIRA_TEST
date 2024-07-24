@@ -26,8 +26,8 @@ const PageHeader = ({
   };
 
   return (
-    <Box className="py-4">
-      <div className="flex items-center justify-between gap-8 pb-8">
+    <Box className="py-2">
+      <div className="flex items-start justify-between gap-8">
         <div>
           <Typography component="h1" variant="h2" color="primary">
             {title}
@@ -61,7 +61,6 @@ const PageHeader = ({
           handleUploadDataExcel={handleUploadDataExcel}
         />
       </div>
-      <hr />
     </Box>
   );
 };

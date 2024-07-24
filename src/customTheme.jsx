@@ -223,6 +223,13 @@ const customTheme = createTheme({
           }
         }
       }
+    },
+    MuiAutocomplete: {
+      styleOverrides: {
+        paper: {
+          width: '350px'
+        }
+      }
     }
   }
 });

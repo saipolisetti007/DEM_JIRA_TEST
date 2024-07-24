@@ -110,7 +110,7 @@ const AddEditEventDialog = ({ open, rowData, isEdit, handleClose }) => {
                   Manage your input fields in Event promo grid
                 </Typography>
               </Box>
-              <ColumnsSettings />
+              <ColumnsSettings handleClose={handleClose} />
             </TabPanel>
           </Box>
         </Box>
