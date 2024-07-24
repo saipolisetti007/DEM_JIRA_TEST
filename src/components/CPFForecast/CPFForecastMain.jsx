@@ -212,7 +212,7 @@ const CPFForecastMain = () => {
                       </Button>
                     ))}
                   </ButtonGroup>
-                  <IconButton onClick={handleClose}>
+                  <IconButton onClick={handleClose} data-testid="closeUnits">
                     <CloseIcon />
                   </IconButton>
                 </MenuItem>

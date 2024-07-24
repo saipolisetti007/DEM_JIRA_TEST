@@ -17,12 +17,21 @@ const mockFilters = {
 const mockData = [
   {
     sku: 'sku4',
+    prod_name: 'prodName',
+    cs_factor: '100',
+    it_factor: '10',
+    units: 'su',
     forecast: [
       {
-        week: '03/06/24',
-        unit: '2850',
-        active: true,
-        approved: false
+        week: '08/12/2024',
+        unit: 3000,
+        prevUnits: 2500,
+        percentChange: 0.6,
+        unit_diff: 200,
+        editedUnits: 4000,
+        finalunits: 4000,
+        approved: false,
+        active: true
       }
     ]
   }
@@ -166,6 +175,40 @@ describe('CPFForecastMain', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('menu')).toBeInTheDocument();
+    });
+  });
+
+  test('opens the unit selection menu when the button is clicked', () => {
+    render(<CPFForecastMain />);
+    fireEvent.click(screen.getByTestId('MoreVertIcon'));
+    expect(screen.getByRole('menu')).toBeInTheDocument();
+    expect(screen.getByText('Select units:')).toBeInTheDocument;
+    fireEvent.click(screen.getByText('cs'));
+    expect(screen.getByText('cs')).toHaveClass('MuiButton-contained');
+    fireEvent.click(screen.getByTestId('closeUnits'));
+    expect(screen.getByText('Select units:')).not.toBeInTheDocument;
+  });
+
+  test('opens the confirmation dialog when there are unsaved changes and unit is changed', async () => {
+    cpfGetForecast.mockResolvedValue(mockData);
+
+    await act(async () => render(<CPFForecastMain />));
+    await waitFor(() => {
+      expect(cpfFilters).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(cpfGetForecast).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      const tableData = screen.getAllByRole('table')[0];
+      const inputDiv = within(tableData).getByTestId('editedUnit');
+      const input = within(inputDiv).getByPlaceholderText('Edited Units');
+      fireEvent.change(input, { target: { value: '3000' } });
+      expect(input).toHaveValue(3000);
+    });
+    fireEvent.click(screen.getByTestId('MoreVertIcon'));
+    await act(async () => {
+      fireEvent.click(screen.getByText('msu'));
     });
   });
 });

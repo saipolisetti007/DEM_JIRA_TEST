@@ -59,6 +59,7 @@ const NewForecastColumns = ({ selectedUnit, convertedUnits, editedValues, handle
         muiEditTextFieldProps: ({ row, column }) => ({
           type: 'number',
           size: 'small',
+          'data-testid': 'editedUnit',
           className: 'edited-unit',
           value:
             localEditValues?.[row.index]?.[column.id] !== undefined
@@ -79,7 +80,7 @@ const NewForecastColumns = ({ selectedUnit, convertedUnits, editedValues, handle
         enableEditing: false
       }
     ],
-    [selectedUnit, handleEditUnits, editedValues]
+    [selectedUnit, handleEditUnits, editedValues, localEditValues]
   );
 
   return columns;

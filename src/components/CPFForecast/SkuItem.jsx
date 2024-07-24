@@ -32,7 +32,7 @@ const SkuItem = ({
   csFactor,
   itFactor,
   selectedUnit,
-  editedValues,
+  editedValues = {},
   setEditedValues,
   index,
   onSubmit,
@@ -324,7 +324,7 @@ const SkuItem = ({
                 </Typography>
               </div>
 
-              <div className="mt-2">
+              <div className="mt-2" data-testid="NewForecastTable">
                 <MRT_ToolbarAlertBanner table={NewForecastTable} className="info-message" />
                 <MRT_TableContainer table={NewForecastTable} />
               </div>
