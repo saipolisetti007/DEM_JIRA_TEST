@@ -7,7 +7,8 @@ import {
   downloadBlankExcel,
   getData,
   promoGridFilters,
-  uploadDataExcel
+  uploadDataExcel,
+  downloadSelectedDataExcel
 } from '../../api/promoGridApi';
 import PromoGridData from './PromoGridData';
 import { BrowserRouter } from 'react-router-dom';
@@ -778,5 +779,26 @@ describe('PromoGridData Component', () => {
     });
 
     expect(window.alert).toHaveBeenCalledWith('Please select a file');
+  });
+
+  test('should show warning if no rows are selected for export', async () => {
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridData />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
+
+    const exportButton = screen.getByLabelText('Export files');
+    await act(async () => {
+      fireEvent.click(exportButton);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Please select at least one event to export')).toBeInTheDocument();
+    });
   });
 });
