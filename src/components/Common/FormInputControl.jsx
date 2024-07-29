@@ -19,6 +19,7 @@ const FormInputControl = ({
   options,
   isMultiline,
   rows,
+  maxLength,
   isRequired,
   isDisabled,
   defaultValue,
@@ -71,6 +72,7 @@ const FormInputControl = ({
             size="small"
             multiline={isMultiline}
             rows={rows}
+            maxLength={maxLength}
             disabled={isDisabled}
             error={!!error}
             helperText={

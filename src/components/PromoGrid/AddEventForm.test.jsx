@@ -68,6 +68,7 @@ describe('Add Event Form Component', () => {
     golden_customer_id: 2000038335,
     event_type: 'MVM',
     event_subtype: 'Single Item Discount',
+    event_description: 'Test',
     event_sales_channel: 'Store',
     item_type: 'EDA',
     product_id: '37000806950',
@@ -115,9 +116,21 @@ describe('Add Event Form Component', () => {
       fireEvent.change(screen.getByLabelText(/Event in store end date/i), {
         target: { value: mockData.event_in_store_end_date }
       });
-      fireEvent.change(screen.getByLabelText(/event sales channel/i), {
-        target: { value: mockData.event_sales_channel }
+      fireEvent.change(screen.getByLabelText(/Event description/i), {
+        target: { value: mockData.event_description }
       });
+    });
+
+    await act(async () => {
+      const eventSalesChannel = screen.getByLabelText(/event sales channel/i);
+      fireEvent.mouseDown(eventSalesChannel);
+    });
+
+    await waitFor(() => {
+      const eventSalesChannelOption = screen.getByRole('listbox', {
+        name: /event sales channel/i
+      });
+      fireEvent.click(within(eventSalesChannelOption).getByText(mockData.event_sales_channel));
     });
 
     await act(async () => {
@@ -145,22 +158,47 @@ describe('Add Event Form Component', () => {
     });
 
     await act(async () => {
-      fireEvent.change(screen.getByLabelText(/Item type/i), {
-        target: { value: mockData.item_type }
+      const itemType = screen.getByLabelText(/Item type/i);
+      fireEvent.mouseDown(itemType);
+    });
+    await waitFor(() => {
+      const itemTypeOption = screen.getByRole('listbox', {
+        name: /Item type/i
       });
+      fireEvent.click(within(itemTypeOption).getByText(mockData.item_type));
+    });
+    await act(async () => {
       fireEvent.change(screen.getByLabelText(/Product ID/i), {
         target: { value: mockData.product_id }
       });
-      fireEvent.change(screen.getByLabelText(/ID Type/i), {
-        target: { value: mockData.id_type }
+    });
+
+    await act(async () => {
+      const idType = screen.getByLabelText(/ID Type/i);
+      fireEvent.mouseDown(idType);
+    });
+    await waitFor(() => {
+      const idTypeOption = screen.getByRole('listbox', {
+        name: /ID Type/i
       });
+      fireEvent.click(within(idTypeOption).getByText(mockData.id_type));
+    });
+    await act(async () => {
       fireEvent.change(screen.getByLabelText(/Customer item Number/i), {
         target: { value: mockData.customer_item_number }
       });
-      fireEvent.change(screen.getByLabelText(/Country Code/i), {
-        target: { value: mockData.country_code }
-      });
     });
+    await act(async () => {
+      const countryCode = screen.getByLabelText(/Country Code/i);
+      fireEvent.mouseDown(countryCode);
+    });
+    await waitFor(() => {
+      const countryCodeOption = screen.getByRole('listbox', {
+        name: /Country Code/i
+      });
+      fireEvent.click(within(countryCodeOption).getByText(mockData.country_code));
+    });
+
     await act(async () => {
       fireEvent.click(screen.getByText('Next Step'));
     });
@@ -203,9 +241,21 @@ describe('Add Event Form Component', () => {
       fireEvent.change(screen.getByLabelText(/Event in store end date/i), {
         target: { value: mockData.event_in_store_end_date }
       });
-      fireEvent.change(screen.getByLabelText(/event sales channel/i), {
-        target: { value: mockData.event_sales_channel }
+      fireEvent.change(screen.getByLabelText(/Event description/i), {
+        target: { value: mockData.event_description }
       });
+    });
+
+    await act(async () => {
+      const eventSalesChannel = screen.getByLabelText(/event sales channel/i);
+      fireEvent.mouseDown(eventSalesChannel);
+    });
+
+    await waitFor(() => {
+      const eventSalesChannelOption = screen.getByRole('listbox', {
+        name: /event sales channel/i
+      });
+      fireEvent.click(within(eventSalesChannelOption).getByText(mockData.event_sales_channel));
     });
 
     await act(async () => {
@@ -233,21 +283,45 @@ describe('Add Event Form Component', () => {
     });
 
     await act(async () => {
-      fireEvent.change(screen.getByLabelText(/Item type/i), {
-        target: { value: mockData.item_type }
+      const itemType = screen.getByLabelText(/Item type/i);
+      fireEvent.mouseDown(itemType);
+    });
+    await waitFor(() => {
+      const itemTypeOption = screen.getByRole('listbox', {
+        name: /Item type/i
       });
+      fireEvent.click(within(itemTypeOption).getByText(mockData.item_type));
+    });
+    await act(async () => {
       fireEvent.change(screen.getByLabelText(/Product ID/i), {
         target: { value: mockData.product_id }
       });
-      fireEvent.change(screen.getByLabelText(/ID Type/i), {
-        target: { value: mockData.id_type }
+    });
+
+    await act(async () => {
+      const idType = screen.getByLabelText(/ID Type/i);
+      fireEvent.mouseDown(idType);
+    });
+    await waitFor(() => {
+      const idTypeOption = screen.getByRole('listbox', {
+        name: /ID Type/i
       });
+      fireEvent.click(within(idTypeOption).getByText(mockData.id_type));
+    });
+    await act(async () => {
       fireEvent.change(screen.getByLabelText(/Customer item Number/i), {
         target: { value: mockData.customer_item_number }
       });
-      fireEvent.change(screen.getByLabelText(/Country Code/i), {
-        target: { value: mockData.country_code }
+    });
+    await act(async () => {
+      const countryCode = screen.getByLabelText(/Country Code/i);
+      fireEvent.mouseDown(countryCode);
+    });
+    await waitFor(() => {
+      const countryCodeOption = screen.getByRole('listbox', {
+        name: /Country Code/i
       });
+      fireEvent.click(within(countryCodeOption).getByText(mockData.country_code));
     });
     await act(async () => {
       fireEvent.click(screen.getByText('Next Step'));
@@ -293,9 +367,21 @@ describe('Add Event Form Component', () => {
       fireEvent.change(screen.getByLabelText(/Event in store end date/i), {
         target: { value: mockData.event_in_store_end_date }
       });
-      fireEvent.change(screen.getByLabelText(/event sales channel/i), {
-        target: { value: mockData.event_sales_channel }
+      fireEvent.change(screen.getByLabelText(/Event description/i), {
+        target: { value: mockData.event_description }
       });
+    });
+
+    await act(async () => {
+      const eventSalesChannel = screen.getByLabelText(/event sales channel/i);
+      fireEvent.mouseDown(eventSalesChannel);
+    });
+
+    await waitFor(() => {
+      const eventSalesChannelOption = screen.getByRole('listbox', {
+        name: /event sales channel/i
+      });
+      fireEvent.click(within(eventSalesChannelOption).getByText(mockData.event_sales_channel));
     });
 
     await act(async () => {

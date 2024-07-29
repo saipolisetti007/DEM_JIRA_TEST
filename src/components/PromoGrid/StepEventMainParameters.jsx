@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { Box, Grid, Typography } from '@mui/material';
+import { salesChannelOptions } from './FormStepFields';
 
 import FormInputControl from '../Common/FormInputControl';
 import { useSelector } from 'react-redux';
@@ -43,6 +44,7 @@ const StepEventMainParameters = ({ control, settings }) => {
     }
     return true;
   };
+
   return (
     <>
       <Box sx={{ margin: '1.5rem 0px' }}>
@@ -145,23 +147,31 @@ const StepEventMainParameters = ({ control, settings }) => {
               }}
             />
           </Grid>
-          {settings.event_description && (
-            <Grid item xs={12}>
-              <FormInputControl
-                control={control}
-                name="event_description"
-                label="Event description"
-                type="text"
-              />
-            </Grid>
-          )}
+
+          <Grid item xs={12}>
+            <FormInputControl
+              control={control}
+              name="event_description"
+              label="Event description"
+              type="text"
+              isRequired={true}
+              rules={{
+                maxLength: {
+                  value: 49,
+                  message: 'Description can not be exceed 49 characters'
+                }
+              }}
+            />
+          </Grid>
+
           <Grid item xs={6}>
             <FormInputControl
               control={control}
               name="event_sales_channel"
               label="Event sales channel"
-              type="text"
+              type="select"
               isRequired={true}
+              options={salesChannelOptions}
             />
           </Grid>
           {settings.event_description && (

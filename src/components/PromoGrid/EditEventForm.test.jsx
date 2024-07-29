@@ -67,6 +67,7 @@ describe('Add Event Form Component', () => {
     event_type: 'MVM',
     event_subtype: 'Single Item Discount',
     event_sales_channel: 'Store',
+    event_description: 'Test',
     item_type: 'EDA',
     product_id: '37000806950',
     id_type: 'GTIN',
@@ -111,6 +112,10 @@ describe('Add Event Form Component', () => {
     });
     const event_in_store_end_date = screen.getByRole('textbox', {
       name: /Event in Store End Date/i
+    });
+
+    fireEvent.change(screen.getByLabelText(/Event description/i), {
+      target: { value: mockData.event_description }
     });
 
     fireEvent.change(event_in_store_start_date, {

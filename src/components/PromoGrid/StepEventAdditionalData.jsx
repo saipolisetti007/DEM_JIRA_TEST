@@ -1,6 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
 import FormInputControl from '../Common/FormInputControl';
+import { itemTypeOptions, iDTypeOptions, countryOptions } from './FormStepFields';
 
 const StepEventAdditionalData = ({ control, settings }) => {
   return (
@@ -41,8 +42,9 @@ const StepEventAdditionalData = ({ control, settings }) => {
             control={control}
             name="item_type"
             label="Item type"
-            type="text"
+            type="select"
             isRequired={true}
+            options={itemTypeOptions}
           />
         </Grid>
         {settings.bu && (
@@ -64,8 +66,9 @@ const StepEventAdditionalData = ({ control, settings }) => {
             control={control}
             name="id_type"
             label="ID type"
-            type="text"
+            type="select"
             isRequired={true}
+            options={iDTypeOptions}
           />
         </Grid>
         <Grid item xs={6}>
@@ -120,8 +123,9 @@ const StepEventAdditionalData = ({ control, settings }) => {
             control={control}
             name="country_code"
             label="Country code"
-            type="text"
+            type="select"
             isRequired={true}
+            options={countryOptions}
           />
         </Grid>
         {settings.distribution_profile && (

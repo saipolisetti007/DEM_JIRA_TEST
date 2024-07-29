@@ -55,10 +55,13 @@ const AddEventForm = ({ handleClose }) => {
   };
 
   const handleStep = async (step) => {
-    const isValid = await trigger();
-    if (isValid) {
-      setActiveStep(step);
-      setStepCompleted({ ...stepCompleted, [visibleSteps.length - 1]: false });
+    if (step !== activeStep) {
+      const isValid = await trigger(stepFields[activeStep]);
+      if (isValid) {
+        setIsNextDisabled(false);
+        setActiveStep(step);
+        setStepCompleted({ ...stepCompleted, [visibleSteps.length - 1]: false });
+      }
     }
   };
 
@@ -164,9 +167,11 @@ const AddEventForm = ({ handleClose }) => {
 
       <FormProvider {...methods}>
         <form>
-          {activeStep === 0 && <StepEventMainParameters control={control} settings={settings} />}
-          {activeStep === 1 && <StepEventAdditionalData control={control} settings={settings} />}
-          {activeStep === 2 && <StepEventProperties control={control} settings={settings} />}
+          <Box sx={{ minHeight: 400 }}>
+            {activeStep === 0 && <StepEventMainParameters control={control} settings={settings} />}
+            {activeStep === 1 && <StepEventAdditionalData control={control} settings={settings} />}
+            {activeStep === 2 && <StepEventProperties control={control} settings={settings} />}
+          </Box>
           <Box
             sx={{
               display: 'flex',

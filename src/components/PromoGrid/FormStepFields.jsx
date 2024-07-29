@@ -62,7 +62,7 @@ const dateFields = [
 ];
 
 const settingsFields = {
-  0: ['start_of_shipments', 'end_of_shipments', 'event_description', 'umbrella_event', 'comments'],
+  0: ['start_of_shipments', 'end_of_shipments', 'umbrella_event', 'comments'],
   1: [
     'expected_shipments_forecast',
     'expected_consumption_forecast',
@@ -98,4 +98,32 @@ const settingsFields = {
   ]
 };
 
-export { steps, stepFields, dateFields, settingsFields };
+const salesChannelOptions = ['Store', 'Ecomm'];
+const itemTypeOptions = ['EDA', 'In & Out'];
+const iDTypeOptions = ['FPC', 'GTIN'];
+const countryOptions = [
+  'US',
+  'CA',
+  'GB',
+  'FR',
+  'DE',
+  'IT',
+  'JP',
+  'CN',
+  'IN',
+  'BR',
+  'RU',
+  'ZA',
+  'PL'
+];
+
+export {
+  steps,
+  stepFields,
+  dateFields,
+  settingsFields,
+  salesChannelOptions,
+  itemTypeOptions,
+  countryOptions,
+  iDTypeOptions
+};
