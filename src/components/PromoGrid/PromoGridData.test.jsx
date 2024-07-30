@@ -186,7 +186,6 @@ describe('PromoGridData Component', () => {
   });
 
   test('update data based on filter change and render data', async () => {
-    promoGridFilters.mockResolvedValue(mockFilters);
     await act(async () =>
       render(
         <Provider store={store}>
@@ -214,7 +213,17 @@ describe('PromoGridData Component', () => {
     });
 
     await waitFor(() => {
-      expect(getData).toHaveBeenCalled();
+      expect(getData).toHaveBeenCalledTimes(2);
+      expect(getData).toHaveBeenCalledWith(
+        expect.any(Number),
+        expect.any(Number),
+        expect.any(Object)
+      );
+    });
+
+    // Verify that the data is rendered correctly
+    await waitFor(() => {
+      expect(screen.getByText('MVM')).toBeInTheDocument();
     });
   });
 

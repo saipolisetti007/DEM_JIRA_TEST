@@ -33,6 +33,7 @@ import { debounce } from 'lodash';
 import { getSettings } from './settingsSlice';
 import { reduceFilters, mapFilterParams } from '../../utils/filterUtils';
 import ManageColumns from './ManageColumns';
+import createDebouncedFetchFilters from '../../utils/debounceUtils';
 
 const PromoGridData = () => {
   const location = useLocation();
@@ -91,19 +92,20 @@ const PromoGridData = () => {
   const { userData } = useSelector((state) => state.userProfileData);
   const customerId = userData?.customers[0];
 
-  const fetchFilters = async () => {
+  const fetchFilters = async (filters = {}) => {
     try {
-      const response = await promoGridFilters();
-      setFilterOptions({
-        subsector: response?.subsector,
-        category: response?.category,
-        brand: response?.brand,
-        brandForm: response?.prod_form_name,
-        sku: response?.sku,
-        prodName: response?.prod_name,
-        customerItemNumber: response?.customer_item_number,
-        active: response?.active || ['Active']
-      });
+      const response = await promoGridFilters(filters);
+      setFilterOptions((prevOptions) => ({
+        ...prevOptions,
+        subsector: response?.subsector || prevOptions.subsector,
+        category: response?.category || prevOptions.category,
+        brand: response?.brand || prevOptions.brand,
+        brandForm: response?.prod_form_name || prevOptions.brandForm,
+        sku: response?.sku || prevOptions.sku,
+        prodName: response?.prod_name || prevOptions.prodName,
+        customerItemNumber: response?.customer_item_number || prevOptions.customerItemNumber,
+        active: response?.active || prevOptions.active
+      }));
       setIsDataLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -143,7 +145,7 @@ const PromoGridData = () => {
   }, [pagination, selectedFilters]);
 
   useEffect(() => {
-    fetchFilters();
+    fetchFilters(selectedFilters);
   }, []);
 
   useEffect(() => {
@@ -157,15 +159,25 @@ const PromoGridData = () => {
     }
   }, [location.state]);
 
+  const debouncedFetchFilters = useCallback(
+    createDebouncedFetchFilters(promoGridFilters, setFilterOptions, setIsSnackOpen, setSnackBar),
+    []
+  );
+
   const handleFilterChange = (filterKey, values) => {
-    setSelectedFilters((prev) => ({
-      ...prev,
+    const updatedFilters = {
+      ...selectedFilters,
       [filterKey]: values
-    }));
+    };
+
+    setSelectedFilters(updatedFilters);
     setPagination((prev) => ({
       ...prev,
       pageIndex: 0
     }));
+
+    // Debounced fetching of updated filter options based on the current selections
+    debouncedFetchFilters(updatedFilters);
   };
 
   const handleCancel = (row = null) => {
@@ -502,7 +514,7 @@ const PromoGridData = () => {
       <PageSection>
         <PageHeader
           table={table}
-          title="Event promo grid"
+          title="Event Promo Plan"
           subtitle="Manage events "
           handleAddEventOpen={handleAddEventOpen}
           handleDataDownloadExcel={handleDataDownloadExcel}

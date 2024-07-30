@@ -179,7 +179,16 @@ describe('promoGridApi', () => {
     performApiRequest.mockResolvedValueOnce(mockFilters);
     const result = await promoGridFilters();
     expect(result).toEqual(mockFilters);
-    expect(performApiRequest).toHaveBeenCalledWith('promo/filter/', 'GET');
+    expect(performApiRequest).toHaveBeenCalledWith('promo/filter/', 'POST', {
+      brand: [],
+      category: [],
+      subsector: [],
+      brandForm: [],
+      active: [],
+      sku: [],
+      customerItemNumber: [],
+      prodName: []
+    });
   });
 
   test('get User Profile ', async () => {

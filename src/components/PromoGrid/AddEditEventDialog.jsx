@@ -107,7 +107,7 @@ const AddEditEventDialog = ({ open, rowData, isEdit, handleClose }) => {
                   Settings
                 </Typography>
                 <Typography component="p" variant="subtitle1">
-                  Manage your input fields in Event promo grid
+                  Manage your input fields in Event Promo Plan
                 </Typography>
               </Box>
               <ColumnsSettings handleClose={handleClose} />

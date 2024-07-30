@@ -5,8 +5,21 @@ export const cpfGetData = async () => {
   return response;
 };
 
-export const cpfFilters = async () => {
-  const response = await performApiRequest('cpf/filters/');
+export const cpfFilters = async (filters = {}) => {
+  const defaultFilters = {
+    brand: [],
+    category: [],
+    subsector: [],
+    brandForm: [],
+    sku: [],
+    customerItemNumber: [],
+    prodName: []
+  };
+
+  const payload = { ...defaultFilters, ...filters };
+
+  const url = 'cpf/filters/';
+  const response = await performApiRequest(url, 'POST', payload);
   return response;
 };
 

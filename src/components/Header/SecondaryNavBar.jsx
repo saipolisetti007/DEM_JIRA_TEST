@@ -42,7 +42,7 @@ const SecondaryNavBar = () => {
                 className="flex items-center align-middle text-sm">
                 <ListIcon isActive={isActive} className="mr-2" />
                 <span className={`text-sm mx-2 ${isActive ? 'text-[#003DA5]' : 'text-white'}`}>
-                  Event Promo Grid
+                  Event Promo Plan
                 </span>
               </Button>
             )}

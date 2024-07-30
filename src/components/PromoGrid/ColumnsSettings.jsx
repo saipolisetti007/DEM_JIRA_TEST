@@ -124,7 +124,7 @@ const ColumnsSettings = ({ handleClose }) => {
           backgroundColor: '#fff'
         }}>
         <Button color="primary" variant="outlined" onClick={handleClose}>
-          Return to Event Promo Grid
+          Return to Event Promo Plan
         </Button>
 
         <Button color="primary" variant="contained" onClick={handleSave}>

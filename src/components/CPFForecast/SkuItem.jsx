@@ -332,7 +332,7 @@ const SkuItem = ({
 
             <Grid item md={5}>
               <Typography variant="h5" component="h4" className="h-6">
-                Previous Forecast
+                Last Submitted Forecast
               </Typography>
 
               <div className="mt-2">
@@ -349,8 +349,7 @@ const SkuItem = ({
         onClose={() => setOpenSubmitDialog(false)}
         onConfirm={handleSubmit}
         title="Are you sure.. ? Save decision?"
-        contentHeading="Please check the Forecast, Only Checked values are to be submitted, unchecked values
-              will be rejected."
+        contentHeading="Please confirm the selection of a portion of available event forecast weeks. Unchecked values will remain as previously submitted."
       />
 
       {isSnackOpen && snackBar && (

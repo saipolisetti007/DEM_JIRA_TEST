@@ -21,7 +21,7 @@ const BreadcrumbNavigation = ({ onNavigate }) => {
         href="/promo-grid"
         onClick={(event) => handleClick(event, '/promo-grid')}
         style={{ textDecoration: 'underline', color: 'black', fontWeight: 500 }}>
-        Event Promo Grid
+        Event Promo Plan
       </Typography>
       <Typography color="action.disabled">Promo Grid Validation Page</Typography>
     </Breadcrumbs>

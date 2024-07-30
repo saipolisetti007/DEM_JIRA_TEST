@@ -20,14 +20,14 @@ describe('SecondaryNavBar component', () => {
   test('renders without crashing', () => {
     renderWithRouter(<SecondaryNavBar />);
     expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
-    expect(screen.getByText(/Event Promo Grid/i)).toBeInTheDocument();
+    expect(screen.getByText(/Event Promo Plan/i)).toBeInTheDocument();
     expect(screen.getByText(/CPF Forecast/i)).toBeInTheDocument();
   });
 
   test('renders all navigation links', () => {
     renderWithRouter(<SecondaryNavBar />);
     expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
-    expect(screen.getByText(/Event Promo Grid/i)).toBeInTheDocument();
+    expect(screen.getByText(/Event Promo Plan/i)).toBeInTheDocument();
     expect(screen.getByText(/CPF Forecast/i)).toBeInTheDocument();
   });
 
@@ -36,7 +36,7 @@ describe('SecondaryNavBar component', () => {
     expect(screen.getByText(/Dashboard/i).closest('a')).toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
-    expect(screen.getByText(/Event Promo Grid/i).closest('a')).not.toHaveClass(
+    expect(screen.getByText(/Event Promo Plan/i).closest('a')).not.toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
     expect(screen.getByText(/CPF Forecast/i).closest('a')).not.toHaveClass(
@@ -46,7 +46,7 @@ describe('SecondaryNavBar component', () => {
 
   test('applies active class to the correct link when navigating to /promo-grid', () => {
     renderWithRouter(<SecondaryNavBar />, { route: '/promo-grid' });
-    expect(screen.getByText(/Event Promo Grid/i).closest('a')).toHaveClass(
+    expect(screen.getByText(/Event Promo Plan/i).closest('a')).toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
     expect(screen.getByText(/Dashboard/i).closest('a')).not.toHaveClass(
@@ -65,7 +65,7 @@ describe('SecondaryNavBar component', () => {
     expect(screen.getByText(/Dashboard/i).closest('a')).not.toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
-    expect(screen.getByText(/Event Promo Grid/i).closest('a')).not.toHaveClass(
+    expect(screen.getByText(/Event Promo Plan/i).closest('a')).not.toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
   });
@@ -73,7 +73,7 @@ describe('SecondaryNavBar component', () => {
   test('navigates to the correct route', () => {
     renderWithRouter(<SecondaryNavBar />);
     expect(screen.getByText(/Dashboard/i).closest('a')).toHaveAttribute('href', '/');
-    expect(screen.getByText(/Event Promo Grid/i).closest('a')).toHaveAttribute(
+    expect(screen.getByText(/Event Promo Plan/i).closest('a')).toHaveAttribute(
       'href',
       '/promo-grid'
     );

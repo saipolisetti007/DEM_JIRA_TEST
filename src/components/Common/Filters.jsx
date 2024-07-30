@@ -27,26 +27,22 @@ const StyledAutocomplete = styled(Autocomplete)(({ theme, disabled }) => ({
   }
 }));
 
-function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) {
+const Filters = ({ filterOptions, isLoading, selectedFilters, onFilterChange }) => {
   const handleFilterChange = (filterKey) => (event, values, reason) => {
     if (reason === 'selectOption' && values.includes('All')) {
-      // Select all options including 'All'
       onFilterChange(filterKey, ['All', ...filterOptions[filterKey]]);
     } else if (
       reason === 'removeOption' &&
       selectedFilters[filterKey]?.includes('All') &&
       !values.includes('All')
     ) {
-      // Deselect all options including 'All'
       onFilterChange(filterKey, []);
     } else if (reason === 'removeOption' && selectedFilters[filterKey]?.includes('All')) {
-      // If 'All' was previously selected but now a specific option is deselected
       onFilterChange(
         filterKey,
         values.filter((value) => value !== 'All')
       );
     } else {
-      // Handle regular selection and deselection
       onFilterChange(filterKey, values);
     }
   };
@@ -60,7 +56,7 @@ function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
 
   return (
     <Box>
-      <div className="flex mx-2 my-3">
+      <div className="flex my-3">
         <div className="flex items-center">
           <span className="mr-5 font-montserrat font-bold">Select filters: </span>
           <div>
@@ -69,7 +65,7 @@ function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
                 data-testid="filter-form-control"
                 sx={{ mx: 0.7 }}
                 key={filterKey}
-                className="min-w-[120px] w-[152px]"
+                className="min-w-[120px] w-[154.8px]" // temp fix for urgent request
                 size="small">
                 <StyledAutocomplete
                   multiple
@@ -126,6 +122,6 @@ function Filters({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
       </div>
     </Box>
   );
-}
+};
 
 export default Filters;

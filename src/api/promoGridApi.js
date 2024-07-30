@@ -101,9 +101,22 @@ export const promoGridSubmit = async (promoHeader) => {
   await performApiRequest('promo/promo-grid-submit/', 'POST', promoHeader);
 };
 
-export const promoGridFilters = async () => {
+export const promoGridFilters = async (filters = {}) => {
+  const defaultFilters = {
+    brand: [],
+    category: [],
+    subsector: [],
+    brandForm: [],
+    active: [],
+    sku: [],
+    customerItemNumber: [],
+    prodName: []
+  };
+
+  const payload = { ...defaultFilters, ...filters };
+
   const url = 'promo/filter/';
-  const response = await performApiRequest(url, 'GET');
+  const response = await performApiRequest(url, 'POST', payload);
   return response;
 };
 

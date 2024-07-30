@@ -8,7 +8,7 @@ describe('BreadcrumbNavigation', () => {
     render(<BreadcrumbNavigation onNavigate={() => {}} />);
 
     expect(screen.getByText('Homepage')).toBeInTheDocument();
-    expect(screen.getByText('Event Promo Grid')).toBeInTheDocument();
+    expect(screen.getByText('Event Promo Plan')).toBeInTheDocument();
     expect(screen.getByText('Promo Grid Validation Page')).toBeInTheDocument();
   });
 
@@ -21,11 +21,11 @@ describe('BreadcrumbNavigation', () => {
     expect(onNavigateMock).toHaveBeenCalledWith('/');
   });
 
-  test('calls onNavigate with the correct argument when Event Promo Grid link is clicked', () => {
+  test('calls onNavigate with the correct argument when Event Promo Plan link is clicked', () => {
     const onNavigateMock = jest.fn();
     render(<BreadcrumbNavigation onNavigate={onNavigateMock} />);
 
-    fireEvent.click(screen.getByText('Event Promo Grid'));
+    fireEvent.click(screen.getByText('Event Promo Plan'));
 
     expect(onNavigateMock).toHaveBeenCalledWith('/promo-grid');
   });

@@ -38,7 +38,15 @@ describe('cpfForecastApi', () => {
     performApiRequest.mockResolvedValueOnce(mockFilters);
     const result = await cpfFilters();
     expect(result).toEqual(mockFilters);
-    expect(performApiRequest).toHaveBeenCalledWith('cpf/filters/');
+    expect(performApiRequest).toHaveBeenCalledWith('cpf/filters/', 'POST', {
+      brand: [],
+      category: [],
+      subsector: [],
+      brandForm: [],
+      sku: [],
+      customerItemNumber: [],
+      prodName: []
+    });
   });
 
   test('get pending products count', async () => {

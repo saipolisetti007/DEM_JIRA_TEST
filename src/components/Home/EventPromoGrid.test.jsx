@@ -18,7 +18,7 @@ describe('EventPromoGrid', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Event promo grid')).toBeInTheDocument();
+    expect(screen.getByText('Event Promo Plan')).toBeInTheDocument();
     expect(screen.getByText('Manage events in your promo grid')).toBeInTheDocument();
   });
 
@@ -41,7 +41,7 @@ describe('EventPromoGrid', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Event promo grid')).toBeInTheDocument();
+    expect(screen.getByText('Event Promo Plan')).toBeInTheDocument();
     expect(screen.getByText('Manage events in your promo grid')).toBeInTheDocument();
   });
 

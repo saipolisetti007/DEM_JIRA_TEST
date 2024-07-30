@@ -21,6 +21,7 @@ import ConfirmationDialog from './ConfirmationDialog';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CloseIcon from '@mui/icons-material/Close';
 import { reduceFilters, mapFilterParams } from '../../utils/filterUtils';
+import createDebouncedFetchFilters from '../../utils/debounceUtils';
 
 const CPFForecastMain = () => {
   const [cpfData, setCpfData] = useState([]);
@@ -42,8 +43,8 @@ const CPFForecastMain = () => {
     brand: [],
     brandForm: [],
     sku: [],
-    prod_name: [],
-    customer_item_number: []
+    prodName: [],
+    customerItemNumber: []
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
@@ -56,18 +57,19 @@ const CPFForecastMain = () => {
     customerItemNumber: []
   });
 
-  const fetchFilters = async () => {
+  const fetchFilters = async (filters = {}) => {
     try {
-      const response = await cpfFilters();
-      setFilterOptions({
-        subsector: response?.subsector || [],
-        category: response?.category || [],
-        brand: response?.brand || [],
-        brandForm: response?.prod_form_name || [],
-        sku: response?.sku || [],
-        prodName: response?.prod_name || [],
-        customerItemNumber: response?.customer_item_number || []
-      });
+      const response = await cpfFilters(filters);
+      setFilterOptions((prevOptions) => ({
+        ...prevOptions,
+        subsector: response?.subsector || prevOptions.subsector,
+        category: response?.category || prevOptions.category,
+        brand: response?.brand || prevOptions.brand,
+        brandForm: response?.prod_form_name || prevOptions.brandForm,
+        sku: response?.sku || prevOptions.sku,
+        prodName: response?.prod_name || prevOptions.prodName,
+        customerItemNumber: response?.customer_item_number || prevOptions.customerItemNumber
+      }));
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -103,6 +105,21 @@ const CPFForecastMain = () => {
 
   const debouncedFetchData = useCallback(debounce(fetchData, 500), []);
 
+  const debouncedFetchFilters = useCallback(
+    createDebouncedFetchFilters(cpfFilters, setFilterOptions, setIsSnackOpen, setSnackBar),
+    []
+  );
+
+  const handleFilterChange = (filterKey, values) => {
+    const updatedFilters = {
+      ...selectedFilters,
+      [filterKey]: values
+    };
+
+    setSelectedFilters(updatedFilters);
+    debouncedFetchFilters(updatedFilters);
+  };
+
   useEffect(() => {
     debouncedFetchData(selectedFilters);
     return () => {
@@ -111,15 +128,8 @@ const CPFForecastMain = () => {
   }, [selectedFilters]);
 
   useEffect(() => {
-    fetchFilters();
+    fetchFilters(selectedFilters);
   }, []);
-
-  const handleFilterChange = (filterKey, values) => {
-    setSelectedFilters((prev) => ({
-      ...prev,
-      [filterKey]: values
-    }));
-  };
 
   const handleAccordionChange = (index) => {
     setExpandedIndex((prevIndex) => (prevIndex === index ? -1 : index));
