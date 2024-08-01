@@ -12,6 +12,9 @@ const initialState = {
   userProfileData: {
     customers: [{ id: 1, name: '2000038335' }]
   },
+  countriesData: {
+    countriesData: ['US', 'AE']
+  },
   eventsData: {
     eventsData: {
       MVM: ['Single Item Discount', 'Future Value'],
@@ -196,6 +199,7 @@ describe('Add Event Form Component', () => {
       const countryCodeOption = screen.getByRole('listbox', {
         name: /Country Code/i
       });
+      expect(countryCodeOption).toBeInTheDocument();
       fireEvent.click(within(countryCodeOption).getByText(mockData.country_code));
     });
 

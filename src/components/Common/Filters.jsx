@@ -13,7 +13,7 @@ function formatFilterKey(filterKey) {
     brandForm: 'Brand Form',
     prodName: 'Product Name',
     customerItemNumber: 'Customer Item Number',
-    customerFlag: 'Customer Flag',
+    customerFlag: 'Customisation Flag',
     eventType: 'Event Type',
     eventSubtype: 'Event Subtype'
   };

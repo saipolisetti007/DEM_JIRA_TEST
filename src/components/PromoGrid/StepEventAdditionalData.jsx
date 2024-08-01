@@ -1,9 +1,11 @@
 import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
 import FormInputControl from '../Common/FormInputControl';
-import { itemTypeOptions, iDTypeOptions, countryOptions } from './FormStepFields';
+import { itemTypeOptions, iDTypeOptions } from './FormStepFields';
+import { useSelector } from 'react-redux';
 
 const StepEventAdditionalData = ({ control, settings }) => {
+  const { countriesData } = useSelector((state) => state.countriesData);
   return (
     <Box sx={{ margin: '1.5rem 0px' }}>
       <Typography component="h4" variant="h5" sx={{ margin: '1rem 0px' }}>
@@ -123,9 +125,9 @@ const StepEventAdditionalData = ({ control, settings }) => {
             control={control}
             name="country_code"
             label="Country code"
-            type="select"
+            type="autocomplete"
             isRequired={true}
-            options={countryOptions}
+            options={countriesData}
           />
         </Grid>
         {settings.distribution_profile && (

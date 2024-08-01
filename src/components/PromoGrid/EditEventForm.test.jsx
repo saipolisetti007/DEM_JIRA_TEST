@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, act, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, act, waitFor, fireEvent, within } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from '../../store/reducers';
@@ -61,7 +61,7 @@ const store = configureStore({
   preloadedState: initialState
 });
 
-describe('Add Event Form Component', () => {
+describe('Edit Event Form Component', () => {
   const mockData = {
     golden_customer_id: 2000038335,
     event_type: 'MVM',
@@ -171,8 +171,10 @@ describe('Add Event Form Component', () => {
     await waitFor(() => {
       expect(screen.getByText('Please fix errors in and try to save again')).toBeInTheDocument();
     });
+    const snackbar = screen.getByTestId('snackbar');
+    const closeIcon = within(snackbar).getByTestId('CloseIcon');
 
-    fireEvent.click(screen.getByTestId('CloseIcon'));
+    fireEvent.click(closeIcon);
   });
   test('handles accordion panel change', async () => {
     const handleClose = jest.fn();

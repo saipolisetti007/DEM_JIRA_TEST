@@ -6,7 +6,8 @@ import {
   Switch,
   FormControlLabel,
   FormControl,
-  FormHelperText
+  FormHelperText,
+  Autocomplete
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -16,7 +17,7 @@ const FormInputControl = ({
   name,
   label,
   type,
-  options,
+  options = [],
   isMultiline,
   rows,
   maxLength,
@@ -119,6 +120,39 @@ const FormInputControl = ({
               </MenuItem>
             ))}
           </TextField>
+        );
+      case 'autocomplete':
+        return (
+          <Autocomplete
+            {...field}
+            value={options.includes(field.value) ? field.value : null}
+            isOptionEqualToValue={(option, value) => option === value}
+            options={options}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={label}
+                variant="outlined"
+                fullWidth
+                size="small"
+                required={isRequired}
+                error={!!error}
+                helperText={
+                  error ? (
+                    <span>
+                      <ErrorIcon fontSize="small" /> {error.message}
+                    </span>
+                  ) : (
+                    ''
+                  )
+                }
+              />
+            )}
+            onChange={(event, value) => {
+              field.onChange(value);
+              clearErrors(name);
+            }}
+          />
         );
       case 'switch':
         return (

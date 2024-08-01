@@ -5,6 +5,7 @@ import { loginRequest } from '../../auth/authConfig';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserProfile } from './userProfileSlice';
 import { fetchEvents } from '../PromoGrid/eventsSlice';
+import { fetchCountries } from '../PromoGrid/countryCodeSlice';
 
 const NavBar = () => {
   const [hasFetchData, setHasFetchData] = useState(false);
@@ -45,6 +46,10 @@ const NavBar = () => {
   useEffect(() => {
     fecthData();
   }, [activeAccount, dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchCountries());
+  }, [dispatch]);
 
   const fecthData = async () => {
     if (activeAccount && !hasFetchData) {

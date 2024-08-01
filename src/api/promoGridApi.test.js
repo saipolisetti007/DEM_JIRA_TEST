@@ -15,7 +15,8 @@ import {
   promoGridColumnCreate,
   promoGridColumnSettings,
   downloadBlankExcel,
-  downloadSelectedDataExcel
+  downloadSelectedDataExcel,
+  getCountries
 } from './promoGridApi';
 
 jest.mock('./apiUtils', () => ({
@@ -413,5 +414,14 @@ describe('promoGridApi', () => {
     createElementSpy.mockRestore();
     appendChildSpy.mockRestore();
     removeChildSpy.mockRestore();
+  });
+
+  test('get countries ', async () => {
+    const data = ['AE', 'BE', 'US'];
+    performApiRequest.mockResolvedValueOnce(data);
+    const result = await getCountries();
+    expect(result).toEqual(data);
+
+    expect(performApiRequest).toHaveBeenCalledWith('masterdata/countries/');
   });
 });

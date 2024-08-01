@@ -23,6 +23,11 @@ export const getEvents = async (customerId) => {
   return response;
 };
 
+export const getCountries = async () => {
+  const response = await performApiRequest('masterdata/countries/');
+  return response;
+};
+
 export const addNewRowData = async (rowData) => {
   const response = await performApiRequest('promo/promo-grid-add/', 'POST', rowData);
   return response;
