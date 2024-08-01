@@ -70,6 +70,7 @@ const PromoGridData = () => {
     sku: [],
     prodName: [],
     customerItemNumber: [],
+    customerFlag: [],
     active: ['Active']
   });
 
@@ -81,6 +82,7 @@ const PromoGridData = () => {
     sku: [],
     prodName: [],
     customerItemNumber: [],
+    customerFlag: [],
     active: ['Active']
   });
 
@@ -104,6 +106,7 @@ const PromoGridData = () => {
         sku: response?.sku || prevOptions.sku,
         prodName: response?.prod_name || prevOptions.prodName,
         customerItemNumber: response?.customer_item_number || prevOptions.customerItemNumber,
+        customerFlag: response?.cust_flag || prevOptions.customerFlag,
         active: response?.active || prevOptions.active
       }));
       setIsDataLoading(false);
@@ -160,7 +163,10 @@ const PromoGridData = () => {
   }, [location.state]);
 
   const debouncedFetchFilters = useCallback(
-    createDebouncedFetchFilters(promoGridFilters, setFilterOptions, setIsSnackOpen, setSnackBar),
+    createDebouncedFetchFilters(promoGridFilters, setFilterOptions, setIsSnackOpen, setSnackBar, [
+      'eventType',
+      'eventSubtype'
+    ]),
     []
   );
 

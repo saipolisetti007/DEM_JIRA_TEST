@@ -33,7 +33,9 @@ describe('cpfForecastApi', () => {
       brandForm: ['brandForm4'],
       sku: ['sku4'],
       prod_name: ['Product1'],
-      customer_item_number: ['123456']
+      customer_item_number: ['123456'],
+      eventType: ['MVM'],
+      eventSubtype: ['Future Value']
     };
     performApiRequest.mockResolvedValueOnce(mockFilters);
     const result = await cpfFilters();
@@ -45,7 +47,9 @@ describe('cpfForecastApi', () => {
       brandForm: [],
       sku: [],
       customerItemNumber: [],
-      prodName: []
+      prodName: [],
+      eventType: [],
+      eventSubtype: []
     });
   });
 
@@ -86,7 +90,9 @@ describe('cpfForecastApi', () => {
       brandForm: [],
       sku: [],
       prodName: [],
-      customerItemNumber: []
+      customerItemNumber: [],
+      eventType: [],
+      eventSubtype: []
     });
   });
 
@@ -113,7 +119,9 @@ describe('cpfForecastApi', () => {
       brandForm: [],
       sku: [],
       prodName: ['Product1'],
-      customerItemNumber: ['123456']
+      customerItemNumber: ['123456'],
+      eventType: [],
+      eventSubtype: []
     });
   });
 

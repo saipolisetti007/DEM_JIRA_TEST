@@ -316,8 +316,8 @@ const SkuItem = ({
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          <Grid container spacing={4}>
-            <Grid item md={7}>
+          <Grid container spacing={2}>
+            <Grid item md={8}>
               <div className="flex w-full justify-between items-center h-6">
                 <Typography variant="h5" component="h4">
                   New Forecast
@@ -330,7 +330,7 @@ const SkuItem = ({
               </div>
             </Grid>
 
-            <Grid item md={5}>
+            <Grid item md={4}>
               <Typography variant="h5" component="h4" className="h-6">
                 Last Submitted Forecast
               </Typography>

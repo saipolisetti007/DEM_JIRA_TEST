@@ -1,4 +1,4 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act, waitFor, render } from '@testing-library/react';
 import NewForecastColumns from './NewForecastColumns';
 
 describe('NewForecastColumns', () => {
@@ -22,8 +22,16 @@ describe('NewForecastColumns', () => {
     );
 
     const columns = result.current;
-    expect(columns).toHaveLength(6);
-    const headers = ['Weeks', '% Change', 'Unit Diff', 'Units', 'Edited Units', 'Final Units'];
+    expect(columns).toHaveLength(7);
+    const headers = [
+      'Weeks',
+      '% Change',
+      'Unit Diff',
+      'Units',
+      'Edited Units',
+      'Final Units',
+      'Event type'
+    ];
     headers.forEach((header, index) => {
       expect(columns[index].header).toBe(header);
     });
@@ -106,9 +114,35 @@ describe('NewForecastColumns', () => {
     const rowColumns = columns.filter((column) => typeof column.Cell === 'function');
 
     rowColumns.forEach((column) => {
+      const cellProps = {
+        cell: {
+          getValue: jest.fn(() => {
+            if (column.accessorKey === 'events') {
+              return [
+                {
+                  event_type: 'Display',
+                  event_subtype: 'Fence',
+                  event_start: '2024-08-09',
+                  event_end: '2024-09-22'
+                },
+                {
+                  event_type: 'MVM',
+                  event_subtype: 'Single Item Discount',
+                  event_start: '2024-06-17',
+                  event_end: '2024-09-23'
+                }
+              ];
+            }
+            return 'Sample Value';
+          })
+        }
+      };
+
       if (column.accessorKey === 'percentChange') {
         const row = { original: { [column.id]: 5 } };
         expect(column.Cell({ row, column })).toBe('5.00%');
+      } else if (column.accessorKey === 'events') {
+        render(<column.Cell {...cellProps} />);
       } else {
         const row = { original: { [column.id]: 5 } };
         waitFor(() => {

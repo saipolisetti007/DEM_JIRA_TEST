@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import EventList from './EventList';
 
 const NewForecastColumns = ({ selectedUnit, convertedUnits, editedValues, handleEditUnits }) => {
   const [localEditValues, setLocalEditValues] = useState({});
@@ -77,6 +78,12 @@ const NewForecastColumns = ({ selectedUnit, convertedUnits, editedValues, handle
         accessorKey: 'finalunits',
         header: 'Final Units',
         Cell: ({ row, column }) => convertedUnits(row.original[column.id], selectedUnit),
+        enableEditing: false
+      },
+      {
+        accessorKey: 'events',
+        header: 'Event type',
+        Cell: ({ cell }) => <EventList events={cell.getValue()} />,
         enableEditing: false
       }
     ],

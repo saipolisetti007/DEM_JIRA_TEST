@@ -44,7 +44,9 @@ const CPFForecastMain = () => {
     brandForm: [],
     sku: [],
     prodName: [],
-    customerItemNumber: []
+    customerItemNumber: [],
+    eventType: [],
+    eventSubtype: []
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
@@ -54,7 +56,9 @@ const CPFForecastMain = () => {
     brandForm: [],
     sku: [],
     prodName: [],
-    customerItemNumber: []
+    customerItemNumber: [],
+    eventType: [],
+    eventSubtype: []
   });
 
   const fetchFilters = async (filters = {}) => {
@@ -68,7 +72,9 @@ const CPFForecastMain = () => {
         brandForm: response?.prod_form_name || prevOptions.brandForm,
         sku: response?.sku || prevOptions.sku,
         prodName: response?.prod_name || prevOptions.prodName,
-        customerItemNumber: response?.customer_item_number || prevOptions.customerItemNumber
+        customerItemNumber: response?.customer_item_number || prevOptions.customerItemNumber,
+        eventType: response?.event_type || prevOptions.eventType,
+        eventSubtype: response?.event_subtype || prevOptions.eventSubtype
       }));
       setIsLoading(false);
     } catch (error) {
@@ -106,7 +112,10 @@ const CPFForecastMain = () => {
   const debouncedFetchData = useCallback(debounce(fetchData, 500), []);
 
   const debouncedFetchFilters = useCallback(
-    createDebouncedFetchFilters(cpfFilters, setFilterOptions, setIsSnackOpen, setSnackBar),
+    createDebouncedFetchFilters(cpfFilters, setFilterOptions, setIsSnackOpen, setSnackBar, [
+      'active',
+      'customerFlag'
+    ]),
     []
   );
 
@@ -171,64 +180,65 @@ const CPFForecastMain = () => {
   return (
     <>
       <PageSection>
-        <DefaultPageHeader title="CPF Forecast" subtitle="Select the SKU to see the forecast" />
+        <Box className="flex justify-between items-center">
+          <DefaultPageHeader title="CPF Forecast" subtitle="Select the SKU to see the forecast" />
+          <div>
+            <IconButton
+              aria-label="more"
+              id="unit-button"
+              color="primary"
+              aria-controls={open ? 'unit-menu' : undefined}
+              aria-expanded={open ? 'true' : undefined}
+              aria-haspopup="true"
+              onClick={handleClick}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              id="unit-menu"
+              MenuListProps={{
+                'aria-labelledby': 'unit-button'
+              }}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right'
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+              }}
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}>
+              <MenuItem sx={{ display: 'flex', gap: 2 }}>
+                <Typography component="span" variant="h6">
+                  Select units:
+                </Typography>
+                <ButtonGroup variant="outlined" aria-label="Select units">
+                  {['cs', 'it', 'su', 'msu'].map((unit) => (
+                    <Button
+                      key={unit}
+                      variant={selectedUnit === unit ? 'contained' : 'outlined'}
+                      onClick={() => handleUnitChange(unit)}>
+                      {unit}
+                    </Button>
+                  ))}
+                </ButtonGroup>
+                <IconButton onClick={handleClose} data-testid="closeUnits">
+                  <CloseIcon />
+                </IconButton>
+              </MenuItem>
+            </Menu>
+          </div>
+        </Box>
+
         <hr />
         <div className="relative min-h-80">
-          <Box className="p-2 flex justify-between">
-            <Filters
-              isLoading={isLoading}
-              filterOptions={filterOptions}
-              selectedFilters={selectedFilters}
-              onFilterChange={handleFilterChange}
-            />
-            <div>
-              <IconButton
-                aria-label="more"
-                id="unit-button"
-                color="primary"
-                aria-controls={open ? 'unit-menu' : undefined}
-                aria-expanded={open ? 'true' : undefined}
-                aria-haspopup="true"
-                onClick={handleClick}>
-                <MoreVertIcon />
-              </IconButton>
-              <Menu
-                id="unit-menu"
-                MenuListProps={{
-                  'aria-labelledby': 'unit-button'
-                }}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right'
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right'
-                }}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}>
-                <MenuItem sx={{ display: 'flex', gap: 2 }}>
-                  <Typography component="span" variant="h6">
-                    Select units:
-                  </Typography>
-                  <ButtonGroup variant="outlined" aria-label="Select units">
-                    {['cs', 'it', 'su', 'msu'].map((unit) => (
-                      <Button
-                        key={unit}
-                        variant={selectedUnit === unit ? 'contained' : 'outlined'}
-                        onClick={() => handleUnitChange(unit)}>
-                        {unit}
-                      </Button>
-                    ))}
-                  </ButtonGroup>
-                  <IconButton onClick={handleClose} data-testid="closeUnits">
-                    <CloseIcon />
-                  </IconButton>
-                </MenuItem>
-              </Menu>
-            </div>
-          </Box>
+          <Filters
+            isLoading={isLoading}
+            filterOptions={filterOptions}
+            selectedFilters={selectedFilters}
+            onFilterChange={handleFilterChange}
+          />
 
           {isPageLoading ? (
             <PageLoader />

@@ -115,6 +115,7 @@ describe('promoGridApi', () => {
         active: [],
         sku: [],
         customerItemNumber: [],
+        customerFlag: [],
         prodName: []
       },
       'blob'
@@ -187,6 +188,7 @@ describe('promoGridApi', () => {
       active: [],
       sku: [],
       customerItemNumber: [],
+      customerFlag: [],
       prodName: []
     });
   });
@@ -249,6 +251,7 @@ describe('promoGridApi', () => {
         active: [],
         sku: [],
         customerItemNumber: [],
+        customerFlag: [],
         prodName: []
       },
       'blob'
@@ -332,6 +335,7 @@ describe('promoGridApi', () => {
         active: [],
         sku: [],
         customerItemNumber: [],
+        customerFlag: [],
         prodName: []
       },
       'blob'

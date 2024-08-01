@@ -21,6 +21,8 @@ export const mapFilterParams = (filterParams) => {
     active: filterParams.active,
     sku: filterParams.sku,
     customerItemNumber: filterParams.customerItemNumber,
-    prodName: filterParams.prodName
+    prodName: filterParams.prodName,
+    eventType: filterParams.eventType,
+    eventSubtype: filterParams.eventSubtype
   };
 };
