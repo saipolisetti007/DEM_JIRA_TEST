@@ -32,6 +32,7 @@ const InputTextComponent = ({
 
   return (
     <TextField
+      className="hide-label"
       data-testid={column.id}
       size="small"
       variant="outlined"

@@ -109,3 +109,7 @@ th.custom-row-actions.MuiTableCell-root[data-pinned='true']:before {
 #manage-column-menu .column-menu-item .MuiCheckbox-root {
   padding: 4px 8px !important;
 }
+.hide-label > label,
+.hide-label legend {
+  display: none;
+}

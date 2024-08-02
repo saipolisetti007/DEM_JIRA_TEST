@@ -76,6 +76,15 @@ const PromoGridValidationTable = () => {
     updatedErrors[rowIndex][accessorKey] = errorMessage !== undefined ? errorMessage : null;
 
     const updatedValues = [...updatedData.rows];
+    // Check if all error messages are the same or null
+    const errorMessages = Object.values(updatedErrors[rowIndex]);
+    const uniqueErrors = new Set(errorMessages.filter((error) => error !== null));
+    const allErrorsSameOrNull = uniqueErrors.size <= 1;
+    if (allErrorsSameOrNull) {
+      for (let key in updatedErrors[rowIndex]) {
+        updatedErrors[rowIndex][key] = null;
+      }
+    }
 
     if (accessorKey === 'event_type' && updatedErrors[rowIndex]?.event_subtype) {
       updatedErrors[rowIndex].event_subtype = null;
@@ -166,16 +175,12 @@ const PromoGridValidationTable = () => {
     }),
     enableEditing: true,
     editDisplayMode: 'table',
+    enableSorting: false,
     enableColumnActions: false,
-    muiTableContainerProps: { sx: { minHeight: '400px' } },
     muiTableProps: {
       sx: {
-        border: '1px solid rgba(81, 81, 81, 0.2)'
-      }
-    },
-    muiTableBodyCellProps: {
-      sx: {
-        border: '1px solid rgba(81, 81, 81, 0.2)'
+        borderCollapse: 'collapse',
+        border: '0.5px solid rgba(0, 0, 0, 0.23)'
       }
     },
     muiTableHeadCellProps: {

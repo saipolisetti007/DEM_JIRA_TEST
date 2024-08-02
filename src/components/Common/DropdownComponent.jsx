@@ -63,7 +63,7 @@ const DropdownComponent = ({
 
   return (
     <div>
-      <FormControl fullWidth size="small" error={error}>
+      <FormControl className="hide-label" fullWidth size="small" error={error}>
         <InputLabel id={`${column.id}-${row.index}`}>{label}</InputLabel>
         <Select
           labelId={`${column.id}-${row.index}`}

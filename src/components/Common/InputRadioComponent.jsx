@@ -50,7 +50,7 @@ const InputRadioComponent = ({
   row._valuesCache[column.id] = booleanValue;
 
   return (
-    <FormControl error={error}>
+    <FormControl className="hide-label" error={error}>
       <FormLabel id={`${column.id}-label`} required={isRequired}>
         {column.columnDef.header}
       </FormLabel>

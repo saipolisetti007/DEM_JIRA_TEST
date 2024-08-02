@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import DatePickerComponent from '../Common/DatePickerComponent';
 import InputRadioComponent from '../Common/InputRadioComponent';
 import InputTextComponent from '../Common/InputTextComponent';
+import { salesChannelOptions, itemTypeOptions, iDTypeOptions } from './FormStepFields';
 
 import { useSelector } from 'react-redux';
 import DropdownComponent from '../Common/DropdownComponent';
@@ -11,7 +12,7 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
   const [selectedEvents, setSelectedEvents] = useState({});
   const [eventSubTypeOptions, setEventSubTypeOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState({});
-
+  const { countriesData } = useSelector((state) => state.countriesData);
   const handleEventChange = (newValue, rowIndex) => {
     if (isLoading) return;
     setSelectedEvents((prev) => ({ ...prev, [rowIndex]: newValue }));
@@ -249,13 +250,15 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
         header: 'Event Sales Channel',
         Edit: ({ column, row }) => {
           return (
-            <InputTextComponent
+            <DropdownComponent
               row={row}
               column={column}
               isRequired={true}
+              label="Event Sales Channel"
               isError={!!validationErrors[row.index]?.event_sales_channel}
               helperText={validationErrors[row.index]?.event_sales_channel}
-              validationType="stringValidation"
+              options={salesChannelOptions}
+              isEventSelected={true}
               handleInputChange={handleInputChange}
             />
           );
@@ -302,13 +305,15 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
         header: 'Item Type',
         Edit: ({ column, row }) => {
           return (
-            <InputTextComponent
+            <DropdownComponent
               row={row}
               column={column}
               isRequired={true}
+              label="Item Type"
               isError={!!validationErrors[row.index]?.item_type}
               helperText={validationErrors[row.index]?.item_type}
-              validationType="stringValidation"
+              options={itemTypeOptions}
+              isEventSelected={true}
               handleInputChange={handleInputChange}
             />
           );
@@ -353,13 +358,15 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
         header: 'Id Type',
         Edit: ({ column, row }) => {
           return (
-            <InputTextComponent
+            <DropdownComponent
               row={row}
               column={column}
               isRequired={true}
+              label="Id Type"
               isError={!!validationErrors[row.index]?.id_type}
               helperText={validationErrors[row.index]?.id_type}
-              validationType="stringValidation"
+              options={iDTypeOptions}
+              isEventSelected={true}
               handleInputChange={handleInputChange}
             />
           );
@@ -438,13 +445,15 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
         header: 'Country Code',
         Edit: ({ column, row }) => {
           return (
-            <InputTextComponent
+            <DropdownComponent
               row={row}
               column={column}
               isRequired={true}
+              label="Country Code"
               isError={!!validationErrors[row.index]?.country_code}
               helperText={validationErrors[row.index]?.country_code}
-              validationType="stringValidation"
+              options={countriesData}
+              isEventSelected={true}
               handleInputChange={handleInputChange}
             />
           );

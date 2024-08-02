@@ -67,6 +67,7 @@ const DatePickerComponent = ({
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <DatePicker
         onChange={handleChange}
+        className="hide-label"
         aria-labelledby={`${column.id}-label`}
         label={column.columnDef.header}
         value={initialValue}
