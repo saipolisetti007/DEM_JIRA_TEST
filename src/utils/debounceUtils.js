@@ -54,9 +54,9 @@ const createDebouncedFetchFilters = (
             : response.event_subtype || [];
         }
 
-        if (!excludeKeys.includes('customerFlag')) {
-          newOptions.customerFlag = updatedFilters.customerFlag.length
-            ? Array.from(new Set([...prevOptions.customerFlag, ...(response.cust_flag || [])]))
+        if (!excludeKeys.includes('custFlag')) {
+          newOptions.custFlag = updatedFilters.custFlag.length
+            ? Array.from(new Set([...prevOptions.custFlag, ...(response.cust_flag || [])]))
             : response.cust_flag || [];
         }
         if (!excludeKeys.includes('active')) {

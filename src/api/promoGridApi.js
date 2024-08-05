@@ -70,7 +70,7 @@ export const downloadDataExcel = async (filters = {}) => {
     active: filters.active || [],
     sku: filters.sku || [],
     customerItemNumber: filters.customerItemNumber || [],
-    customerFlag: filters.customerFlag || [],
+    custFlag: filters.custFlag || [],
     prodName: filters.prodName || []
   };
 
@@ -116,7 +116,7 @@ export const promoGridFilters = async (filters = {}) => {
     active: [],
     sku: [],
     customerItemNumber: [],
-    customerFlag: [],
+    custFlag: [],
     prodName: []
   };
 

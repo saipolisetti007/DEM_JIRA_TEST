@@ -114,7 +114,7 @@ const CPFForecastMain = () => {
   const debouncedFetchFilters = useCallback(
     createDebouncedFetchFilters(cpfFilters, setFilterOptions, setIsSnackOpen, setSnackBar, [
       'active',
-      'customerFlag'
+      'custFlag'
     ]),
     []
   );

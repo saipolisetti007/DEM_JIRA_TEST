@@ -70,7 +70,7 @@ const PromoGridData = () => {
     sku: [],
     prodName: [],
     customerItemNumber: [],
-    customerFlag: [],
+    custFlag: [],
     active: ['Active']
   });
 
@@ -82,7 +82,7 @@ const PromoGridData = () => {
     sku: [],
     prodName: [],
     customerItemNumber: [],
-    customerFlag: [],
+    custFlag: [],
     active: ['Active']
   });
 
@@ -106,7 +106,7 @@ const PromoGridData = () => {
         sku: response?.sku || prevOptions.sku,
         prodName: response?.prod_name || prevOptions.prodName,
         customerItemNumber: response?.customer_item_number || prevOptions.customerItemNumber,
-        customerFlag: response?.cust_flag || prevOptions.customerFlag,
+        custFlag: response?.cust_flag || prevOptions.custFlag,
         active: response?.active || prevOptions.active
       }));
       setIsDataLoading(false);
