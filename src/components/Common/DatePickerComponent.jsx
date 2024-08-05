@@ -28,17 +28,12 @@ const DatePickerComponent = ({
     const selectedDate = newValue ? moment(newValue) : null;
     const accessorKey = column.id;
     const rowIndex = row.index;
-    const tomarrow = moment().add(1, 'day');
     const startDate = moment(row._valuesCache[startDateField], 'MM/DD/YYYY');
     const formatedDate = newValue ? selectedDate.format('MM/DD/YYYY') : null;
     row._valuesCache[column.id] = formatedDate;
 
     if (validationType === 'startDate') {
-      if (selectedDate?.isBefore(tomarrow, 'day')) {
-        setError(true);
-        setHelperMsg('Date Should be a future Date');
-        return;
-      } else if (!selectedDate && isRequired) {
+      if (!selectedDate && isRequired) {
         setError(true);
         setHelperMsg('Required');
         return;
@@ -46,9 +41,9 @@ const DatePickerComponent = ({
     }
 
     if (validationType === 'endDate') {
-      if (selectedDate?.isSameOrBefore(startDate, 'day')) {
+      if (selectedDate?.isBefore(startDate, 'day')) {
         setError(true);
-        setHelperMsg('End Date Should be a greater than start date');
+        setHelperMsg('End Date should be equal/after start date');
         return;
       } else if (!selectedDate && isRequired) {
         setError(true);

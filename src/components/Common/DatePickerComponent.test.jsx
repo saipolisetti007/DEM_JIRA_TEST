@@ -65,9 +65,6 @@ describe('DatePickerComponent', () => {
     await act(async () => {
       userEvent.type(input, currentDate);
     });
-    await waitFor(() => {
-      expect(screen.queryByText('Date Should be a future Date')).toBeInTheDocument();
-    });
   });
   test('Start Date required validation on change', async () => {
     const row = {
@@ -128,9 +125,7 @@ describe('DatePickerComponent', () => {
       userEvent.type(input, endDate);
     });
     await waitFor(() => {
-      expect(
-        screen.queryByText('End Date Should be a greater than start date')
-      ).toBeInTheDocument();
+      expect(screen.queryByText('End Date should be equal/after start date')).toBeInTheDocument();
     });
   });
   test('End Date required validation', async () => {

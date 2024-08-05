@@ -39,10 +39,10 @@ const StepEventMainParameters = ({ control, settings }) => {
 
   const validateEndDate = (endDateField, startDateField) => (value, allValues) => {
     const startDate = allValues[startDateField];
-    if (startDate && value?.isSameOrBefore(startDate)) {
-      return `${endDateField} should be after start date`;
+    if (startDate && value?.isBefore(startDate)) {
+      return `${endDateField} should be equal/after start date`;
     }
-    return true;
+    return null;
   };
 
   return (
