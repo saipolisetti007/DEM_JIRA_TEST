@@ -16,12 +16,12 @@ Object.defineProperty(document, 'cookie', {
 
 describe('ManageColumns', () => {
   const columns = [
-    { id: 'unique_event_id', header: 'Unique Event ID' },
+    { id: 'cpf_id', header: 'CPF ID' },
     { id: 'golden_customer_id', header: 'Golden Customer  ID' }
   ];
 
   const initialVisibility = {
-    unique_event_id: true,
+    cpf_id: true,
     golden_customer_id: false
   };
 
@@ -47,8 +47,8 @@ describe('ManageColumns', () => {
     expect(button).toBeInTheDocument();
     fireEvent.click(button);
     expect(screen.getByRole('menu')).toBeInTheDocument;
-    expect(screen.getByLabelText('Unique Event ID')).toBeInTheDocument();
-    expect(screen.getByLabelText('Unique Event ID')).toBeChecked();
+    expect(screen.getByLabelText('CPF ID')).toBeInTheDocument();
+    expect(screen.getByLabelText('CPF ID')).toBeChecked();
     expect(screen.getByLabelText('Golden Customer ID')).toBeInTheDocument();
     expect(screen.getByLabelText('Golden Customer ID')).not.toBeChecked();
 
@@ -76,7 +76,7 @@ describe('ManageColumns', () => {
     const menu = screen.getByRole('menu', { name: /Manage Columns/i });
 
     expect(menu).toBeInTheDocument;
-    expect(screen.getByLabelText('Unique Event ID')).toBeInTheDocument();
+    expect(screen.getByLabelText('CPF ID')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('closeMenu'));
   });
@@ -97,7 +97,7 @@ describe('ManageColumns', () => {
 
     expect(mockOnColumnVisibilityChange).toHaveBeenCalledWith('golden_customer_id', true);
     const expectedVisibility = {
-      unique_event_id: true,
+      cpf_id: true,
       golden_customer_id: true
     };
     const name = 'columnVisibility';
@@ -135,7 +135,7 @@ describe('ManageColumns', () => {
       />
     );
 
-    expect(screen.queryByLabelText('Unique Event ID')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('CPF ID')).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Golden Customer  ID')).not.toBeInTheDocument();
   });
 });

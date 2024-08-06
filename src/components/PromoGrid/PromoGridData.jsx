@@ -189,11 +189,11 @@ const PromoGridData = () => {
   const handleCancel = (row = null) => {
     if (row) {
       // Cancel specific row event
-      setSelectedEventIds([row.original.unique_event_id]);
+      setSelectedEventIds([row.original.cpf_id]);
       setCancelDialogOpen(true);
     } else if (Object.keys(rowSelection).length > 0) {
       // Cancel selected rows events
-      const selectedIds = Object.keys(rowSelection).map((key) => data[key].unique_event_id);
+      const selectedIds = Object.keys(rowSelection).map((key) => data[key].cpf_id);
       setSelectedEventIds(selectedIds);
       setCancelDialogOpen(true);
     } else {
@@ -210,7 +210,7 @@ const PromoGridData = () => {
     setIsSaving(true);
     try {
       const payload = {
-        unique_event_id: selectedEventIds,
+        cpf_id: selectedEventIds,
         golden_customer_id: customerId
       };
       await cancelRowData(payload);
@@ -276,7 +276,7 @@ const PromoGridData = () => {
   };
 
   const handleSelectedDataDownloadExcel = async () => {
-    const selectedIds = Object.keys(rowSelection).map((key) => data[key].unique_event_id);
+    const selectedIds = Object.keys(rowSelection).map((key) => data[key].cpf_id);
 
     if (selectedIds.length === 0) {
       setIsSnackOpen(true);
@@ -434,7 +434,7 @@ const PromoGridData = () => {
       density: 'compact',
       showGlobalFilter: true,
       columnPinning: {
-        left: ['mrt-row-select', 'unique_event_id'],
+        left: ['mrt-row-select', 'cpf_id'],
         right: ['mrt-row-actions']
       }
     },
@@ -500,7 +500,7 @@ const PromoGridData = () => {
     setOpenDialog(true);
     setRowData(row.original);
     setIsEdit(true);
-    setSelectedEventIds([row.original.unique_event_id]);
+    setSelectedEventIds([row.original.cpf_id]);
     const startDate = moment(row.original.event_in_store_start_date, 'MM/DD/YYYY');
     const currentDate = moment();
     if (startDate.isBefore(currentDate, 'day')) {

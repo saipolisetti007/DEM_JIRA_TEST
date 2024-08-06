@@ -1,7 +1,7 @@
 const steps = ['Event Main Parameters', 'Event Additional Data', 'Event Properties'];
 const stepFields = {
   0: [
-    'unique_event_id',
+    'cpf_id',
     'golden_customer_id',
     'event_in_store_start_date',
     'event_in_store_end_date',

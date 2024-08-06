@@ -55,8 +55,8 @@ const StepEventMainParameters = ({ control, settings }) => {
           <Grid item xs={6}>
             <FormInputControl
               control={control}
-              name="unique_event_id"
-              label="Unique Event ID"
+              name="cpf_id"
+              label="CPF ID"
               type="text"
               isDisabled={true}
             />

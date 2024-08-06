@@ -24,8 +24,8 @@ describe('PromoGridColumns', () => {
         expect.objectContaining(
           {},
           {
-            accessorKey: 'unique_event_id',
-            header: 'Unique Event Id',
+            accessorKey: 'cpf_id',
+            header: 'CPF ID',
             muiEditTextFieldProps: {
               error: expect.any(Boolean),
               helperText: expect.anything(),

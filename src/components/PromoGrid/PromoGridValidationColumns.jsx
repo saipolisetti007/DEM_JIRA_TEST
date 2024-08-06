@@ -26,8 +26,8 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'unique_event_id',
-        header: 'Unique Event Id',
+        accessorKey: 'cpf_id',
+        header: 'CPF ID',
         size: 100,
         enableEditing: false
       },

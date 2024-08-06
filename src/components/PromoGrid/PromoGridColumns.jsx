@@ -13,8 +13,8 @@ const PromoGridColumns = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'unique_event_id',
-        header: 'Unique Event ID',
+        accessorKey: 'cpf_id',
+        header: 'CPF ID',
         grow: false,
         size: 150
       },
