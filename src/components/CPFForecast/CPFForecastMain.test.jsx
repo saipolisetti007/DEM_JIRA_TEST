@@ -165,28 +165,17 @@ describe('CPFForecastMain', () => {
     });
   });
 
-  test('handles menu button click', async () => {
+  test('handles unit button click and unit change', async () => {
     await act(async () => render(<CPFForecastMain />));
     await waitFor(() => {
       expect(cpfFilters).toHaveBeenCalled();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'more' }));
-
-    await waitFor(() => {
-      expect(screen.getByRole('menu')).toBeInTheDocument();
-    });
-  });
-
-  test('opens the unit selection menu when the button is clicked', () => {
-    render(<CPFForecastMain />);
-    fireEvent.click(screen.getByTestId('MoreVertIcon'));
-    expect(screen.getByRole('menu')).toBeInTheDocument();
-    expect(screen.getByText('Select units:')).toBeInTheDocument;
+    // Click on the unit button
     fireEvent.click(screen.getByText('cs'));
     expect(screen.getByText('cs')).toHaveClass('MuiButton-contained');
-    fireEvent.click(screen.getByTestId('closeUnits'));
-    expect(screen.getByText('Select units:')).not.toBeInTheDocument;
+    fireEvent.click(screen.getByText('it'));
+    expect(screen.getByText('it')).toHaveClass('MuiButton-contained');
   });
 
   test('opens the confirmation dialog when there are unsaved changes and unit is changed', async () => {
@@ -206,7 +195,6 @@ describe('CPFForecastMain', () => {
       fireEvent.change(input, { target: { value: '3000' } });
       expect(input).toHaveValue(3000);
     });
-    fireEvent.click(screen.getByTestId('MoreVertIcon'));
     await act(async () => {
       fireEvent.click(screen.getByText('msu'));
     });

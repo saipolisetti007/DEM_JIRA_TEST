@@ -1,16 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import PageSection from '../Common/PageSection';
 import DefaultPageHeader from '../Common/DefaultPageHeader';
-import {
-  Alert,
-  Box,
-  Button,
-  ButtonGroup,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography
-} from '@mui/material';
+import { Alert, Box, Button, ButtonGroup, Typography } from '@mui/material';
 import SkuItem from './SkuItem';
 import { cpfFilters, cpfGetForecast } from '../../api/cpfForecastApi';
 import PageLoader from '../Common/PageLoader';
@@ -18,8 +9,6 @@ import Filters from '../Common/Filters';
 import InfoSnackBar from '../Common/InfoSnackBar';
 import { debounce } from 'lodash';
 import ConfirmationDialog from './ConfirmationDialog';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import CloseIcon from '@mui/icons-material/Close';
 import { reduceFilters, mapFilterParams } from '../../utils/filterUtils';
 import createDebouncedFetchFilters from '../../utils/debounceUtils';
 
@@ -164,15 +153,6 @@ const CPFForecastMain = () => {
     setOpenDialog(false);
   };
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleSubmit = async () => {
     await fetchData(selectedFilters);
   };
@@ -183,34 +163,9 @@ const CPFForecastMain = () => {
         <Box className="flex justify-between items-center">
           <DefaultPageHeader title="CPF Forecast" subtitle="Select the SKU to see the forecast" />
           <div>
-            <IconButton
-              aria-label="more"
-              id="unit-button"
-              color="primary"
-              aria-controls={open ? 'unit-menu' : undefined}
-              aria-expanded={open ? 'true' : undefined}
-              aria-haspopup="true"
-              onClick={handleClick}>
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              id="unit-menu"
-              MenuListProps={{
-                'aria-labelledby': 'unit-button'
-              }}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right'
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right'
-              }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}>
-              <MenuItem sx={{ display: 'flex', gap: 2 }}>
-                <Typography component="span" variant="h6">
+            <Box className="flex justify-between items-center">
+              <div>
+                <Typography component="span" variant="h6" sx={{ marginRight: 2 }}>
                   Select units:
                 </Typography>
                 <ButtonGroup variant="outlined" aria-label="Select units">
@@ -223,11 +178,8 @@ const CPFForecastMain = () => {
                     </Button>
                   ))}
                 </ButtonGroup>
-                <IconButton onClick={handleClose} data-testid="closeUnits">
-                  <CloseIcon />
-                </IconButton>
-              </MenuItem>
-            </Menu>
+              </div>
+            </Box>
           </div>
         </Box>
 
@@ -280,7 +232,7 @@ const CPFForecastMain = () => {
         onClose={handleCloseUnitChange}
         onConfirm={handleConfirmUnitChange}
         title="Are you sure.. ? Change units?"
-        contentHeading=" Unsaved edited units wiil be reset"
+        contentHeading="Unsaved edited units will be reset"
       />
 
       {isSnackOpen && snackBar && (
