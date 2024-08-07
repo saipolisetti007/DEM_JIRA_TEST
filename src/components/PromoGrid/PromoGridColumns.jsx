@@ -24,6 +24,11 @@ const PromoGridColumns = () => {
         size: 130
       },
       {
+        accessorKey: 'unique_event_id',
+        header: 'Unique Event ID',
+        size: 100
+      },
+      {
         accessorKey: 'event_in_store_start_date',
         header: 'Event in store start date'
       },
@@ -134,6 +139,10 @@ const PromoGridColumns = () => {
       {
         accessorKey: 'price_after_discount',
         header: 'Price after discount'
+      },
+      {
+        accessorKey: 'minerva_volume',
+        header: 'Minerva volume'
       },
       {
         accessorKey: 'status',

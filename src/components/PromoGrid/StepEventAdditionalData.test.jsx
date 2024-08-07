@@ -22,6 +22,7 @@ describe('StepEventAdditionalData Component', () => {
       discount_amt: true,
       base_price: true,
       price_after_discount: true,
+      minerva_volume: true,
       status: true
     };
     render(

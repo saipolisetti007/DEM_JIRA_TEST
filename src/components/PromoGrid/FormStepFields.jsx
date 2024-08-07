@@ -7,6 +7,7 @@ const stepFields = {
     'event_in_store_end_date',
     'start_of_shipments',
     'end_of_shipments',
+    'unique_event_id',
     'event_type',
     'event_subtype',
     'event_description',
@@ -31,7 +32,8 @@ const stepFields = {
     'discount_amt',
     'base_price',
     'price_after_discount',
-    'status'
+    'status',
+    'minerva_volume'
   ],
   2: [
     'event_string_property_1',
@@ -62,7 +64,7 @@ const dateFields = [
 ];
 
 const settingsFields = {
-  0: ['start_of_shipments', 'end_of_shipments', 'umbrella_event', 'comments'],
+  0: ['unique_event_id', 'start_of_shipments', 'end_of_shipments', 'umbrella_event', 'comments'],
   1: [
     'expected_shipments_forecast',
     'expected_consumption_forecast',
@@ -74,6 +76,7 @@ const settingsFields = {
     'discount_amt',
     'base_price',
     'price_after_discount',
+    'minerva_volume',
     'status'
   ],
   2: [

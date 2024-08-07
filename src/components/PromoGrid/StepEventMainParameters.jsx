@@ -114,6 +114,16 @@ const StepEventMainParameters = ({ control, settings }) => {
               />
             </Grid>
           )}
+          {settings.unique_event_id && (
+            <Grid item xs={6}>
+              <FormInputControl
+                control={control}
+                name="unique_event_id"
+                label="Unique Event ID"
+                type="text"
+              />
+            </Grid>
+          )}
         </Grid>
       </Box>
       <Box>

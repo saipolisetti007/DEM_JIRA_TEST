@@ -34,17 +34,21 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
       {
         accessorKey: 'golden_customer_id',
         header: 'Golden Customer ID',
-        enableEditing: false,
+        enableEditing: false
+      },
+      {
+        accessorKey: 'unique_event_id',
+        header: 'Unique Event ID',
         Edit: ({ column, row }) => {
           return (
             <InputTextComponent
               row={row}
               column={column}
-              isDisable={true}
               isRequired={true}
-              isError={!!validationErrors[row.index]?.golden_customer_id}
-              helperText={validationErrors[row.index]?.golden_customer_id}
-              validationType="integerValidation"
+              isError={!!validationErrors[row.index]?.unique_event_id}
+              helperText={validationErrors[row.index]?.unique_event_id}
+              validationType="stringValidation"
+              handleInputChange={handleInputChange}
             />
           );
         }
@@ -524,6 +528,22 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
         }
       },
       {
+        accessorKey: 'minerva_volume',
+        header: 'Minerva volume',
+        Edit: ({ column, row }) => {
+          return (
+            <InputTextComponent
+              row={row}
+              column={column}
+              isError={!!validationErrors[row.index]?.minerva_volume}
+              helperText={validationErrors[row.index]?.minerva_volume}
+              validationType="floatValidation"
+              handleInputChange={handleInputChange}
+            />
+          );
+        }
+      },
+      {
         accessorKey: 'status',
         header: 'Status',
         Edit: ({ column, row }) => {
@@ -539,6 +559,7 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
           );
         }
       },
+
       {
         accessorKey: 'event_string_property_1',
         header: 'Event String Property 1',

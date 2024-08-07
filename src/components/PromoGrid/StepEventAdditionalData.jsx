@@ -179,6 +179,19 @@ const StepEventAdditionalData = ({ control, settings }) => {
             />
           </Grid>
         )}
+        {settings.minerva_volume && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="minerva_volume"
+              label="Minerva volume"
+              type="text"
+              rules={{
+                validationType: 'floatValidation'
+              }}
+            />
+          </Grid>
+        )}
         {settings.status && (
           <Grid item xs={6}>
             <FormInputControl control={control} name="status" label="Status" type="text" />
