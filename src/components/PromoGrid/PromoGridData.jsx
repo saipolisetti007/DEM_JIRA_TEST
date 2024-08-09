@@ -444,7 +444,7 @@ const PromoGridData = () => {
     displayColumnDefOptions: {
       'mrt-row-actions': {
         header: '',
-        size: 50
+        size: 100
       }
     },
     renderRowActions: ({ row, table }) => (
@@ -549,9 +549,11 @@ const PromoGridData = () => {
           handleCancel={handleCancel}
           handleSelectedDataDownloadExcel={handleSelectedDataDownloadExcel}
         />
-        <MRT_ToolbarAlertBanner table={table} className="info-message" />
-        <MRT_TableContainer table={table} />
-        <MRT_TablePagination table={table} />
+        <div className="promogrid-table">
+          <MRT_ToolbarAlertBanner table={table} className="info-message" />
+          <MRT_TableContainer table={table} />
+          <MRT_TablePagination table={table} />
+        </div>
       </PageSection>
 
       <CancelEventDialog
