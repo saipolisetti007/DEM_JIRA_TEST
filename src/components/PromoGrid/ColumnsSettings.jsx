@@ -70,6 +70,9 @@ const ColumnsSettings = ({ handleClose }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
+  const { userData } = useSelector((state) => state.userProfileData);
+  const region = userData?.region;
+  const hiddenFieldsNA = ['unique_event_id', 'minerva_volume'];
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -96,19 +99,26 @@ const ColumnsSettings = ({ handleClose }) => {
 
   return (
     <>
-      {steps.map((step, index) => (
-        <AccordionPanel
-          key={step}
-          panel={`panel${index + 1}`}
-          expanded={expanded}
-          handleChange={handleChange}
-          title={step}
-          fields={settingsFields[index]}
-          localSettings={settings}
-          isLoading={isLoading}
-          handleCheckboxChange={handleCheckboxChange}
-        />
-      ))}
+      {steps.map((step, index) => {
+        //Filter fields based on region "NA"
+        const filteredFields =
+          region === 'NA'
+            ? settingsFields[index].filter((field) => !hiddenFieldsNA.includes(field))
+            : settingsFields[index];
+        return (
+          <AccordionPanel
+            key={step}
+            panel={`panel${index + 1}`}
+            expanded={expanded}
+            handleChange={handleChange}
+            title={step}
+            fields={filteredFields}
+            localSettings={settings}
+            isLoading={isLoading}
+            handleCheckboxChange={handleCheckboxChange}
+          />
+        );
+      })}
 
       <Box
         sx={{

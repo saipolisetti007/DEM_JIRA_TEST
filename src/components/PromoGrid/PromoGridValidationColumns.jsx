@@ -13,6 +13,8 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
   const [eventSubTypeOptions, setEventSubTypeOptions] = useState({});
   const [selectedOptions, setSelectedOptions] = useState({});
   const { countriesData } = useSelector((state) => state.countriesData);
+  const { userData } = useSelector((state) => state.userProfileData);
+  const region = userData?.region;
   const handleEventChange = (newValue, rowIndex) => {
     if (isLoading) return;
     setSelectedEvents((prev) => ({ ...prev, [rowIndex]: newValue }));
@@ -36,23 +38,27 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
         header: 'Golden Customer ID',
         enableEditing: false
       },
-      {
-        accessorKey: 'unique_event_id',
-        header: 'Unique Event ID',
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isRequired={true}
-              isError={!!validationErrors[row.index]?.unique_event_id}
-              helperText={validationErrors[row.index]?.unique_event_id}
-              validationType="stringValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
+      ...(region !== 'NA'
+        ? [
+            {
+              accessorKey: 'unique_event_id',
+              header: 'Unique Event ID',
+              Edit: ({ column, row }) => {
+                return (
+                  <InputTextComponent
+                    row={row}
+                    column={column}
+                    isRequired={true}
+                    isError={!!validationErrors[row.index]?.unique_event_id}
+                    helperText={validationErrors[row.index]?.unique_event_id}
+                    validationType="stringValidation"
+                    handleInputChange={handleInputChange}
+                  />
+                );
+              }
+            }
+          ]
+        : []),
       {
         accessorKey: 'event_in_store_start_date',
         header: 'Event in Store Start Date',
@@ -527,22 +533,26 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
           );
         }
       },
-      {
-        accessorKey: 'minerva_volume',
-        header: 'Minerva volume',
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isError={!!validationErrors[row.index]?.minerva_volume}
-              helperText={validationErrors[row.index]?.minerva_volume}
-              validationType="floatValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
+      ...(region !== 'NA'
+        ? [
+            {
+              accessorKey: 'minerva_volume',
+              header: 'Minerva volume',
+              Edit: ({ column, row }) => {
+                return (
+                  <InputTextComponent
+                    row={row}
+                    column={column}
+                    isError={!!validationErrors[row.index]?.minerva_volume}
+                    helperText={validationErrors[row.index]?.minerva_volume}
+                    validationType="floatValidation"
+                    handleInputChange={handleInputChange}
+                  />
+                );
+              }
+            }
+          ]
+        : []),
       {
         accessorKey: 'status',
         header: 'Status',

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 const PromoGridColumns = () => {
   const RadioCellValue = (value) => {
@@ -9,7 +10,8 @@ const PromoGridColumns = () => {
     }
     return '';
   };
-
+  const { userData } = useSelector((state) => state.userProfileData);
+  const region = userData?.region;
   const columns = useMemo(
     () => [
       {
@@ -23,11 +25,15 @@ const PromoGridColumns = () => {
         header: 'Golden Customer  ID  ',
         size: 130
       },
-      {
-        accessorKey: 'unique_event_id',
-        header: 'Unique Event ID',
-        size: 100
-      },
+      ...(region !== 'NA'
+        ? [
+            {
+              accessorKey: 'unique_event_id',
+              header: 'Unique Event ID',
+              size: 100
+            }
+          ]
+        : []),
       {
         accessorKey: 'event_in_store_start_date',
         header: 'Event in store start date'
@@ -140,10 +146,14 @@ const PromoGridColumns = () => {
         accessorKey: 'price_after_discount',
         header: 'Price after discount'
       },
-      {
-        accessorKey: 'minerva_volume',
-        header: 'Minerva volume'
-      },
+      ...(region !== 'NA'
+        ? [
+            {
+              accessorKey: 'minerva_volume',
+              header: 'Minerva volume'
+            }
+          ]
+        : []),
       {
         accessorKey: 'status',
         header: 'Status'

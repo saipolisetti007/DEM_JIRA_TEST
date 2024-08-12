@@ -10,6 +10,7 @@ const StepEventMainParameters = ({ control, settings }) => {
   const { setValue } = useFormContext();
   const { userData } = useSelector((state) => state.userProfileData);
   const customerId = userData?.customers[0];
+  const region = userData?.region;
 
   const { eventsData, eventTypeOptions } = useSelector((state) => state.eventsData);
 
@@ -114,7 +115,7 @@ const StepEventMainParameters = ({ control, settings }) => {
               />
             </Grid>
           )}
-          {settings.unique_event_id && (
+          {region !== 'NA' && settings.unique_event_id && (
             <Grid item xs={6}>
               <FormInputControl
                 control={control}

@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 
 const StepEventAdditionalData = ({ control, settings }) => {
   const { countriesData } = useSelector((state) => state.countriesData);
+  const { userData } = useSelector((state) => state.userProfileData);
+  const region = userData?.region;
   return (
     <Box sx={{ margin: '1.5rem 0px' }}>
       <Typography component="h4" variant="h5" sx={{ margin: '1rem 0px' }}>
@@ -179,7 +181,7 @@ const StepEventAdditionalData = ({ control, settings }) => {
             />
           </Grid>
         )}
-        {settings.minerva_volume && (
+        {region !== 'NA' && settings.minerva_volume && (
           <Grid item xs={6}>
             <FormInputControl
               control={control}
