@@ -23,7 +23,7 @@ const SkuItem = ({
   sku,
   prod_name,
   data,
-  isExanped,
+  isExpanded,
   isLoading,
   setIsLoading,
   isRefetching,
@@ -36,7 +36,8 @@ const SkuItem = ({
   setEditedValues,
   index,
   onSubmit,
-  onAccordionChange
+  onAccordionChange,
+  cpfEnabled
 }) => {
   const [rowSelection, setRowSelection] = useState({});
   const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
@@ -57,13 +58,15 @@ const SkuItem = ({
     setRowSelection(initialRowSelection);
   }, [data]);
 
-  const hanldeAccordionChange = () => {
-    onAccordionChange(isExanped ? -1 : index);
+  const handleAccordionChange = () => {
+    onAccordionChange(isExpanded ? -1 : index);
   };
 
   const handleSave = (event) => {
     event.stopPropagation();
-    setOpenSubmitDialog(true);
+    if (cpfEnabled) {
+      setOpenSubmitDialog(true);
+    }
   };
 
   const handleSubmit = async () => {
@@ -113,7 +116,7 @@ const SkuItem = ({
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Error occured ! Please submit again !!!',
+        message: 'Error occurred ! Please submit again !!!',
         severity: 'error'
       });
       setIsSaving(false);
@@ -223,7 +226,8 @@ const SkuItem = ({
       selectedUnit,
       convertedUnits,
       handleEditUnits,
-      editedValues
+      editedValues,
+      cpfEnabled
     }),
     data,
     muiTableProps: {
@@ -242,7 +246,10 @@ const SkuItem = ({
         backgroundColor: theme.palette.primary.dark,
         color: theme.palette.primary.contrastText,
         textTransform: 'initial',
-        verticalAlign: 'middle'
+        verticalAlign: 'middle',
+        '&:hover': {
+          backgroundColor: theme.palette.primary.dark
+        }
       })
     },
     muiToolbarAlertBannerProps: isError
@@ -251,14 +258,14 @@ const SkuItem = ({
           children: 'Network Error. Could not fetch the data.'
         }
       : undefined,
-    enableEditing: true,
+    enableEditing: cpfEnabled,
     editDisplayMode: 'table',
     enableRowActions: false,
     enableColumnActions: false,
     enableColumnFilters: false,
     enablePagination: false,
     enableSorting: false,
-    enableRowSelection: (row) => row.original.active,
+    enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     initialState: {
       density: 'compact'
@@ -270,12 +277,26 @@ const SkuItem = ({
       'mrt-row-select': {
         header: '',
         size: 20,
-        border: 'none'
+        border: 'none',
+        muiTableBodyCellProps: {
+          sx: {
+            pointerEvents: cpfEnabled ? 'auto' : 'none', // disabling pointer events if cpfEnabled is false
+            opacity: cpfEnabled ? 1 : 0.5
+          }
+        },
+        muiTableHeadCellProps: {
+          sx: (theme) => ({
+            pointerEvents: cpfEnabled ? 'auto' : 'none', // disabling pointer events if cpfEnabled is false for column header
+            opacity: cpfEnabled ? 1 : 0.5,
+            backgroundColor: theme.palette.primary.dark,
+            color: theme.palette.primary.contrastText
+          })
+        }
       }
     },
     state: {
       rowSelection,
-      isLoading: isLoading,
+      isLoading,
       showAlertBanner: isError,
       showProgressBars: isRefetching
     }
@@ -287,8 +308,8 @@ const SkuItem = ({
         data-testid={`accordion-item-${index}`}
         disableGutters
         elevation={0}
-        expanded={isExanped}
-        onChange={hanldeAccordionChange}>
+        expanded={isExpanded}
+        onChange={handleAccordionChange}>
         <AccordionSummary
           sx={{ padding: 0 }}
           className="flex-row-reverse"
@@ -310,7 +331,8 @@ const SkuItem = ({
               color="primary"
               size="small"
               startIcon={<CheckIcon />}
-              onClick={handleSave}>
+              onClick={handleSave}
+              disabled={!cpfEnabled}>
               {isSaving ? 'Saving...' : 'Save Decision'}
             </Button>
           </div>
@@ -336,7 +358,7 @@ const SkuItem = ({
               </Typography>
 
               <div className="mt-2">
-                <MRT_ToolbarAlertBanner table={NewForecastTable} className="info-message" />
+                <MRT_ToolbarAlertBanner table={previousForecastTable} className="info-message" />
                 <MRT_TableContainer table={previousForecastTable} />
               </div>
             </Grid>

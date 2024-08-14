@@ -3,6 +3,7 @@ import { fireEvent, render, screen, act, waitFor } from '@testing-library/react'
 import SkuItem from './SkuItem';
 import { cpfDecisions } from '../../api/cpfForecastApi';
 jest.mock('../../api/cpfForecastApi');
+
 describe('SkuItem', () => {
   const mockData = [
     {
@@ -38,7 +39,7 @@ describe('SkuItem', () => {
   const isLoading = false;
   const setEditedValues = jest.fn();
   const onSubmit = jest.fn();
-  const mockAccordianChange = jest.fn();
+  const mockAccordionChange = jest.fn();
 
   it('renders correctly', () => {
     render(
@@ -54,14 +55,15 @@ describe('SkuItem', () => {
         isLoading={isLoading}
         setEditedValues={setEditedValues}
         onSubmit={onSubmit}
-        onAccordionChange={mockAccordianChange}
+        onAccordionChange={mockAccordionChange}
+        cpfEnabled={true}
       />
     );
     expect(screen.getByText(`SKU : ${sku}`)).toBeInTheDocument();
     expect(screen.getByText('Save Decision')).toBeInTheDocument();
   });
 
-  test('should expand accordion and trigger onAccorionChange', () => {
+  test('should expand accordion and trigger onAccordionChange', () => {
     render(
       <SkuItem
         sku={sku}
@@ -75,11 +77,12 @@ describe('SkuItem', () => {
         isLoading={isLoading}
         setEditedValues={setEditedValues}
         onSubmit={onSubmit}
-        onAccordionChange={mockAccordianChange}
+        onAccordionChange={mockAccordionChange}
+        cpfEnabled={true}
       />
     );
     fireEvent.click(screen.getByText(`SKU : ${sku}`));
-    expect(mockAccordianChange).toHaveBeenCalled();
+    expect(mockAccordionChange).toHaveBeenCalled();
   });
 
   test('should open dialog on save button click', () => {
@@ -96,12 +99,14 @@ describe('SkuItem', () => {
         isLoading={isLoading}
         setEditedValues={setEditedValues}
         onSubmit={onSubmit}
-        onAccordionChange={mockAccordianChange}
+        onAccordionChange={mockAccordionChange}
+        cpfEnabled={true}
       />
     );
     fireEvent.click(screen.getByText('Save Decision'));
     expect(screen.getByText('Are you sure.. ? Save decision?')).toBeInTheDocument();
   });
+
   test('should handle dialog actions submit', async () => {
     render(
       <SkuItem
@@ -116,7 +121,8 @@ describe('SkuItem', () => {
         isLoading={isLoading}
         setEditedValues={setEditedValues}
         onSubmit={onSubmit}
-        onAccordionChange={mockAccordianChange}
+        onAccordionChange={mockAccordionChange}
+        cpfEnabled={true}
       />
     );
 
@@ -133,6 +139,7 @@ describe('SkuItem', () => {
       expect(cpfDecisions).toHaveBeenCalled();
     });
   });
+
   test('should handle dialog actions cancel', async () => {
     render(
       <SkuItem
@@ -147,7 +154,8 @@ describe('SkuItem', () => {
         isLoading={isLoading}
         setEditedValues={setEditedValues}
         onSubmit={onSubmit}
-        onAccordionChange={mockAccordianChange}
+        onAccordionChange={mockAccordionChange}
+        cpfEnabled={true}
       />
     );
 
@@ -156,6 +164,7 @@ describe('SkuItem', () => {
       fireEvent.click(screen.getByText('Cancel'));
     });
   });
+
   test('should handle error actions', async () => {
     cpfDecisions.mockRejectedValue();
     render(
@@ -171,7 +180,8 @@ describe('SkuItem', () => {
         isLoading={isLoading}
         setEditedValues={setEditedValues}
         onSubmit={onSubmit}
-        onAccordionChange={mockAccordianChange}
+        onAccordionChange={mockAccordionChange}
+        cpfEnabled={true}
       />
     );
 
@@ -185,12 +195,13 @@ describe('SkuItem', () => {
       expect(cpfDecisions).toHaveBeenCalled();
     });
     await waitFor(() => {
-      expect(screen.getByText('Error occured ! Please submit again !!!')).toBeInTheDocument();
+      expect(screen.getByText('Error occurred ! Please submit again !!!')).toBeInTheDocument();
     });
     await waitFor(() => {
       fireEvent.click(screen.getByTestId('CloseIcon'));
     });
   });
+
   test('calls handleCellEdit correctly', () => {
     render(
       <SkuItem
@@ -205,7 +216,8 @@ describe('SkuItem', () => {
         isLoading={isLoading}
         setEditedValues={setEditedValues}
         onSubmit={onSubmit}
-        onAccordionChange={mockAccordianChange}
+        onAccordionChange={mockAccordionChange}
+        cpfEnabled={true}
       />
     );
     waitFor(() => !isLoading);
@@ -221,8 +233,8 @@ describe('SkuItem', () => {
     });
   });
 
-  test('converts units  correctly', () => {
-    const mockCovertedUnits = jest.fn().mockImplementation((value, unit) => {
+  test('converts units correctly', () => {
+    const mockConvertedUnits = jest.fn().mockImplementation((value, unit) => {
       if (unit === 'cs') return Math.round(value / csFactor);
       if (unit === 'it') return Math.round(value / itFactor);
       if (unit === 'msu') return (value / 1000).toFixed(2);
@@ -241,14 +253,15 @@ describe('SkuItem', () => {
         isLoading={isLoading}
         setEditedValues={setEditedValues}
         onSubmit={onSubmit}
-        onAccordionChange={mockAccordianChange}
-        convertedUnits={mockCovertedUnits}
+        onAccordionChange={mockAccordionChange}
+        convertedUnits={mockConvertedUnits}
+        cpfEnabled={true}
       />
     );
 
-    expect(mockCovertedUnits(100, 'cs')).toBe(1);
-    expect(mockCovertedUnits(100, 'it')).toBe(10);
-    expect(mockCovertedUnits(1000, 'msu')).toBe('1.00');
-    expect(mockCovertedUnits(100, 'su')).toBe(100);
+    expect(mockConvertedUnits(100, 'cs')).toBe(1);
+    expect(mockConvertedUnits(100, 'it')).toBe(10);
+    expect(mockConvertedUnits(1000, 'msu')).toBe('1.00');
+    expect(mockConvertedUnits(100, 'su')).toBe(100);
   });
 });

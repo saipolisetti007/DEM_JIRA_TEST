@@ -14,6 +14,7 @@ import createDebouncedFetchFilters from '../../utils/debounceUtils';
 
 const CPFForecastMain = () => {
   const [cpfData, setCpfData] = useState([]);
+  const [cpfEnabled, setCpfEnabled] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefetching, setIsRefetching] = useState(false);
@@ -84,7 +85,8 @@ const CPFForecastMain = () => {
       const filterParams = reduceFilters(filters);
       const mappedFilterParams = mapFilterParams(filterParams);
       const response = await cpfGetForecast(mappedFilterParams);
-      setCpfData(response);
+      setCpfData(response.cpf_data);
+      setCpfEnabled(response.cpf_enabled);
       setIsPageLoading(false);
     } catch (error) {
       setIsPageLoading(false);
@@ -220,6 +222,7 @@ const CPFForecastMain = () => {
                     isExanped={index === expandedIndex}
                     onAccordionChange={() => handleAccordionChange(index)}
                     onSubmit={handleSubmit}
+                    cpfEnabled={cpfEnabled}
                   />
                 ))
               )}

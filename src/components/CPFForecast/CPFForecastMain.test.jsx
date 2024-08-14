@@ -14,28 +14,31 @@ const mockFilters = {
   sku: ['sku4']
 };
 
-const mockData = [
-  {
-    sku: 'sku4',
-    prod_name: 'prodName',
-    cs_factor: '100',
-    it_factor: '10',
-    units: 'su',
-    forecast: [
-      {
-        week: '08/12/2024',
-        unit: 3000,
-        prevUnits: 2500,
-        percentChange: 0.6,
-        unit_diff: 200,
-        editedUnits: 4000,
-        finalunits: 4000,
-        approved: false,
-        active: true
-      }
-    ]
-  }
-];
+const mockData = {
+  cpf_data: [
+    {
+      sku: 'sku4',
+      prod_name: 'prodName',
+      cs_factor: '100',
+      it_factor: '10',
+      units: 'su',
+      forecast: [
+        {
+          week: '08/12/2024',
+          unit: 3000,
+          prevUnits: 2500,
+          percentChange: 0.6,
+          unit_diff: 200,
+          editedUnits: 4000,
+          finalunits: 4000,
+          approved: false,
+          active: true
+        }
+      ]
+    }
+  ],
+  cpf_enabled: true
+};
 
 describe('CPFForecastMain', () => {
   beforeEach(() => {
@@ -79,7 +82,8 @@ describe('CPFForecastMain', () => {
       expect(cpfGetForecast).toHaveBeenCalled();
     });
     await waitFor(() => {
-      expect(screen.getByText((content, element) => content.includes('sku4'))).toBeInTheDocument();
+      const skuElement = screen.getByText((content, element) => content.includes('sku4'));
+      expect(skuElement).toBeInTheDocument();
     });
   });
 

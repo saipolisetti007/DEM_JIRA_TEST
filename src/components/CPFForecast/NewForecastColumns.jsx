@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import EventList from './EventList';
 
-const NewForecastColumns = ({ selectedUnit, convertedUnits, editedValues, handleEditUnits }) => {
+const NewForecastColumns = ({
+  selectedUnit,
+  convertedUnits,
+  editedValues,
+  handleEditUnits,
+  cpfEnabled
+}) => {
   const [localEditValues, setLocalEditValues] = useState({});
   const handleEditChange = (rowIndex, columnId, value) => {
     setLocalEditValues((prev) => ({
@@ -55,7 +61,7 @@ const NewForecastColumns = ({ selectedUnit, convertedUnits, editedValues, handle
       {
         accessorKey: 'editedUnits',
         header: 'Edited Units',
-        enableEditing: (row) => row.original.active,
+        enableEditing: cpfEnabled && ((row) => row.original.active),
         Cell: ({ row, column }) => convertedUnits(row.original[column.id], selectedUnit),
         muiEditTextFieldProps: ({ row, column }) => ({
           type: 'number',
@@ -71,7 +77,9 @@ const NewForecastColumns = ({ selectedUnit, convertedUnits, editedValues, handle
           },
           onBlur: () => {
             handleBlur(row.index, column.id);
-          }
+          },
+          disabled: !cpfEnabled,
+          style: { color: !cpfEnabled ? 'gray' : undefined }
         })
       },
       {
@@ -87,7 +95,7 @@ const NewForecastColumns = ({ selectedUnit, convertedUnits, editedValues, handle
         enableEditing: false
       }
     ],
-    [selectedUnit, handleEditUnits, editedValues, localEditValues]
+    [selectedUnit, handleEditUnits, editedValues, localEditValues, cpfEnabled]
   );
 
   return columns;
