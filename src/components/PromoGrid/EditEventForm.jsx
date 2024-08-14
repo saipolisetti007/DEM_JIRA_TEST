@@ -18,6 +18,7 @@ import { steps, dateFields, stepFields } from './FormStepFields';
 import { ArrowDropDown } from '@mui/icons-material';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 import { useSelector } from 'react-redux';
+import DialogComponent from '../Common/DialogComponent';
 const formatRowData = (rowData) => {
   const formattedData = { ...rowData };
 
@@ -63,6 +64,8 @@ const EditEventForm = ({ rowData, handleClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [updatedData, setUpdatedData] = useState(null);
   const formattedData = formatRowData(rowData);
   const methods = useForm({ mode: 'onChange', defaultValues: formattedData });
   const { handleSubmit, control, setError, formState } = methods;
@@ -97,6 +100,7 @@ const EditEventForm = ({ rowData, handleClose }) => {
   const onSubmit = async (data) => {
     setIsLoading(true);
     const formattedData = formatDataForSubmit(data);
+    setUpdatedData(formattedData);
     try {
       await updateRowData(formattedData);
       handleClose(null, 'edit');
@@ -104,22 +108,56 @@ const EditEventForm = ({ rowData, handleClose }) => {
     } catch (error) {
       setIsLoading(false);
       const response = error.response?.data;
-      const transformErrors = (response) => {
-        return response?.errors.reduce((acc, { field, error }) => {
-          acc[field] = error;
+      const transformErrors = (response, key) => {
+        return response?.reduce((acc, message) => {
+          acc[message.field] = message[key];
           return acc;
         }, {});
       };
-      const transformedErrors = transformErrors(response);
-      for (const field in transformedErrors) {
-        setError(field, { type: 'server', message: transformedErrors[field] });
+
+      const transformedErrors = transformErrors(response?.errors || [], 'error');
+      const transformedWarnings = transformErrors(response?.warnings || [], 'warning');
+
+      if (Object.keys(transformedErrors).length > 0) {
+        for (const field in transformedErrors) {
+          setError(field, { type: 'error', message: transformedErrors[field] });
+        }
+        setIsSnackOpen(true);
+        setSnackBar({
+          message: <span>Please fix errors in and try to save again</span>,
+          severity: 'error'
+        });
+      } else if (Object.keys(transformedWarnings).length > 0) {
+        for (const field in transformedWarnings) {
+          setError(field, { type: 'warning', message: transformedWarnings[field] });
+        }
+        setDialogOpen(true);
       }
+    }
+  };
+
+  const handleDialogConfirm = async () => {
+    setDialogOpen(false);
+    try {
+      setIsLoading(true);
+      const dataWithWarningOverride = {
+        ...updatedData,
+        warning_override: true
+      };
+      await updateRowData(dataWithWarningOverride);
+      setIsLoading(false);
+      handleClose(null, 'edit');
+    } catch (error) {
+      setIsLoading(false);
       setIsSnackOpen(true);
       setSnackBar({
-        message: <span>Please fix errors in and try to save again</span>,
+        message: 'Error Occured while updating the data',
         severity: 'error'
       });
     }
+  };
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   const handleSnackbar = () => {
@@ -172,6 +210,16 @@ const EditEventForm = ({ rowData, handleClose }) => {
           </Box>
         </form>
       </FormProvider>
+      <DialogComponent
+        open={dialogOpen}
+        title="Confirm submission"
+        dialogHeading="There are warnings in the form submission"
+        dialogContent="Do you want to proceed?"
+        cancelText="Return to PromoGrid"
+        confirmText="Procced to Submit"
+        handleConfirm={handleDialogConfirm}
+        handleClose={handleDialogClose}
+      />
 
       {isSnackOpen && snackBar && (
         <InfoSnackBar

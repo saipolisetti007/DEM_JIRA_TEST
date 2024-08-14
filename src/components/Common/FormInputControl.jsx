@@ -12,6 +12,9 @@ import {
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import ErrorIcon from '@mui/icons-material/Error';
+import WarningIcon from '@mui/icons-material/Warning';
+import { useTheme } from '@emotion/react';
+
 const FormInputControl = ({
   control,
   name,
@@ -56,8 +59,11 @@ const FormInputControl = ({
     }
     return validationRules;
   };
+  const theme = useTheme();
 
   const renderField = (field, error) => {
+    const isWarning = error?.type === 'warning';
+
     switch (type) {
       case 'text':
       case 'number':
@@ -73,13 +79,19 @@ const FormInputControl = ({
             size="small"
             multiline={isMultiline}
             rows={rows}
+            color={isWarning ? 'warning' : ''}
+            focused={isWarning}
             maxLength={maxLength}
             disabled={isDisabled}
-            error={!!error}
+            error={!!error && !isWarning}
             helperText={
               error ? (
-                <span>
-                  <ErrorIcon fontSize="small" /> {error.message}
+                <span
+                  style={{
+                    color: isWarning ? theme.palette.warning.main : ''
+                  }}>
+                  {isWarning ? <WarningIcon fontSize="small" /> : <ErrorIcon fontSize="small" />}
+                  {error.message}
                 </span>
               ) : (
                 ''
@@ -104,11 +116,17 @@ const FormInputControl = ({
             fullWidth
             required={isRequired}
             size="small"
-            error={!!error}
+            color={isWarning ? 'warning' : ''}
+            focused={isWarning}
+            error={!!error && !isWarning}
             helperText={
               error ? (
-                <span>
-                  <ErrorIcon fontSize="small" /> {error.message}
+                <span
+                  style={{
+                    color: isWarning ? theme.palette.warning.main : ''
+                  }}>
+                  {isWarning ? <WarningIcon fontSize="small" /> : <ErrorIcon fontSize="small" />}
+                  {error.message}
                 </span>
               ) : (
                 ''
@@ -135,12 +153,22 @@ const FormInputControl = ({
                 variant="outlined"
                 fullWidth
                 size="small"
+                color={isWarning ? 'warning' : ''}
+                focused={isWarning}
                 required={isRequired}
-                error={!!error}
+                error={!!error && !isWarning}
                 helperText={
                   error ? (
-                    <span>
-                      <ErrorIcon fontSize="small" /> {error.message}
+                    <span
+                      style={{
+                        color: isWarning ? theme.palette.warning.main : ''
+                      }}>
+                      {isWarning ? (
+                        <WarningIcon fontSize="small" />
+                      ) : (
+                        <ErrorIcon fontSize="small" />
+                      )}
+                      {error.message}
                     </span>
                   ) : (
                     ''
@@ -198,10 +226,20 @@ const FormInputControl = ({
                   variant: 'outlined',
                   fullWidth: true,
                   required: isRequired,
-                  error: !!error,
+                  color: isWarning ? 'warning' : '',
+                  focused: isWarning,
+                  error: !!error && !isWarning,
                   helperText: error ? (
-                    <span>
-                      <ErrorIcon fontSize="small" /> {error.message}
+                    <span
+                      style={{
+                        color: isWarning ? theme.palette.warning.main : ''
+                      }}>
+                      {isWarning ? (
+                        <WarningIcon fontSize="small" />
+                      ) : (
+                        <ErrorIcon fontSize="small" />
+                      )}
+                      {error.message}
                     </span>
                   ) : (
                     ''

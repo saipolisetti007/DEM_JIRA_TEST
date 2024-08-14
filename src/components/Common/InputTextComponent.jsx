@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { TextField } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
+import WarningIcon from '@mui/icons-material/Warning';
+import { useTheme } from '@emotion/react';
 
 const InputTextComponent = ({
   row,
   column,
   isRequired,
   isError,
+  isWarning,
   helperText,
   validationType,
   handleInputChange
 }) => {
+  const theme = useTheme();
   const [rowValue, setRowValue] = useState(row.original[column.id] ?? '');
   const [error, setError] = useState(isError);
   const [helperMsg, setHelperMsg] = useState(helperText);
@@ -39,11 +43,17 @@ const InputTextComponent = ({
       required={isRequired}
       id={`${column.id}-${row.index}`}
       label={column.columnDef.header}
-      error={error}
+      color={isWarning ? 'warning' : ''}
+      focused={isWarning}
+      error={!!error && !isWarning}
       helperText={
         error ? (
-          <span>
-            <ErrorIcon fontSize="small" /> {helperMsg}
+          <span
+            style={{
+              color: isWarning ? theme.palette.warning.main : ''
+            }}>
+            {isWarning ? <WarningIcon fontSize="small" /> : <ErrorIcon fontSize="small" />}
+            {helperMsg}
           </span>
         ) : (
           ''

@@ -3,17 +3,21 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import ErrorIcon from '@mui/icons-material/Error';
+import WarningIcon from '@mui/icons-material/Warning';
+import { useTheme } from '@emotion/react';
 
 const DatePickerComponent = ({
   row,
   column,
   isRequired,
   isError,
+  isWarning,
   helperText,
   validationType,
   startDateField,
   handleInputChange
 }) => {
+  const theme = useTheme();
   const value = row.original[column.id];
   const initialValue = value ? moment(value, 'MM/DD/YYYY') : null;
   const [error, setError] = useState(isError);
@@ -71,10 +75,16 @@ const DatePickerComponent = ({
             size: 'small',
             clearable: true,
             required: isRequired,
-            error: error,
+            color: isWarning ? 'warning' : '',
+            focused: isWarning,
+            error: error && !isWarning,
             helperText: error ? (
-              <span>
-                <ErrorIcon fontSize="small" /> {helperMsg}
+              <span
+                style={{
+                  color: isWarning ? theme.palette.warning.main : ''
+                }}>
+                {isWarning ? <WarningIcon fontSize="small" /> : <ErrorIcon fontSize="small" />}
+                {helperMsg}
               </span>
             ) : (
               ''

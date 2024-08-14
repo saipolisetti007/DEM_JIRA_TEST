@@ -414,4 +414,392 @@ describe('Add Event Form Component', () => {
       expect(screen.getByText('Event Additional Data')).toHaveClass('Mui-active');
     });
   });
+  test('should handle form Warnings correctly', async () => {
+    const warningResponse = {
+      response: {
+        data: {
+          warnings: [
+            {
+              field: 'Event in store end date',
+              warning: 'event end date should be within 365 days of start date'
+            }
+          ]
+        }
+      }
+    };
+    addNewRowData.mockRejectedValueOnce(warningResponse);
+    const handleClose = jest.fn();
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <AddEventForm handleClose={handleClose} />
+        </Provider>
+      );
+    });
+
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/Event in store start date/i), {
+        target: { value: mockData.event_in_store_start_date }
+      });
+      fireEvent.change(screen.getByLabelText(/Event in store end date/i), {
+        target: { value: mockData.event_in_store_end_date }
+      });
+      fireEvent.change(screen.getByLabelText(/Event description/i), {
+        target: { value: mockData.event_description }
+      });
+    });
+
+    await act(async () => {
+      const eventSalesChannel = screen.getByLabelText(/event sales channel/i);
+      fireEvent.mouseDown(eventSalesChannel);
+    });
+
+    await waitFor(() => {
+      const eventSalesChannelOption = screen.getByRole('listbox', {
+        name: /event sales channel/i
+      });
+      fireEvent.click(within(eventSalesChannelOption).getByText(mockData.event_sales_channel));
+    });
+
+    await act(async () => {
+      const eventType = screen.getByLabelText(/event type/i);
+      fireEvent.mouseDown(eventType);
+    });
+
+    await waitFor(() => {
+      const typeOption = screen.getByRole('listbox', { name: /event type/i });
+      fireEvent.click(within(typeOption).getByText(/MVM/i));
+    });
+
+    await act(async () => {
+      const eventSubtype = screen.getByLabelText(/event subtype/i);
+      fireEvent.mouseDown(eventSubtype);
+    });
+
+    await waitFor(() => {
+      const typeSubOption = screen.getByRole('listbox', { name: /event subtype/i });
+      fireEvent.click(within(typeSubOption).getByText(/Single Item Discount/i));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Next Step'));
+    });
+
+    await act(async () => {
+      const itemType = screen.getByLabelText(/Item type/i);
+      fireEvent.mouseDown(itemType);
+    });
+    await waitFor(() => {
+      const itemTypeOption = screen.getByRole('listbox', {
+        name: /Item type/i
+      });
+      fireEvent.click(within(itemTypeOption).getByText(mockData.item_type));
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/Product ID/i), {
+        target: { value: mockData.product_id }
+      });
+    });
+
+    await act(async () => {
+      const idType = screen.getByLabelText(/ID Type/i);
+      fireEvent.mouseDown(idType);
+    });
+    await waitFor(() => {
+      const idTypeOption = screen.getByRole('listbox', {
+        name: /ID Type/i
+      });
+      fireEvent.click(within(idTypeOption).getByText(mockData.id_type));
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/Customer item Number/i), {
+        target: { value: mockData.customer_item_number }
+      });
+    });
+    await act(async () => {
+      const countryCode = screen.getByLabelText(/Country Code/i);
+      fireEvent.mouseDown(countryCode);
+    });
+    await waitFor(() => {
+      const countryCodeOption = screen.getByRole('listbox', {
+        name: /Country Code/i
+      });
+      fireEvent.click(within(countryCodeOption).getByText(mockData.country_code));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('Next Step'));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Save New Event'));
+    });
+    await waitFor(() => {
+      expect(screen.getByText(/There are warnings in the form submission/i)).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Procced to Submit'));
+  });
+  test('should handle form Warnings and show catch error', async () => {
+    const warningResponse = {
+      response: {
+        data: {
+          warnings: [
+            {
+              field: 'Event in store end date',
+              warning: 'event end date should be within 365 days of start date'
+            }
+          ]
+        }
+      }
+    };
+    const errorResponse = new Error('network Error');
+    addNewRowData.mockRejectedValueOnce(warningResponse).mockRejectedValueOnce(errorResponse);
+    const handleClose = jest.fn();
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <AddEventForm handleClose={handleClose} />
+        </Provider>
+      );
+    });
+
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/Event in store start date/i), {
+        target: { value: mockData.event_in_store_start_date }
+      });
+      fireEvent.change(screen.getByLabelText(/Event in store end date/i), {
+        target: { value: mockData.event_in_store_end_date }
+      });
+      fireEvent.change(screen.getByLabelText(/Event description/i), {
+        target: { value: mockData.event_description }
+      });
+    });
+
+    await act(async () => {
+      const eventSalesChannel = screen.getByLabelText(/event sales channel/i);
+      fireEvent.mouseDown(eventSalesChannel);
+    });
+
+    await waitFor(() => {
+      const eventSalesChannelOption = screen.getByRole('listbox', {
+        name: /event sales channel/i
+      });
+      fireEvent.click(within(eventSalesChannelOption).getByText(mockData.event_sales_channel));
+    });
+
+    await act(async () => {
+      const eventType = screen.getByLabelText(/event type/i);
+      fireEvent.mouseDown(eventType);
+    });
+
+    await waitFor(() => {
+      const typeOption = screen.getByRole('listbox', { name: /event type/i });
+      fireEvent.click(within(typeOption).getByText(/MVM/i));
+    });
+
+    await act(async () => {
+      const eventSubtype = screen.getByLabelText(/event subtype/i);
+      fireEvent.mouseDown(eventSubtype);
+    });
+
+    await waitFor(() => {
+      const typeSubOption = screen.getByRole('listbox', { name: /event subtype/i });
+      fireEvent.click(within(typeSubOption).getByText(/Single Item Discount/i));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Next Step'));
+    });
+
+    await act(async () => {
+      const itemType = screen.getByLabelText(/Item type/i);
+      fireEvent.mouseDown(itemType);
+    });
+    await waitFor(() => {
+      const itemTypeOption = screen.getByRole('listbox', {
+        name: /Item type/i
+      });
+      fireEvent.click(within(itemTypeOption).getByText(mockData.item_type));
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/Product ID/i), {
+        target: { value: mockData.product_id }
+      });
+    });
+
+    await act(async () => {
+      const idType = screen.getByLabelText(/ID Type/i);
+      fireEvent.mouseDown(idType);
+    });
+    await waitFor(() => {
+      const idTypeOption = screen.getByRole('listbox', {
+        name: /ID Type/i
+      });
+      fireEvent.click(within(idTypeOption).getByText(mockData.id_type));
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/Customer item Number/i), {
+        target: { value: mockData.customer_item_number }
+      });
+    });
+    await act(async () => {
+      const countryCode = screen.getByLabelText(/Country Code/i);
+      fireEvent.mouseDown(countryCode);
+    });
+    await waitFor(() => {
+      const countryCodeOption = screen.getByRole('listbox', {
+        name: /Country Code/i
+      });
+      fireEvent.click(within(countryCodeOption).getByText(mockData.country_code));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('Next Step'));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Save New Event'));
+    });
+    await waitFor(() => {
+      expect(screen.getByText(/There are warnings in the form submission/i)).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Procced to Submit'));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Error Occured while updating the data/i)).toBeInTheDocument();
+    });
+  });
+
+  test('should close warning dailog on cancel', async () => {
+    const warningResponse = {
+      response: {
+        data: {
+          warnings: [
+            {
+              field: 'Event in store end date',
+              warning: 'event end date should be within 365 days of start date'
+            }
+          ]
+        }
+      }
+    };
+    addNewRowData.mockRejectedValueOnce(warningResponse);
+    const handleClose = jest.fn();
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <AddEventForm handleClose={handleClose} />
+        </Provider>
+      );
+    });
+
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/Event in store start date/i), {
+        target: { value: mockData.event_in_store_start_date }
+      });
+      fireEvent.change(screen.getByLabelText(/Event in store end date/i), {
+        target: { value: mockData.event_in_store_end_date }
+      });
+      fireEvent.change(screen.getByLabelText(/Event description/i), {
+        target: { value: mockData.event_description }
+      });
+    });
+
+    await act(async () => {
+      const eventSalesChannel = screen.getByLabelText(/event sales channel/i);
+      fireEvent.mouseDown(eventSalesChannel);
+    });
+
+    await waitFor(() => {
+      const eventSalesChannelOption = screen.getByRole('listbox', {
+        name: /event sales channel/i
+      });
+      fireEvent.click(within(eventSalesChannelOption).getByText(mockData.event_sales_channel));
+    });
+
+    await act(async () => {
+      const eventType = screen.getByLabelText(/event type/i);
+      fireEvent.mouseDown(eventType);
+    });
+
+    await waitFor(() => {
+      const typeOption = screen.getByRole('listbox', { name: /event type/i });
+      fireEvent.click(within(typeOption).getByText(/MVM/i));
+    });
+
+    await act(async () => {
+      const eventSubtype = screen.getByLabelText(/event subtype/i);
+      fireEvent.mouseDown(eventSubtype);
+    });
+
+    await waitFor(() => {
+      const typeSubOption = screen.getByRole('listbox', { name: /event subtype/i });
+      fireEvent.click(within(typeSubOption).getByText(/Single Item Discount/i));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Next Step'));
+    });
+
+    await act(async () => {
+      const itemType = screen.getByLabelText(/Item type/i);
+      fireEvent.mouseDown(itemType);
+    });
+    await waitFor(() => {
+      const itemTypeOption = screen.getByRole('listbox', {
+        name: /Item type/i
+      });
+      fireEvent.click(within(itemTypeOption).getByText(mockData.item_type));
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/Product ID/i), {
+        target: { value: mockData.product_id }
+      });
+    });
+
+    await act(async () => {
+      const idType = screen.getByLabelText(/ID Type/i);
+      fireEvent.mouseDown(idType);
+    });
+    await waitFor(() => {
+      const idTypeOption = screen.getByRole('listbox', {
+        name: /ID Type/i
+      });
+      fireEvent.click(within(idTypeOption).getByText(mockData.id_type));
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/Customer item Number/i), {
+        target: { value: mockData.customer_item_number }
+      });
+    });
+    await act(async () => {
+      const countryCode = screen.getByLabelText(/Country Code/i);
+      fireEvent.mouseDown(countryCode);
+    });
+    await waitFor(() => {
+      const countryCodeOption = screen.getByRole('listbox', {
+        name: /Country Code/i
+      });
+      fireEvent.click(within(countryCodeOption).getByText(mockData.country_code));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('Next Step'));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Save New Event'));
+    });
+    const modal = screen.getByRole('dialog');
+    await waitFor(() => {
+      expect(screen.getByText(/There are warnings in the form submission/i)).toBeInTheDocument();
+    });
+
+    fireEvent.click(within(modal).getByText('Return to PromoGrid'));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(/There are warnings in the form submission/i)
+      ).not.toBeInTheDocument();
+    });
+  });
 });

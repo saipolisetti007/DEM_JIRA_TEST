@@ -194,4 +194,145 @@ describe('Edit Event Form Component', () => {
     fireEvent.click(screen.getByText('Event Main Parameters'));
     expect(accordionDiv).toHaveAttribute('aria-expanded', 'true');
   });
+  test('should handle form Warnings correctly', async () => {
+    const warningResponse = {
+      response: {
+        data: {
+          warnings: [{ field: 'name', warning: 'Name is required' }]
+        }
+      }
+    };
+
+    updateRowData.mockRejectedValueOnce(warningResponse);
+
+    const handleClose = jest.fn();
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <EditEventForm rowData={mockData} handleClose={handleClose} />
+        </Provider>
+      );
+    });
+
+    const event_in_store_start_date = screen.getByRole('textbox', {
+      name: /Event in Store Start Date/i
+    });
+    const event_in_store_end_date = screen.getByRole('textbox', {
+      name: /Event in Store End Date/i
+    });
+
+    fireEvent.change(event_in_store_start_date, {
+      target: { value: '07/22/2024' }
+    });
+
+    fireEvent.change(event_in_store_end_date, {
+      target: { value: '07/24/2024' }
+    });
+
+    fireEvent.click(screen.getByText('Save changes'));
+
+    await waitFor(() => {
+      expect(screen.getByText(/There are warnings in the form submission/i)).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Procced to Submit'));
+  });
+  test('should handle form Warnings and show catch error', async () => {
+    const warningResponse = {
+      response: {
+        data: {
+          warnings: [{ field: 'name', warning: 'Name is required' }]
+        }
+      }
+    };
+    const errorResponse = new Error('network Error');
+    updateRowData.mockRejectedValueOnce(warningResponse).mockRejectedValueOnce(errorResponse);
+    const handleClose = jest.fn();
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <EditEventForm rowData={mockData} handleClose={handleClose} />
+        </Provider>
+      );
+    });
+
+    const event_in_store_start_date = screen.getByRole('textbox', {
+      name: /Event in Store Start Date/i
+    });
+    const event_in_store_end_date = screen.getByRole('textbox', {
+      name: /Event in Store End Date/i
+    });
+
+    fireEvent.change(event_in_store_start_date, {
+      target: { value: '07/22/2024' }
+    });
+
+    fireEvent.change(event_in_store_end_date, {
+      target: { value: '07/24/2024' }
+    });
+
+    fireEvent.click(screen.getByText('Save changes'));
+
+    await waitFor(() => {
+      expect(screen.getByText(/There are warnings in the form submission/i)).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Procced to Submit'));
+    await waitFor(() => {
+      expect(screen.getByText(/Error Occured while updating the data/i)).toBeInTheDocument();
+    });
+  });
+
+  test('should close warning dailog on cancel', async () => {
+    const warningResponse = {
+      response: {
+        data: {
+          warnings: [{ field: 'name', warning: 'Name is required' }]
+        }
+      }
+    };
+    updateRowData.mockRejectedValueOnce(warningResponse);
+    const handleClose = jest.fn();
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <EditEventForm rowData={mockData} handleClose={handleClose} />
+        </Provider>
+      );
+    });
+
+    const event_in_store_start_date = screen.getByRole('textbox', {
+      name: /Event in Store Start Date/i
+    });
+    const event_in_store_end_date = screen.getByRole('textbox', {
+      name: /Event in Store End Date/i
+    });
+
+    fireEvent.change(event_in_store_start_date, {
+      target: { value: '07/22/2024' }
+    });
+
+    fireEvent.change(event_in_store_end_date, {
+      target: { value: '07/24/2024' }
+    });
+
+    fireEvent.click(screen.getByText('Save changes'));
+
+    await waitFor(() => {
+      expect(screen.getByText(/There are warnings in the form submission/i)).toBeInTheDocument();
+    });
+
+    const modal = screen.getByRole('dialog');
+    await waitFor(() => {
+      expect(screen.getByText(/There are warnings in the form submission/i)).toBeInTheDocument();
+    });
+
+    fireEvent.click(within(modal).getByText('Return to PromoGrid'));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(/There are warnings in the form submission/i)
+      ).not.toBeInTheDocument();
+    });
+  });
 });

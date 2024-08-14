@@ -7,7 +7,11 @@ import { salesChannelOptions, itemTypeOptions, iDTypeOptions } from './FormStepF
 import { useSelector } from 'react-redux';
 import DropdownComponent from '../Common/DropdownComponent';
 
-const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => {
+const PromoGridValidationColumns = ({
+  validationErrors,
+  validationWarnings,
+  handleInputChange
+}) => {
   const { eventsData, eventTypeOptions, isLoading } = useSelector((state) => state.eventsData);
   const [selectedEvents, setSelectedEvents] = useState({});
   const [eventSubTypeOptions, setEventSubTypeOptions] = useState({});
@@ -48,7 +52,6 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
                   <InputTextComponent
                     row={row}
                     column={column}
-                    isRequired={true}
                     isError={!!validationErrors[row.index]?.unique_event_id}
                     helperText={validationErrors[row.index]?.unique_event_id}
                     validationType="stringValidation"
@@ -69,6 +72,7 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
               row={row}
               column={column}
               isRequired={true}
+              isWarning={!!validationWarnings[row.index]?.event_in_store_start_date}
               isError={!!validationErrors[row.index]?.event_in_store_start_date}
               helperText={validationErrors[row.index]?.event_in_store_start_date}
               validationType="startDate"
@@ -88,6 +92,7 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
               row={row}
               column={column}
               isRequired={true}
+              isWarning={!!validationWarnings[row.index]?.event_in_store_end_date}
               isError={!!validationErrors[row.index]?.event_in_store_end_date}
               helperText={validationErrors[row.index]?.event_in_store_end_date}
               validationType="endDate"
@@ -144,6 +149,7 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
               column={column}
               isRequired={true}
               label="Event Type"
+              isWarning={!!validationWarnings[row.index]?.event_type}
               isError={!!validationErrors[row.index]?.event_type}
               helperText={validationErrors[row.index]?.event_type}
               options={eventTypeOptions}
@@ -179,6 +185,7 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
               options={SubTypeOptions}
               selectedState={selectedOptions[rowIndex]}
               isEventSelected={!!selectedEvent}
+              isWarning={!!validationWarnings[row.index]?.event_subtype}
               isError={!!validationErrors[row.index]?.event_subtype}
               helperText={validationErrors[row.index]?.event_subtype}
               handleInputChange={handleInputChange}
@@ -355,6 +362,7 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
               row={row}
               column={column}
               isRequired={true}
+              isWarning={!!validationWarnings[row.index]?.product_id}
               isError={!!validationErrors[row.index]?.product_id}
               helperText={validationErrors[row.index]?.product_id}
               validationType="stringValidation"
@@ -871,6 +879,7 @@ const PromoGridValidationColumns = ({ validationErrors, handleInputChange }) => 
     ],
     [
       validationErrors,
+      validationWarnings,
       eventsData,
       eventTypeOptions,
       selectedEvents,

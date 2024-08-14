@@ -103,15 +103,10 @@ describe('PromoGridValidations', () => {
     });
   });
 
-  test('handle validate calls promoGridValidate', async () => {
+  test('handle validate calls promoGridValidate without error and warning', async () => {
     const mockUpdatedState = [
       {
-        promo_header: '10',
-        rows: [
-          {
-            golden_customer_id: '1'
-          }
-        ]
+        promo_header: '10'
       }
     ];
     promoGridValidate.mockResolvedValue(mockUpdatedState);
@@ -130,6 +125,7 @@ describe('PromoGridValidations', () => {
     fireEvent.click(validateButton);
     await waitFor(() => {
       expect(promoGridValidate).toHaveBeenCalledTimes(1);
+
       expect(
         screen.getByText('Validation Succesfull, please submit the data !!!')
       ).toBeInTheDocument();
@@ -167,6 +163,44 @@ describe('PromoGridValidations', () => {
     await waitFor(() => {
       expect(promoGridValidate).toHaveBeenCalled();
       expect(screen.getByText('Please check the validations !!!')).toBeInTheDocument();
+    });
+  });
+
+  test('calls promoGridValidate and handles warnings', async () => {
+    const mockUpdatedState = {
+      rows: [
+        {
+          golden_customer_id: '1',
+          validation_warning: { golden_customer_id: 'Warning message' }
+        }
+      ]
+    };
+
+    promoGridValidate.mockResolvedValue(mockUpdatedState);
+
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
+      );
+    });
+
+    const validateButton = screen.getByText('Validate');
+    expect(validateButton).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(validateButton);
+    });
+
+    await waitFor(() => {
+      expect(promoGridValidate).toHaveBeenCalledTimes(1);
+    });
+
+    // Check if the warning dialog is shown
+    await waitFor(() => {
+      expect(screen.getByText('There are warnings in the form submission')).toBeInTheDocument();
     });
   });
 

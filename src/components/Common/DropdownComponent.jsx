@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
+import WarningIcon from '@mui/icons-material/Warning';
+import { useTheme } from '@emotion/react';
 
 const DropdownComponent = ({
   row,
@@ -8,6 +10,7 @@ const DropdownComponent = ({
   label,
   options,
   isError,
+  isWarning,
   helperText,
   isEventSelected,
   onChange,
@@ -15,6 +18,7 @@ const DropdownComponent = ({
   handleInputChange,
   selectedState
 }) => {
+  const theme = useTheme();
   const rowValue = row.original[column.id] || '';
   const [isInitValue, setIsInitValue] = useState(true);
   const [value, setValue] = useState(rowValue);
@@ -70,6 +74,7 @@ const DropdownComponent = ({
           id={`${column.id}_${row.index}`}
           value={options?.includes(value) ? value : ''}
           label={label}
+          color={isWarning ? 'warning' : ''}
           data-testid={column.id}
           onChange={handleChange}>
           {!isEventSelected && (
@@ -91,7 +96,13 @@ const DropdownComponent = ({
         </Select>
         {error && (
           <FormHelperText>
-            <ErrorIcon fontSize="small" /> {helperMsg}
+            <span
+              style={{
+                color: isWarning ? theme.palette.warning.main : ''
+              }}>
+              {isWarning ? <WarningIcon fontSize="small" /> : <ErrorIcon fontSize="small" />}
+              {helperMsg}
+            </span>
           </FormHelperText>
         )}
       </FormControl>

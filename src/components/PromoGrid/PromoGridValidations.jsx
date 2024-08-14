@@ -15,6 +15,7 @@ import { promoGridSubmit, promoGridValidate } from '../../api/promoGridApi';
 import InfoSnackBar from '../Common/InfoSnackBar';
 import BreadcrumbNavigation from '../Common/BreadcrumbNavigation';
 import ValidationPageDialog from '../Common/ValidationPageDialog'; // Make sure the path is correct
+import DialogComponent from '../Common/DialogComponent';
 
 const PromoGridValidationTable = () => {
   const location = useLocation();
@@ -26,9 +27,10 @@ const PromoGridValidationTable = () => {
   const [isRefetching, setIsRefetching] = useState(false);
   const [isError, setIsError] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
+  const [validationWarnings, setValidationWarnings] = useState({});
   const [updatedData, setUpdatedData] = useState([]);
   const [submitDisabled, setSubmitDisabled] = useState(true);
-
+  const [warningDialogOpen, setWarningDialogOpen] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
 
@@ -107,18 +109,38 @@ const PromoGridValidationTable = () => {
     try {
       const updatedRows = updatedData.rows.map((row) => {
         // eslint-disable-next-line no-unused-vars
-        const { validations, ...rest } = row;
+        const { validations, validation_warning, ...rest } = row;
         return rest;
       });
       const updatedState = { ...updatedData, rows: updatedRows };
-      await promoGridValidate(updatedState);
+      const response = await promoGridValidate(updatedState);
       setIsDataLoading(false);
-      setSubmitDisabled(false);
-      setIsSnackOpen(true);
-      setSnackBar({
-        message: 'Validation Succesfull, please submit the data !!!',
-        severity: 'success'
-      });
+      if (response.rows) {
+        // Assuming response contains updated rows with validation warnings
+        const warnings = response.rows.map((row) => row.validation_warning || {});
+        const hasWarnings = warnings.some((warning) => Object.keys(warning).length > 0);
+
+        if (hasWarnings) {
+          setUpdatedData(response);
+          setValidationErrors(warnings);
+          setValidationWarnings(warnings);
+          setWarningDialogOpen(true);
+        } else {
+          setSubmitDisabled(false);
+          setIsSnackOpen(true);
+          setSnackBar({
+            message: 'Validation successful. You can proceed to submit.',
+            severity: 'success'
+          });
+        }
+      } else {
+        setSubmitDisabled(false);
+        setIsSnackOpen(true);
+        setSnackBar({
+          message: 'Validation Succesfull, please submit the data !!!',
+          severity: 'success'
+        });
+      }
     } catch (error) {
       updateData(error.response.data);
       setIsDataLoading(false);
@@ -132,6 +154,7 @@ const PromoGridValidationTable = () => {
   };
 
   const handleSubmit = async () => {
+    setWarningDialogOpen(false);
     try {
       const promoHeader = {
         promo_header: responseData.promo_header
@@ -151,6 +174,7 @@ const PromoGridValidationTable = () => {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
+    setWarningDialogOpen(false);
   };
 
   const handleDialogConfirm = () => {
@@ -171,6 +195,7 @@ const PromoGridValidationTable = () => {
     data: tableData,
     columns: PromoGridValidationColumns({
       validationErrors,
+      validationWarnings,
       handleInputChange
     }),
     enableEditing: true,
@@ -262,6 +287,16 @@ const PromoGridValidationTable = () => {
         onClose={handleDialogClose}
         onConfirm={handleDialogConfirm}
         onReturnToPromoGrid={handleReturnToPromoGrid}
+      />
+      <DialogComponent
+        open={warningDialogOpen}
+        title="Confirm submission"
+        dialogHeading="There are warnings in the form submission"
+        dialogContent="Do you want to proceed?"
+        cancelText="Return to PromoGrid"
+        confirmText="Procced to Submit"
+        handleConfirm={handleSubmit}
+        handleClose={handleDialogClose}
       />
     </>
   );
