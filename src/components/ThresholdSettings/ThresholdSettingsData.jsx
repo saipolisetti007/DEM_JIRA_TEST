@@ -94,15 +94,10 @@ const ThresholdSettingsData = () => {
   const fetchFilters = async () => {
     try {
       const data = await fetchThresholdFilters();
-      console.log('Data from API:', data); // Log the raw data from the API
       setFilters({
         subsectors: data ? Object.keys(data) : [],
         rawData: data || {}
       });
-      console.log('Filters after setting state:', {
-        subsectors: data ? Object.keys(data) : [],
-        rawData: data || {}
-      }); // Log the state after setting it
     } catch (error) {
       console.error('Failed to load filters:', error);
     }
@@ -133,7 +128,6 @@ const ThresholdSettingsData = () => {
       });
       await fetchData(selectedCustomer);
     } catch (error) {
-      console.log(error.response.data);
       if (error.response.data && error.response.data.message) {
         setErrorMessage(error.response.data.message);
       } else {
@@ -151,6 +145,7 @@ const ThresholdSettingsData = () => {
   const handleEditRule = (row) => {
     setIsMode('edit');
     setOpenDialog(true);
+    setErrorMessage('');
     setRowData(row.original);
   };
 
