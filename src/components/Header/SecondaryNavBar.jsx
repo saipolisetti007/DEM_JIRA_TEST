@@ -5,6 +5,7 @@ import DashboardIcon from '../../assets/dashboard/DashboardIcon';
 import GraphIcon from '../../assets/dashboard/GraphIcon';
 import ListIcon from '../../assets/dashboard/ListIcon';
 // import TruckIcon from '../../assets/dashboard/TruckIcon';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const SecondaryNavBar = () => {
   return (
@@ -66,8 +67,8 @@ const SecondaryNavBar = () => {
             )}
           </NavLink>
 
-          {/* <NavLink
-            to="/shipments-orders"
+          <NavLink
+            to="/threshold-settings"
             className={({ isActive }) =>
               isActive ? 'bg-white font-bold rounded-full px-2 text-[#003DA5]' : 'text-white'
             }>
@@ -76,13 +77,13 @@ const SecondaryNavBar = () => {
                 variant="text"
                 color="inherit"
                 className="flex items-center align-middle text-sm">
-                <TruckIcon isActive={isActive} className="mr-2" />
+                <SettingsIcon isActive={isActive} className="mr-2" />
                 <span className={`text-sm mx-2 ${isActive ? 'text-[#003DA5]' : 'text-white'}`}>
-                  Shipments and Orders
+                  Threshold Settings
                 </span>
               </Button>
             )}
-          </NavLink> */}
+          </NavLink>
         </div>
       </Container>
     </nav>

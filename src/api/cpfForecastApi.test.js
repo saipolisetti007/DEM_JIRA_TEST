@@ -5,7 +5,12 @@ import {
   cpfPendingCount,
   cpfGetForecast,
   cpfDecisions,
-  cpfFilters
+  cpfFilters,
+  cpfThresholdList,
+  cpfThresholdAdd,
+  cpfThresholdEdit,
+  cpfThresholdDelete,
+  fetchThresholdFilters
 } from './cpfForecastApi';
 
 jest.mock('./apiUtils', () => ({
@@ -139,5 +144,47 @@ describe('cpfForecastApi', () => {
     performApiRequest.mockResolvedValueOnce(rowData);
     await cpfDecisions(rowData);
     expect(performApiRequest).toHaveBeenCalledWith('cpf/cpf-forecast/', 'POST', rowData);
+  });
+
+  test('get data with customer value', async () => {
+    const customerId = '123';
+    const data = [{ id: 1, name: 'test' }];
+    performApiRequest.mockResolvedValueOnce(data);
+    const result = await cpfThresholdList(customerId);
+    expect(result).toEqual(data);
+    const url = `/cpf/items/?customer=${customerId}`;
+    expect(performApiRequest).toHaveBeenCalledWith(url);
+  });
+  test('adds new row data', async () => {
+    const rowData = { id: 1, name: 'test' };
+    performApiRequest.mockResolvedValueOnce(rowData);
+    await cpfThresholdAdd(rowData);
+    expect(performApiRequest).toHaveBeenCalledWith('cpf/add/', 'POST', rowData);
+  });
+
+  test('updates row data', async () => {
+    const rowData = { id: 1, name: 'test' };
+    const rowId = 1;
+    performApiRequest.mockResolvedValueOnce(rowData);
+
+    await cpfThresholdEdit(rowId, rowData);
+    const url = `/cpf/edit/${rowId}/`;
+    expect(performApiRequest).toHaveBeenCalledWith(url, 'PUT', rowData);
+  });
+
+  test('cancel row data', async () => {
+    const rowId = 1;
+    performApiRequest.mockResolvedValueOnce(rowId);
+    await cpfThresholdDelete(rowId);
+    const url = `/cpf/items/${rowId}/cancel/`;
+    expect(performApiRequest).toHaveBeenCalledWith(url, 'DELETE');
+  });
+
+  test('fetch threshold filters', async () => {
+    const data = [{ id: 1, name: 'test' }];
+    performApiRequest.mockResolvedValueOnce(data);
+    const result = await fetchThresholdFilters();
+    expect(result).toEqual(data);
+    expect(performApiRequest).toHaveBeenCalledWith('cpf/threshold-rules/filters/');
   });
 });

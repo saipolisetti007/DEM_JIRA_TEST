@@ -20,6 +20,7 @@ import PromoGrid from './pages/PromoGrid';
 import CPFForecast from './pages/CPFForecast';
 import PromoGridValidations from './components/PromoGrid/PromoGridValidations';
 import StoreToDcMapping from './pages/StoreToDcMapping';
+import ThresholdSettings from './pages/ThresholdSettings';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +31,7 @@ const router = createBrowserRouter(
       <Route path="/promo-grid" element={<PromoGrid />} />
       <Route path="/promo-grid-validations" element={<PromoGridValidations />} />
       <Route path="/cpf-forecast" element={<CPFForecast />} />
+      <Route path="/threshold-settings" element={<ThresholdSettings />} />
     </Route>
   )
 );

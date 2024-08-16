@@ -56,3 +56,28 @@ export const cpfPendingCount = async () => {
 export const cpfDecisionAction = async (selections) => {
   await performApiRequest('cpf/cpf-decision/', 'POST', selections);
 };
+
+export const cpfThresholdList = async (customerId) => {
+  const url = `/cpf/items/?customer=${customerId}`;
+  const response = await performApiRequest(url);
+  return response;
+};
+
+export const cpfThresholdAdd = async (data) => {
+  await performApiRequest('cpf/add/', 'POST', data);
+};
+
+export const cpfThresholdEdit = async (rowId, data) => {
+  const url = `/cpf/edit/${rowId}/`;
+  await performApiRequest(url, 'PUT', data);
+};
+
+export const cpfThresholdDelete = async (rowId) => {
+  const url = `/cpf/items/${rowId}/cancel/`;
+  await performApiRequest(url, 'DELETE');
+};
+
+export const fetchThresholdFilters = async () => {
+  const response = await performApiRequest('cpf/threshold-rules/filters/');
+  return response;
+};

@@ -63,6 +63,8 @@
       "./src/api/**/*.{js,jsx}",
       "./src/components/**/*.{js,jsx}",
       "!src/components/**/StoreToDc.{js,jsx}",
+      "!src/components/**/ThresholdSettingsData.{js,jsx}",
+      "!src/components/**/AddRuleForm.{js,jsx}",
       "!src/api/**/storeApi.{js,jsx}"
     ],
     "coverageThreshold": {

@@ -454,6 +454,8 @@ const PromoGridData = () => {
         hoveredRow={hoveredRow}
         handleEdit={handleEdit}
         handleCancel={handleCancel}
+        cancelTooltip="Cancel Event"
+        editTooltip="Edit Event"
       />
     ),
     state: {
