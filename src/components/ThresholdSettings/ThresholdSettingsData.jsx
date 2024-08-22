@@ -116,10 +116,11 @@ const ThresholdSettingsData = () => {
   };
 
   const onSubmit = async (data) => {
+    setIsSaving(true);
     try {
       data.customer = selectedCustomer.toString();
       await cpfThresholdAdd(data);
-      setIsSaving(true);
+      setIsSaving(false);
       setOpenDialog(false);
       setIsSnackOpen(true);
       setSnackBar({
@@ -128,7 +129,8 @@ const ThresholdSettingsData = () => {
       });
       await fetchData(selectedCustomer);
     } catch (error) {
-      if (error.response.data && error.response.data.message) {
+      setIsSaving(false);
+      if (error.response?.data?.message) {
         setErrorMessage(error.response.data.message);
       } else {
         setIsSnackOpen(true);
@@ -154,9 +156,10 @@ const ThresholdSettingsData = () => {
   };
 
   const onEditSubmit = async (data) => {
+    setIsSaving(true);
     try {
       await cpfThresholdEdit(rowData.id, data);
-      setIsSaving(true);
+      setIsSaving(false);
       setOpenDialog(false);
       setIsSnackOpen(true);
       setSnackBar({
@@ -165,7 +168,8 @@ const ThresholdSettingsData = () => {
       });
       await fetchData(selectedCustomer);
     } catch (error) {
-      if (error.response.data && error.response.data.message) {
+      setIsSaving(false);
+      if (error.response?.data?.message) {
         setErrorMessage(error.response.data.message);
       } else {
         setIsSnackOpen(true);
@@ -184,8 +188,10 @@ const ThresholdSettingsData = () => {
   };
 
   const handleDelete = async () => {
+    setIsSaving(true);
     try {
       await cpfThresholdDelete(rowData.id);
+      setIsSaving(false);
       setOpenConfirmDialog(false);
       setIsSnackOpen(true);
       setSnackBar({
@@ -194,9 +200,10 @@ const ThresholdSettingsData = () => {
       });
       await fetchData(selectedCustomer);
     } catch {
+      setIsSaving(false);
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Failed to delete threshold',
+        message: 'Failed to delete threshold rule',
         severity: 'error'
       });
     }
@@ -351,7 +358,7 @@ const ThresholdSettingsData = () => {
           open={openDialog}
           title="Add New Threshold Rule"
           cancelText="Return to Settings"
-          confirmText={isLoading ? 'Saving' : 'Save'}
+          confirmText={isSaving ? 'Saving' : 'Save'}
           disabled={!formState.isValid}
           handleConfirm={handleSave}
           handleClose={handleDialogClose}>
@@ -364,7 +371,7 @@ const ThresholdSettingsData = () => {
           open={openDialog}
           title="Edit Threshold Rule"
           cancelText="Cancel"
-          confirmText={isLoading ? 'Saving' : 'Save Changes'}
+          confirmText={isSaving ? 'Saving' : 'Save Changes'}
           disabled={!formState.isValid}
           handleConfirm={handleEditSave}
           handleClose={handleDialogClose}>
@@ -385,7 +392,7 @@ const ThresholdSettingsData = () => {
         dialogHeading="Are you sure? you want to delete the rule?"
         dialogContent="The record will be deleted immediately. You can't undo this action."
         cancelText="Return to Settings"
-        confirmText="Delete Rule"
+        confirmText={isSaving ? 'Deleting' : 'Delete Rule'}
         handleConfirm={handleDelete}
         handleClose={handleDialogClose}
       />

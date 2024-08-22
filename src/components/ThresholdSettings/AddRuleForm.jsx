@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import FormInputControl from '../Common/FormInputControl';
 import { Alert, Box, Grid, Typography } from '@mui/material';
-import { useWatch } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [brandForms, setBrandForms] = useState([]);
+  const { setValue, getValues } = useFormContext();
+  const currentValues = getValues();
 
   const subsector = useWatch({
     control,
@@ -51,7 +53,6 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
 
   const compareOptions = ['Customer Forecast'];
   const OperationOptions = ['% difference', 'Abs. unit difference'];
-  const percentunitOptions = ['%'];
   const volumsUnitOptions = ['cs', 'it', 'su', 'msu'];
 
   const operation = useWatch({
@@ -59,12 +60,19 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
     name: 'operation_type'
   });
 
-  const unitOptions =
-    operation === '% difference'
-      ? percentunitOptions
-      : operation === 'Abs. unit difference'
-        ? volumsUnitOptions
-        : [];
+  useEffect(() => {
+    const unitsValue = getValues('unit');
+
+    if (operation === '% difference') {
+      if (unitsValue !== '%') {
+        setValue('unit', '%');
+      }
+    } else if (operation === 'Abs. unit difference') {
+      if (unitsValue !== '' && !volumsUnitOptions.includes(unitsValue)) {
+        setValue('unit', '');
+      }
+    }
+  }, [operation, getValues, setValue]);
 
   return (
     <>
@@ -163,14 +171,25 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
             </Typography>
           </Grid>
           <Grid item xs={3}>
-            <FormInputControl
-              control={control}
-              name="unit"
-              label="Unit"
-              type="select"
-              options={unitOptions}
-              isRequired={true}
-            />
+            {operation === '% difference' ? (
+              <FormInputControl
+                control={control}
+                name="unit"
+                label="Unit"
+                type="text"
+                isDisabled={operation === '% difference'}
+                isRequired={true}
+              />
+            ) : (
+              <FormInputControl
+                control={control}
+                name="unit"
+                label="Unit"
+                type="select"
+                options={volumsUnitOptions}
+                isRequired={true}
+              />
+            )}
           </Grid>
         </Grid>
       </Box>
@@ -179,7 +198,14 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
           <Alert severity="error">
             <Typography variant="body2">
               Unable to create new rule, entry already exists for <br />
-              <strong> {errorMessage} </strong> <br />
+              <strong>
+                {currentValues.subsector} /
+                {currentValues.category && <span> {currentValues.category} / </span>}
+                {currentValues.brand && <span> {currentValues.brand} / </span>}
+                {currentValues.brand_form && <span> {currentValues.brand_form} / </span>}
+                {currentValues.compare_with} / {currentValues.operation_type}
+              </strong>
+              <br />
               To edit entry, return to settings and select edit entry
             </Typography>
           </Alert>
@@ -188,7 +214,13 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
           <Alert severity="warning">
             <Typography variant="body2">
               Saving will overwrite existing entry for <br />
-              <strong>Above Entry</strong>
+              <strong>
+                {currentValues.subsector} /
+                {currentValues.category && <span> {currentValues.category} / </span>}
+                {currentValues.brand && <span> {currentValues.brand} / </span>}
+                {currentValues.brand_form && <span> {currentValues.brand_form} / </span>}
+                {currentValues.compare_with} / {currentValues.operation_type}
+              </strong>
             </Typography>
           </Alert>
         ) : (
