@@ -11,21 +11,21 @@ import { debounce } from 'lodash';
 import ConfirmationDialog from './ConfirmationDialog';
 import { reduceFilters, mapFilterParams } from '../../utils/filterUtils';
 import createDebouncedFetchFilters from '../../utils/debounceUtils';
+import DefaultPageLoader from '../Common/DefaultPageLoader';
 
 const CPFForecastMain = () => {
   const [cpfData, setCpfData] = useState([]);
   const [cpfEnabled, setCpfEnabled] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [isRefetching, setIsRefetching] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [expandedIndex, setExpandedIndex] = useState(0);
+  const [expandedIndex, setExpandedIndex] = useState(-1);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
   const [selectedUnit, setSelectedUnit] = useState('su');
   const [editedValues, setEditedValues] = useState({});
   const [pendingUnitChange, setPendingUnitChange] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [filtersUpdated, setFiltersUpdated] = useState(false);
 
   const [filterOptions, setFilterOptions] = useState({
     subsector: [],
@@ -36,7 +36,8 @@ const CPFForecastMain = () => {
     prodName: [],
     customerItemNumber: [],
     eventType: [],
-    eventSubtype: []
+    eventSubtype: [],
+    customerId: []
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
@@ -48,10 +49,12 @@ const CPFForecastMain = () => {
     prodName: [],
     customerItemNumber: [],
     eventType: [],
-    eventSubtype: []
+    eventSubtype: [],
+    customerId: []
   });
 
   const fetchFilters = async (filters = {}) => {
+    setIsLoading(true);
     try {
       const response = await cpfFilters(filters);
       setFilterOptions((prevOptions) => ({
@@ -64,12 +67,18 @@ const CPFForecastMain = () => {
         prodName: response?.prod_name || prevOptions.prodName,
         customerItemNumber: response?.customer_item_number || prevOptions.customerItemNumber,
         eventType: response?.event_type || prevOptions.eventType,
-        eventSubtype: response?.event_subtype || prevOptions.eventSubtype
+        eventSubtype: response?.event_subtype || prevOptions.eventSubtype,
+        customerId: response?.customer_id || prevOptions.customerId
       }));
       setIsLoading(false);
+      setSelectedFilters((prevFilters) => ({
+        ...prevFilters,
+        customerId: [response?.customer_id[0]]
+      }));
+      setFiltersUpdated(true);
     } catch (error) {
+      setFiltersUpdated(true);
       setIsLoading(false);
-      setIsError(true);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Network Error !!!',
@@ -80,18 +89,17 @@ const CPFForecastMain = () => {
 
   const fetchData = async (filters) => {
     setIsPageLoading(true);
-    setIsError(false);
     try {
       const filterParams = reduceFilters(filters);
       const mappedFilterParams = mapFilterParams(filterParams);
       const response = await cpfGetForecast(mappedFilterParams);
-      setCpfData(response.cpf_data);
+      setCpfData(response.skus);
       setCpfEnabled(response.cpf_enabled);
       setIsPageLoading(false);
+      setExpandedIndex(-1);
     } catch (error) {
       setIsPageLoading(false);
       setIsLoading(true);
-      setIsError(true);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Network Error !!!',
@@ -100,6 +108,9 @@ const CPFForecastMain = () => {
     }
   };
 
+  useEffect(() => {
+    fetchFilters(selectedFilters);
+  }, []);
   const debouncedFetchData = useCallback(debounce(fetchData, 500), []);
 
   const debouncedFetchFilters = useCallback(
@@ -121,15 +132,14 @@ const CPFForecastMain = () => {
   };
 
   useEffect(() => {
-    debouncedFetchData(selectedFilters);
+    if (filtersUpdated) {
+      debouncedFetchData(selectedFilters);
+    }
+
     return () => {
       debouncedFetchData.cancel();
     };
-  }, [selectedFilters]);
-
-  useEffect(() => {
-    fetchFilters(selectedFilters);
-  }, []);
+  }, [selectedFilters, filtersUpdated]);
 
   const handleAccordionChange = (index) => {
     setExpandedIndex((prevIndex) => (prevIndex === index ? -1 : index));
@@ -155,9 +165,9 @@ const CPFForecastMain = () => {
     setOpenDialog(false);
   };
 
-  const handleSubmit = async () => {
-    await fetchData(selectedFilters);
-  };
+  if (!filtersUpdated) {
+    return <DefaultPageLoader />;
+  }
 
   return (
     <>
@@ -204,24 +214,16 @@ const CPFForecastMain = () => {
                 cpfData.map((item, index) => (
                   <SkuItem
                     key={item.sku}
-                    isLoading={isLoading}
-                    setIsLoading={setIsLoading}
-                    isError={isError}
-                    isRefetching={isRefetching}
-                    setIsRefetching={setIsRefetching}
                     index={index}
                     sku={item.sku}
                     prod_name={item.prod_name}
-                    csFactor={item.cs_factor}
-                    itFactor={item.it_factor}
-                    data={item.forecast}
                     isExpanded={index === expandedIndex}
                     selectedUnit={selectedUnit}
                     editedValues={editedValues}
                     setEditedValues={setEditedValues}
                     isExanped={index === expandedIndex}
                     onAccordionChange={() => handleAccordionChange(index)}
-                    onSubmit={handleSubmit}
+                    selectedFilters={selectedFilters}
                     cpfEnabled={cpfEnabled}
                   />
                 ))

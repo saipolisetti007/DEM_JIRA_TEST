@@ -53,6 +53,11 @@ const createDebouncedFetchFilters = (
             ? Array.from(new Set([...prevOptions.eventSubtype, ...(response.event_subtype || [])]))
             : response.event_subtype || [];
         }
+        if (!excludeKeys.includes('customerId')) {
+          newOptions.customerId = updatedFilters.customerId.length
+            ? Array.from(new Set([...prevOptions.customerId, ...(response.customer_id || [])]))
+            : response.customer_id || [];
+        }
 
         if (!excludeKeys.includes('custFlag')) {
           newOptions.custFlag = updatedFilters.custFlag.length

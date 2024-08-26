@@ -10,7 +10,8 @@ import {
   cpfThresholdAdd,
   cpfThresholdEdit,
   cpfThresholdDelete,
-  fetchThresholdFilters
+  fetchThresholdFilters,
+  cpfSkuForecast
 } from './cpfForecastApi';
 
 jest.mock('./apiUtils', () => ({
@@ -40,7 +41,8 @@ describe('cpfForecastApi', () => {
       prod_name: ['Product1'],
       customer_item_number: ['123456'],
       eventType: ['MVM'],
-      eventSubtype: ['Future Value']
+      eventSubtype: ['Future Value'],
+      customer_id: ['2000038335']
     };
     performApiRequest.mockResolvedValueOnce(mockFilters);
     const result = await cpfFilters();
@@ -54,8 +56,29 @@ describe('cpfForecastApi', () => {
       customerItemNumber: [],
       prodName: [],
       eventType: [],
-      eventSubtype: []
+      eventSubtype: [],
+      customerId: []
     });
+  });
+
+  test('get SKU table data', async () => {
+    const mockData = [
+      {
+        forecast: [
+          {
+            week: '08/26/2024',
+            unit: 88729.55,
+            prevUnits: 90000.0
+          }
+        ],
+        units: 1
+      }
+    ];
+    const skuData = [{ customer_id: 1, sku: 1, eventType: [], eventSubtype: [] }];
+    performApiRequest.mockResolvedValueOnce(mockData);
+    const result = await cpfSkuForecast(skuData);
+    expect(result).toEqual(mockData);
+    expect(performApiRequest).toHaveBeenCalledWith('cpf/cpf-sku-forecast/', 'POST', skuData);
   });
 
   test('get pending products count', async () => {
@@ -75,20 +98,12 @@ describe('cpfForecastApi', () => {
 
   test('cpfGetForecast data with sku', async () => {
     const data = {
-      sku: '100123456',
-      forecast: [
-        {
-          week: '05/27/2024',
-          units: '123456',
-          approved: false,
-          active: true
-        }
-      ]
+      sku: '100123456'
     };
     performApiRequest.mockResolvedValueOnce(data);
     const result = await cpfGetForecast();
     expect(result).toEqual(data);
-    expect(performApiRequest).toHaveBeenCalledWith('cpf/cpf-forecast-list/', 'POST', {
+    expect(performApiRequest).toHaveBeenCalledWith('cpf/cpf-forecast-sku-list/', 'POST', {
       brand: [],
       category: [],
       subsector: [],
@@ -97,27 +112,25 @@ describe('cpfForecastApi', () => {
       prodName: [],
       customerItemNumber: [],
       eventType: [],
-      eventSubtype: []
+      eventSubtype: [],
+      customerId: []
     });
   });
 
   test('should append filters to the URL when filters are provided', async () => {
-    const filters = { brand: ['Dawn'], prodName: ['Product1'], customerItemNumber: ['123456'] }; // Updated keys
+    const filters = {
+      brand: ['Dawn'],
+      prodName: ['Product1'],
+      customerItemNumber: ['123456'],
+      customerId: ['123']
+    }; // Updated keys
     const data = {
-      sku: '100123456',
-      forecast: [
-        {
-          week: '05/27/2024',
-          units: '123456',
-          approved: false,
-          active: true
-        }
-      ]
+      sku: '100123456'
     };
     performApiRequest.mockResolvedValueOnce(data);
     const result = await cpfGetForecast(filters);
     expect(result).toEqual(data);
-    expect(performApiRequest).toHaveBeenCalledWith('cpf/cpf-forecast-list/', 'POST', {
+    expect(performApiRequest).toHaveBeenCalledWith('cpf/cpf-forecast-sku-list/', 'POST', {
       brand: ['Dawn'],
       category: [],
       subsector: [],
@@ -126,7 +139,8 @@ describe('cpfForecastApi', () => {
       prodName: ['Product1'],
       customerItemNumber: ['123456'],
       eventType: [],
-      eventSubtype: []
+      eventSubtype: [],
+      customerId: ['123']
     });
   });
 

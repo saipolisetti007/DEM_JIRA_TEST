@@ -15,7 +15,8 @@ export const cpfFilters = async (filters = {}) => {
     customerItemNumber: [],
     prodName: [],
     eventType: [],
-    eventSubtype: []
+    eventSubtype: [],
+    customerId: []
   };
 
   const payload = { ...defaultFilters, ...filters };
@@ -26,7 +27,7 @@ export const cpfFilters = async (filters = {}) => {
 };
 
 export const cpfGetForecast = async (filters = {}) => {
-  const url = 'cpf/cpf-forecast-list/';
+  const url = 'cpf/cpf-forecast-sku-list/';
 
   const body = {
     brand: filters.brand || [],
@@ -37,10 +38,16 @@ export const cpfGetForecast = async (filters = {}) => {
     prodName: filters.prodName || [],
     customerItemNumber: filters.customerItemNumber || [],
     eventType: filters.eventType || [],
-    eventSubtype: filters.eventSubtype || []
+    eventSubtype: filters.eventSubtype || [],
+    customerId: filters.customerId || []
   };
 
   const response = await performApiRequest(url, 'POST', body);
+  return response;
+};
+
+export const cpfSkuForecast = async (skuData) => {
+  const response = await performApiRequest('cpf/cpf-sku-forecast/', 'POST', skuData);
   return response;
 };
 

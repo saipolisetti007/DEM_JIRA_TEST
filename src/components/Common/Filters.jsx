@@ -15,7 +15,8 @@ function formatFilterKey(filterKey) {
     customerItemNumber: 'Customer Item Number',
     custFlag: 'Customization Flag',
     eventType: 'Event Type',
-    eventSubtype: 'Event Subtype'
+    eventSubtype: 'Event Subtype',
+    customerId: 'Customer ID'
   };
 
   return customLabels[filterKey] || filterKey.charAt(0).toUpperCase() + filterKey.slice(1);
@@ -65,64 +66,72 @@ const Filters = ({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
         </Typography>
 
         <div className="flex items-center gap-2 flex-wrap">
-          {Object.keys(filterOptions)?.map((filterKey) => (
-            <FormControl
-              data-testid="filter-form-control"
-              sx={{ mx: 0.7 }}
-              key={filterKey}
-              className="min-w-[120px] w-[154.8px] m-0" // temp fix for urgent request
-              size="small">
-              <StyledAutocomplete
-                multiple
-                disableCloseOnSelect
-                options={['All', ...(filterOptions[filterKey] || [])]}
-                value={selectedFilters[filterKey] || []}
-                onChange={handleFilterChange(filterKey)}
-                loading={isLoading}
-                size="small"
-                noOptionsText="No options available"
-                getOptionLabel={(option) => String(option)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    label={renderLabel(filterKey)}
-                    placeholder="Search..."
-                  />
-                )}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props}>
-                    <Checkbox
-                      style={{ marginRight: 8 }}
-                      checked={
-                        option === 'All'
-                          ? selectedFilters[filterKey]?.length ===
-                            filterOptions[filterKey]?.length + 1
-                          : selected
-                      }
+          {Object.keys(filterOptions)?.map((filterKey) => {
+            const isSingleSelect = filterKey === 'customerId';
+            const options = isSingleSelect
+              ? filterOptions[filterKey] || []
+              : ['All', ...(filterOptions[filterKey] || [])];
+            return (
+              <FormControl
+                data-testid="filter-form-control"
+                sx={{ mx: 0.7 }}
+                key={filterKey}
+                className="min-w-[120px] w-[154.8px] m-0" // temp fix for urgent request
+                size="small">
+                <StyledAutocomplete
+                  multiple={!isSingleSelect}
+                  disableCloseOnSelect={!isSingleSelect}
+                  options={options}
+                  value={selectedFilters[filterKey] || []}
+                  onChange={handleFilterChange(filterKey)}
+                  loading={isLoading}
+                  size="small"
+                  noOptionsText="No options available"
+                  getOptionLabel={(option) => String(option)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label={renderLabel(filterKey)}
+                      placeholder="Search..."
                     />
-                    {option}
-                  </li>
-                )}
-                isOptionEqualToValue={(option, value) => option === value}
-                renderTags={() => null}
-                ListboxProps={{
-                  className: 'with-search-bar',
-                  sx: {
-                    '& .MuiAutocomplete-groupLabel': {
-                      display: 'none'
-                    },
-                    '& .MuiAutocomplete-groupUl': {
-                      padding: 0
-                    },
-                    '& .MuiAutocomplete-inputRoot': {
-                      paddingBottom: '1rem'
+                  )}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      {!isSingleSelect && (
+                        <Checkbox
+                          style={{ marginRight: 8 }}
+                          checked={
+                            option === 'All'
+                              ? selectedFilters[filterKey]?.length ===
+                                filterOptions[filterKey]?.length + 1
+                              : selected
+                          }
+                        />
+                      )}
+                      {option}
+                    </li>
+                  )}
+                  isOptionEqualToValue={(option, value) => option === value}
+                  renderTags={() => null}
+                  ListboxProps={{
+                    className: 'with-search-bar',
+                    sx: {
+                      '& .MuiAutocomplete-groupLabel': {
+                        display: 'none'
+                      },
+                      '& .MuiAutocomplete-groupUl': {
+                        padding: 0
+                      },
+                      '& .MuiAutocomplete-inputRoot': {
+                        paddingBottom: '1rem'
+                      }
                     }
-                  }
-                }}
-              />
-            </FormControl>
-          ))}
+                  }}
+                />
+              </FormControl>
+            );
+          })}
         </div>
       </div>
     </Box>

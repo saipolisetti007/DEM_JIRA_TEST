@@ -15,40 +15,70 @@ import {
 import { ArrowDropDown } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
 import InfoSnackBar from '../Common/InfoSnackBar';
-import { cpfDecisions } from '../../api/cpfForecastApi';
+import { cpfDecisions, cpfSkuForecast } from '../../api/cpfForecastApi';
 import NewForecastColumns from './NewForecastColumns';
 import ConfirmationDialog from './ConfirmationDialog';
 
 const SkuItem = ({
   sku,
   prod_name,
-  data,
   isExpanded,
-  isLoading,
-  setIsLoading,
-  isRefetching,
-  setIsRefetching,
-  isError,
-  csFactor,
-  itFactor,
   selectedUnit,
   editedValues = {},
   setEditedValues,
   index,
-  onSubmit,
+  selectedFilters,
   onAccordionChange,
   cpfEnabled
 }) => {
+  const [data, setData] = useState([]);
+  const [lastSelectedSku, setLastSelectedSku] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefetching, setIsRefetching] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [csFactor, setCsFactor] = useState();
+  const [itFactor, setItFactor] = useState();
   const [rowSelection, setRowSelection] = useState({});
   const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
 
+  const fetchData = async (sku) => {
+    setIsLoading(true);
+    setIsError(false);
+    try {
+      const requestbody = {
+        sku: sku,
+        customerId: selectedFilters.customerId[0],
+        eventType: selectedFilters.eventType,
+        eventSubtype: selectedFilters.eventSubtype
+      };
+      const response = await cpfSkuForecast(requestbody);
+      setIsLoading(false);
+      setData(response.forecast);
+      setCsFactor(response.cs_factor);
+      setItFactor(response.it_factor);
+      setIsLoading(false);
+      setIsRefetching(false);
+    } catch (error) {
+      setIsLoading(false);
+      setIsError(true);
+    }
+  };
+
+  const handleAccordionClick = (sku) => {
+    if (sku === lastSelectedSku) {
+      return;
+    }
+    setLastSelectedSku(sku);
+    fetchData(sku);
+  };
+
   useEffect(() => {
     const initialRowSelection = {};
     if (data) {
-      data.forEach((row, index) => {
+      data?.forEach((row, index) => {
         if (row.approved) {
           initialRowSelection[index] = true;
         }
@@ -108,11 +138,7 @@ const SkuItem = ({
       setEditedValues({});
       setIsRefetching(true);
       setIsSaving(false);
-      setTimeout(() => {
-        if (onSubmit) {
-          onSubmit();
-        }
-      }, 1000);
+      await fetchData(sku);
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
@@ -156,7 +182,7 @@ const SkuItem = ({
   useEffect(() => {
     if (Object.keys(editedValues).length === 0) {
       const updatedRowSelection = { ...rowSelection };
-      data.forEach((row, index) => {
+      data?.forEach((row, index) => {
         if (row.approved) {
           updatedRowSelection[index] = true;
         } else {
@@ -184,7 +210,7 @@ const SkuItem = ({
 
   const previousForecastTable = useMaterialReactTable({
     columns,
-    data,
+    data: data || [],
     muiTableProps: {
       sx: {
         borderCollapse: 'collapse',
@@ -203,6 +229,12 @@ const SkuItem = ({
         verticalAlign: 'middle'
       }
     },
+    muiToolbarAlertBannerProps: isError
+      ? {
+          color: 'error',
+          children: 'Network Error. Could not fetch the data !!!'
+        }
+      : undefined,
     enableEditing: false,
     enableRowActions: false,
     enableColumnActions: false,
@@ -217,7 +249,10 @@ const SkuItem = ({
       size: 150
     },
     state: {
-      rowSelection
+      isLoading: isLoading,
+      isSaving: isSaving,
+      showAlertBanner: isError,
+      showProgressBars: isRefetching
     }
   });
 
@@ -229,7 +264,7 @@ const SkuItem = ({
       editedValues,
       cpfEnabled
     }),
-    data,
+    data: data || [],
     muiTableProps: {
       sx: {
         borderCollapse: 'collapse',
@@ -265,7 +300,7 @@ const SkuItem = ({
     enableColumnFilters: false,
     enablePagination: false,
     enableSorting: false,
-    enableRowSelection: true,
+    enableRowSelection: (row) => row.original.active,
     onRowSelectionChange: setRowSelection,
     initialState: {
       density: 'compact'
@@ -296,7 +331,8 @@ const SkuItem = ({
     },
     state: {
       rowSelection,
-      isLoading,
+      isLoading: isLoading,
+      isSaving: isSaving,
       showAlertBanner: isError,
       showProgressBars: isRefetching
     }
@@ -312,6 +348,7 @@ const SkuItem = ({
         onChange={handleAccordionChange}>
         <AccordionSummary
           sx={{ padding: 0 }}
+          onClick={() => handleAccordionClick(sku)}
           className="flex-row-reverse"
           expandIcon={<ArrowDropDown sx={{ fontSize: '2rem' }} />}
           aria-controls={`panel${index}-content`}

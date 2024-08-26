@@ -165,7 +165,8 @@ const PromoGridData = () => {
   const debouncedFetchFilters = useCallback(
     createDebouncedFetchFilters(promoGridFilters, setFilterOptions, setIsSnackOpen, setSnackBar, [
       'eventType',
-      'eventSubtype'
+      'eventSubtype',
+      'customerId'
     ]),
     []
   );
