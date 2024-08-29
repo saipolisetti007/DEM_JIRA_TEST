@@ -21,9 +21,7 @@ describe('StepEventAdditionalData Component', () => {
       distribution_profile: true,
       discount_amt: true,
       base_price: true,
-      price_after_discount: true,
-      minerva_volume: true,
-      status: true
+      price_after_discount: true
     };
     render(
       <Provider store={store}>

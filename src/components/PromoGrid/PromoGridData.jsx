@@ -93,6 +93,7 @@ const PromoGridData = () => {
 
   const { userData } = useSelector((state) => state.userProfileData);
   const customerId = userData?.customers[0];
+  const region = userData?.region;
 
   const fetchFilters = async (filters = {}) => {
     try {
@@ -384,7 +385,7 @@ const PromoGridData = () => {
   };
 
   const table = useMaterialReactTable({
-    columns: PromoGridColumns(),
+    columns: PromoGridColumns({ region }),
     data,
     createDisplayMode: 'modal',
     editDisplayMode: 'modal',

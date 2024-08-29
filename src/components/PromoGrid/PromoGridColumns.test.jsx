@@ -17,7 +17,7 @@ describe('PromoGridColumns', () => {
     const columns = result.current;
 
     // Test for all columns
-    expect(columns).toHaveLength(49);
+    expect(columns).toHaveLength(46);
 
     expect(result.current).toEqual(
       expect.arrayContaining([

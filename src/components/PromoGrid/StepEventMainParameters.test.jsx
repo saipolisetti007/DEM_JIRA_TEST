@@ -11,11 +11,11 @@ const Wrapper = ({ children }) => {
 
 describe('StepEventMainParameters Component', () => {
   const settings = {
-    unique_event_id: true,
     start_of_shipments: true,
     end_of_shipments: true,
     event_description: true,
     umbrella_event: true,
+    minerva_volume: true,
     comments: true
   };
   test('should render without crash', () => {

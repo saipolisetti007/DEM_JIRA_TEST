@@ -42,26 +42,6 @@ const PromoGridValidationColumns = ({
         header: 'Golden Customer ID',
         enableEditing: false
       },
-      ...(region !== 'NA'
-        ? [
-            {
-              accessorKey: 'unique_event_id',
-              header: 'Unique Event ID',
-              Edit: ({ column, row }) => {
-                return (
-                  <InputTextComponent
-                    row={row}
-                    column={column}
-                    isError={!!validationErrors[row.index]?.unique_event_id}
-                    helperText={validationErrors[row.index]?.unique_event_id}
-                    validationType="stringValidation"
-                    handleInputChange={handleInputChange}
-                  />
-                );
-              }
-            }
-          ]
-        : []),
       {
         accessorKey: 'event_in_store_start_date',
         header: 'Event in Store Start Date',
@@ -111,7 +91,7 @@ const PromoGridValidationColumns = ({
             <DatePickerComponent
               row={row}
               column={column}
-              isRequired={false}
+              isRequired={region === 'EU'}
               isError={!!validationErrors[row.index]?.start_of_shipments}
               helperText={validationErrors[row.index]?.start_of_shipments}
               validationType="startDate"
@@ -147,7 +127,7 @@ const PromoGridValidationColumns = ({
             <DropdownComponent
               row={row}
               column={column}
-              isRequired={true}
+              isRequired={region !== 'EU'}
               label="Event Type"
               isWarning={!!validationWarnings[row.index]?.event_type}
               isError={!!validationErrors[row.index]?.event_type}
@@ -180,7 +160,7 @@ const PromoGridValidationColumns = ({
             <DropdownComponent
               row={row}
               column={column}
-              isRequired={true}
+              isRequired={region !== 'EU'}
               label="Event Subtype"
               options={SubTypeOptions}
               selectedState={selectedOptions[rowIndex]}
@@ -194,6 +174,27 @@ const PromoGridValidationColumns = ({
           );
         }
       },
+      ...(region === 'EU'
+        ? [
+            {
+              accessorKey: 'unique_event_id',
+              header: 'Unique Event ID',
+              Edit: ({ column, row }) => {
+                return (
+                  <InputTextComponent
+                    row={row}
+                    column={column}
+                    isRequired={true}
+                    isError={!!validationErrors[row.index]?.unique_event_id}
+                    helperText={validationErrors[row.index]?.unique_event_id}
+                    validationType="stringValidation"
+                    handleInputChange={handleInputChange}
+                  />
+                );
+              }
+            }
+          ]
+        : []),
       {
         accessorKey: 'event_description',
         header: 'Event Description',
@@ -202,7 +203,7 @@ const PromoGridValidationColumns = ({
             <InputTextComponent
               row={row}
               column={column}
-              isRequired={false}
+              isRequired={region !== 'EU'}
               isError={!!validationErrors[row.index]?.event_description}
               helperText={validationErrors[row.index]?.event_description}
               validationType="stringValidation"
@@ -245,6 +246,26 @@ const PromoGridValidationColumns = ({
           );
         }
       },
+      ...(region === 'EU'
+        ? [
+            {
+              accessorKey: 'minerva_volume',
+              header: 'Minerva volume',
+              Edit: ({ column, row }) => {
+                return (
+                  <InputTextComponent
+                    row={row}
+                    column={column}
+                    isError={!!validationErrors[row.index]?.minerva_volume}
+                    helperText={validationErrors[row.index]?.minerva_volume}
+                    validationType="floatValidation"
+                    handleInputChange={handleInputChange}
+                  />
+                );
+              }
+            }
+          ]
+        : []),
 
       {
         accessorKey: 'event_publish_to_demand',
@@ -270,7 +291,7 @@ const PromoGridValidationColumns = ({
             <DropdownComponent
               row={row}
               column={column}
-              isRequired={true}
+              isRequired={region !== 'EU'}
               label="Event Sales Channel"
               isError={!!validationErrors[row.index]?.event_sales_channel}
               helperText={validationErrors[row.index]?.event_sales_channel}
@@ -290,7 +311,7 @@ const PromoGridValidationColumns = ({
             <InputTextComponent
               row={row}
               column={column}
-              isRequired={false}
+              isRequired={region === 'EU'}
               handleInputChange={handleInputChange}
               isError={!!validationErrors[row.index]?.expected_shipments_forecast}
               helperText={validationErrors[row.index]?.expected_shipments_forecast}
@@ -325,7 +346,7 @@ const PromoGridValidationColumns = ({
             <DropdownComponent
               row={row}
               column={column}
-              isRequired={true}
+              isRequired={region !== 'EU'}
               label="Item Type"
               isError={!!validationErrors[row.index]?.item_type}
               helperText={validationErrors[row.index]?.item_type}
@@ -541,37 +562,177 @@ const PromoGridValidationColumns = ({
           );
         }
       },
-      ...(region !== 'NA'
-        ? [
-            {
-              accessorKey: 'minerva_volume',
-              header: 'Minerva volume',
-              Edit: ({ column, row }) => {
-                return (
-                  <InputTextComponent
-                    row={row}
-                    column={column}
-                    isError={!!validationErrors[row.index]?.minerva_volume}
-                    helperText={validationErrors[row.index]?.minerva_volume}
-                    validationType="floatValidation"
-                    handleInputChange={handleInputChange}
-                  />
-                );
-              }
-            }
-          ]
-        : []),
       {
-        accessorKey: 'status',
-        header: 'Status',
+        accessorKey: 'offer_type',
+        header: 'Offer Type',
         Edit: ({ column, row }) => {
           return (
             <InputTextComponent
               row={row}
               column={column}
-              isError={!!validationErrors[row.index]?.status}
-              helperText={validationErrors[row.index]?.status}
+              isError={!!validationErrors[row.index]?.offer_type}
+              helperText={validationErrors[row.index]?.offer_type}
               validationType="stringValidation"
+              handleInputChange={handleInputChange}
+            />
+          );
+        }
+      },
+      {
+        accessorKey: 'multi_category_offer',
+        header: 'Multi Category Offer',
+        Edit: ({ column, row }) => {
+          return (
+            <InputTextComponent
+              row={row}
+              column={column}
+              isError={!!validationErrors[row.index]?.multi_category_offer}
+              helperText={validationErrors[row.index]?.multi_category_offer}
+              validationType="floatValidation"
+              handleInputChange={handleInputChange}
+            />
+          );
+        }
+      },
+      {
+        accessorKey: 'multi_manufacturer_offer',
+        header: 'Multi Manufacturer Offer',
+        Edit: ({ column, row }) => {
+          return (
+            <InputTextComponent
+              row={row}
+              column={column}
+              isError={!!validationErrors[row.index]?.multi_manufacturer_offer}
+              helperText={validationErrors[row.index]?.multi_manufacturer_offer}
+              validationType="floatValidation"
+              handleInputChange={handleInputChange}
+            />
+          );
+        }
+      },
+      {
+        accessorKey: 'off',
+        header: 'Off',
+        Edit: ({ column, row }) => {
+          return (
+            <InputTextComponent
+              row={row}
+              column={column}
+              isError={!!validationErrors[row.index]?.off}
+              helperText={validationErrors[row.index]?.off}
+              validationType="floatValidation"
+              handleInputChange={handleInputChange}
+            />
+          );
+        }
+      },
+      {
+        accessorKey: 'limit',
+        header: 'Limit',
+        Edit: ({ column, row }) => {
+          return (
+            <InputTextComponent
+              row={row}
+              column={column}
+              isError={!!validationErrors[row.index]?.limit}
+              helperText={validationErrors[row.index]?.limit}
+              validationType="floatValidation"
+              handleInputChange={handleInputChange}
+            />
+          );
+        }
+      },
+      {
+        accessorKey: 'off_2',
+        header: 'OFF 2',
+        Edit: ({ column, row }) => {
+          return (
+            <InputTextComponent
+              row={row}
+              column={column}
+              isError={!!validationErrors[row.index]?.off_2}
+              helperText={validationErrors[row.index]?.off_2}
+              validationType="floatValidation"
+              handleInputChange={handleInputChange}
+            />
+          );
+        }
+      },
+      {
+        accessorKey: 'quantity_threshold',
+        header: 'Quantity Threshold',
+        Edit: ({ column, row }) => {
+          return (
+            <InputTextComponent
+              row={row}
+              column={column}
+              isError={!!validationErrors[row.index]?.quantity_threshold}
+              helperText={validationErrors[row.index]?.quantity_threshold}
+              validationType="floatValidation"
+              handleInputChange={handleInputChange}
+            />
+          );
+        }
+      },
+      {
+        accessorKey: 'x_free',
+        header: 'X Free',
+        Edit: ({ column, row }) => {
+          return (
+            <InputTextComponent
+              row={row}
+              column={column}
+              isError={!!validationErrors[row.index]?.x_free}
+              helperText={validationErrors[row.index]?.x_free}
+              validationType="floatValidation"
+              handleInputChange={handleInputChange}
+            />
+          );
+        }
+      },
+      {
+        accessorKey: 'gc_buy',
+        header: 'GC-Buy',
+        Edit: ({ column, row }) => {
+          return (
+            <InputTextComponent
+              row={row}
+              column={column}
+              isError={!!validationErrors[row.index]?.gc_buy}
+              helperText={validationErrors[row.index]?.gc_buy}
+              validationType="floatValidation"
+              handleInputChange={handleInputChange}
+            />
+          );
+        }
+      },
+      {
+        accessorKey: 'gc_save',
+        header: 'GC-Save',
+        Edit: ({ column, row }) => {
+          return (
+            <InputTextComponent
+              row={row}
+              column={column}
+              isError={!!validationErrors[row.index]?.gc_save}
+              helperText={validationErrors[row.index]?.gc_save}
+              validationType="floatValidation"
+              handleInputChange={handleInputChange}
+            />
+          );
+        }
+      },
+      {
+        accessorKey: 'percentage',
+        header: '% Discount',
+        Edit: ({ column, row }) => {
+          return (
+            <InputTextComponent
+              row={row}
+              column={column}
+              isError={!!validationErrors[row.index]?.percentage}
+              helperText={validationErrors[row.index]?.percentage}
+              validationType="floatValidation"
               handleInputChange={handleInputChange}
             />
           );
@@ -646,23 +807,7 @@ const PromoGridValidationColumns = ({
           );
         }
       },
-      {
-        accessorKey: 'event_string_property_5',
-        header: 'Event String Property 5',
-        size: 200,
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isError={!!validationErrors[row.index]?.event_string_property_5}
-              helperText={validationErrors[row.index]?.event_string_property_5}
-              validationType="stringValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
+
       {
         accessorKey: 'event_num_property_1',
         header: 'Event Num  Property 1',
@@ -708,168 +853,6 @@ const PromoGridValidationColumns = ({
               column={column}
               isError={!!validationErrors[row.index]?.event_num_property_3}
               helperText={validationErrors[row.index]?.event_num_property_3}
-              validationType="floatValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
-      {
-        accessorKey: 'event_num_property_4',
-        header: 'Event Num  Property 4',
-        size: 200,
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isError={!!validationErrors[row.index]?.event_num_property_4}
-              helperText={validationErrors[row.index]?.event_num_property_4}
-              validationType="floatValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
-      {
-        accessorKey: 'event_num_property_5',
-        header: 'Event Num  Property 5',
-        size: 200,
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isError={!!validationErrors[row.index]?.event_num_property_5}
-              helperText={validationErrors[row.index]?.event_num_property_5}
-              validationType="floatValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
-      {
-        accessorKey: 'offer_type',
-        header: 'Offer Type',
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isError={!!validationErrors[row.index]?.offer_type}
-              helperText={validationErrors[row.index]?.offer_type}
-              validationType="stringValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
-      {
-        accessorKey: 'off',
-        header: 'Off',
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isError={!!validationErrors[row.index]?.off}
-              helperText={validationErrors[row.index]?.off}
-              validationType="integerValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
-      {
-        accessorKey: 'limit',
-        header: 'Limit',
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isError={!!validationErrors[row.index]?.limit}
-              helperText={validationErrors[row.index]?.limit}
-              validationType="floatValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
-      {
-        accessorKey: 'tpr',
-        header: 'TPR',
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isError={!!validationErrors[row.index]?.tpr}
-              helperText={validationErrors[row.index]?.tpr}
-              validationType="floatValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
-      {
-        accessorKey: 'off_2',
-        header: 'OFF 2',
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isError={!!validationErrors[row.index]?.off_2}
-              helperText={validationErrors[row.index]?.off_2}
-              validationType="floatValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
-      {
-        accessorKey: 'gc_buy',
-        header: 'GC-Buy',
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isError={!!validationErrors[row.index]?.gc_buy}
-              helperText={validationErrors[row.index]?.gc_buy}
-              validationType="floatValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
-      {
-        accessorKey: 'gc_save',
-        header: 'GC-Save',
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isError={!!validationErrors[row.index]?.gc_save}
-              helperText={validationErrors[row.index]?.gc_save}
-              validationType="floatValidation"
-              handleInputChange={handleInputChange}
-            />
-          );
-        }
-      },
-      {
-        accessorKey: 'percentage',
-        header: 'Percentage(%)',
-        Edit: ({ column, row }) => {
-          return (
-            <InputTextComponent
-              row={row}
-              column={column}
-              isError={!!validationErrors[row.index]?.percentage}
-              helperText={validationErrors[row.index]?.percentage}
               validationType="floatValidation"
               handleInputChange={handleInputChange}
             />

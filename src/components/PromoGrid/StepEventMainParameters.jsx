@@ -93,13 +93,14 @@ const StepEventMainParameters = ({ control, settings }) => {
               }}
             />
           </Grid>
-          {settings.start_of_shipments && (
+          {(region === 'EU' || settings.start_of_shipments) && (
             <Grid item xs={6}>
               <FormInputControl
                 control={control}
                 name="start_of_shipments"
                 label="Start of shipments"
                 type="date"
+                isRequired={region === 'EU'}
               />
             </Grid>
           )}
@@ -115,16 +116,6 @@ const StepEventMainParameters = ({ control, settings }) => {
               />
             </Grid>
           )}
-          {region !== 'NA' && settings.unique_event_id && (
-            <Grid item xs={6}>
-              <FormInputControl
-                control={control}
-                name="unique_event_id"
-                label="Unique Event ID"
-                type="text"
-              />
-            </Grid>
-          )}
         </Grid>
       </Box>
       <Box>
@@ -132,60 +123,89 @@ const StepEventMainParameters = ({ control, settings }) => {
           Event Description
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="event_type"
-              label="Event type"
-              type="select"
-              isRequired={true}
-              options={eventTypeOptions}
-            />
-          </Grid>
-
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="event_subtype"
-              label="Event subtype"
-              type="select"
-              isRequired={true}
-              options={
-                eventSubTypeOptions.length ? eventSubTypeOptions : ['Please select a Event type']
-              }
-              rules={{
-                validate: (value) => (eventSubTypeOptions.length ? !!value : true)
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <FormInputControl
-              control={control}
-              name="event_description"
-              label="Event description"
-              type="text"
-              isRequired={true}
-              rules={{
-                maxLength: {
-                  value: 49,
-                  message: 'Description can not be exceed 49 characters'
+          {(region !== 'EU' || settings.event_type) && (
+            <Grid item xs={6}>
+              <FormInputControl
+                control={control}
+                name="event_type"
+                label="Event type"
+                type="select"
+                isRequired={region !== 'EU'}
+                options={eventTypeOptions}
+              />
+            </Grid>
+          )}
+          {(region !== 'EU' || settings.event_subtype) && (
+            <Grid item xs={6}>
+              <FormInputControl
+                control={control}
+                name="event_subtype"
+                label="Event subtype"
+                type="select"
+                isRequired={region !== 'EU'}
+                options={
+                  eventSubTypeOptions.length ? eventSubTypeOptions : ['Please select a Event type']
                 }
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="event_sales_channel"
-              label="Event sales channel"
-              type="select"
-              isRequired={true}
-              options={salesChannelOptions}
-            />
-          </Grid>
-          {settings.event_description && (
+                rules={{
+                  validate: (value) => (eventSubTypeOptions.length ? !!value : true)
+                }}
+              />
+            </Grid>
+          )}
+          {region === 'EU' && (
+            <Grid item xs={6}>
+              <FormInputControl
+                control={control}
+                name="unique_event_id"
+                label="Unique Event ID"
+                type="text"
+                isRequired={true}
+              />
+            </Grid>
+          )}
+          {region === 'EU' && settings.minerva_volume && (
+            <Grid item xs={6}>
+              <FormInputControl
+                control={control}
+                name="minerva_volume"
+                label="Minerva volume"
+                type="text"
+                rules={{
+                  validationType: 'floatValidation'
+                }}
+              />
+            </Grid>
+          )}
+          {(region !== 'EU' || settings.event_description) && (
+            <Grid item xs={12}>
+              <FormInputControl
+                control={control}
+                name="event_description"
+                label="Event description"
+                type="text"
+                isRequired={region !== 'EU'}
+                rules={{
+                  maxLength: {
+                    value: 49,
+                    message: 'Description can not be exceed 49 characters'
+                  }
+                }}
+              />
+            </Grid>
+          )}
+          {(region !== 'EU' || settings.event_sales_channel) && (
+            <Grid item xs={6}>
+              <FormInputControl
+                control={control}
+                name="event_sales_channel"
+                label="Event sales channel"
+                type="select"
+                isRequired={region !== 'EU'}
+                options={salesChannelOptions}
+              />
+            </Grid>
+          )}
+          {settings.umbrella_event && (
             <Grid item xs={6}>
               <FormInputControl
                 control={control}

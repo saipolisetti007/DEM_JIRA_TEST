@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
-const PromoGridColumns = () => {
+const PromoGridColumns = ({ region }) => {
   const RadioCellValue = (value) => {
     if (value === true) {
       return 'Yes';
@@ -10,8 +9,7 @@ const PromoGridColumns = () => {
     }
     return '';
   };
-  const { userData } = useSelector((state) => state.userProfileData);
-  const region = userData?.region;
+
   const columns = useMemo(
     () => [
       {
@@ -25,15 +23,6 @@ const PromoGridColumns = () => {
         header: 'Golden Customer  ID  ',
         size: 130
       },
-      ...(region !== 'NA'
-        ? [
-            {
-              accessorKey: 'unique_event_id',
-              header: 'Unique Event ID',
-              size: 100
-            }
-          ]
-        : []),
       {
         accessorKey: 'event_in_store_start_date',
         header: 'Event in store start date'
@@ -60,6 +49,15 @@ const PromoGridColumns = () => {
         accessorKey: 'event_subtype',
         header: 'Event subtype'
       },
+      ...(region === 'EU'
+        ? [
+            {
+              accessorKey: 'unique_event_id',
+              header: 'Unique Event ID',
+              size: 100
+            }
+          ]
+        : []),
       {
         accessorKey: 'event_description',
         header: 'Event description'
@@ -72,7 +70,14 @@ const PromoGridColumns = () => {
         accessorKey: 'comments',
         header: 'Comments'
       },
-
+      ...(region === 'EU'
+        ? [
+            {
+              accessorKey: 'minerva_volume',
+              header: 'Minerva volume'
+            }
+          ]
+        : []),
       {
         accessorKey: 'event_publish_to_demand',
         header: 'Event publish to demand',
@@ -94,27 +99,33 @@ const PromoGridColumns = () => {
       },
       {
         accessorKey: 'item_type',
-        header: 'Item type'
+        header: 'Item type',
+        size: 130
       },
       {
         accessorKey: 'bu',
-        header: 'BU'
+        header: 'BU',
+        size: 150
       },
       {
         accessorKey: 'product_id',
-        header: 'Product ID'
+        header: 'Product ID',
+        size: 150
       },
       {
         accessorKey: 'id_type',
-        header: 'ID type'
+        header: 'ID type',
+        size: 130
       },
       {
         accessorKey: 'customer_item_number',
-        header: 'Customer item number'
+        header: 'Customer item number',
+        size: 160
       },
       {
         accessorKey: 'proxy_like_item_number',
-        header: 'Proxy like item number'
+        header: 'Proxy like item number',
+        size: 160
       },
       {
         accessorKey: 'pgp_flag',
@@ -123,7 +134,8 @@ const PromoGridColumns = () => {
       },
       {
         accessorKey: 'promoted_product_group_id',
-        header: 'Promoted product group ID'
+        header: 'Promoted product group ID',
+        size: 120
       },
       {
         accessorKey: 'country_code',
@@ -132,7 +144,8 @@ const PromoGridColumns = () => {
 
       {
         accessorKey: 'distribution_profile',
-        header: 'Distribution profile'
+        header: 'Distribution profile',
+        size: 150
       },
       {
         accessorKey: 'discount_amt',
@@ -144,20 +157,62 @@ const PromoGridColumns = () => {
       },
       {
         accessorKey: 'price_after_discount',
-        header: 'Price after discount'
+        header: 'Price after discount',
+        size: 120
       },
-      ...(region !== 'NA'
-        ? [
-            {
-              accessorKey: 'minerva_volume',
-              header: 'Minerva volume'
-            }
-          ]
-        : []),
       {
-        accessorKey: 'status',
-        header: 'Status'
+        accessorKey: 'offer_type',
+        header: 'Offer type',
+        size: 130
       },
+      {
+        accessorKey: 'multi_category_offer',
+        header: 'Multi Category Offer',
+        size: 150
+      },
+      {
+        accessorKey: 'multi_manufacturer_offer',
+        header: 'Multi Manufacturer Offer',
+        size: 140
+      },
+      {
+        accessorKey: 'off',
+        header: 'Off',
+        size: 130
+      },
+      {
+        accessorKey: 'limit',
+        header: 'Limit'
+      },
+      {
+        accessorKey: 'off_2',
+        header: 'OFF 2'
+      },
+      {
+        accessorKey: 'quantity_threshold',
+        header: 'Quantity Threshold',
+        size: 110
+      },
+      {
+        accessorKey: 'x_free',
+        header: 'X Free',
+        size: 130
+      },
+      {
+        accessorKey: 'gc_buy',
+        header: 'GC-Buy',
+        size: 120
+      },
+      {
+        accessorKey: 'gc_save',
+        header: 'GC-Save',
+        size: 140
+      },
+      {
+        accessorKey: 'percentage',
+        header: '% Discount'
+      },
+
       {
         accessorKey: 'event_string_property_1',
         header: 'Event string property 1',
@@ -178,11 +233,7 @@ const PromoGridColumns = () => {
         header: 'Event string property 4',
         size: 150
       },
-      {
-        accessorKey: 'event_string_property_5',
-        header: 'Event string property 5',
-        size: 150
-      },
+
       {
         accessorKey: 'event_num_property_1',
         header: 'Event num  property 1',
@@ -197,51 +248,9 @@ const PromoGridColumns = () => {
         accessorKey: 'event_num_property_3',
         header: 'Event num  property 3',
         size: 150
-      },
-      {
-        accessorKey: 'event_num_property_4',
-        header: 'Event num  property 4',
-        size: 150
-      },
-      {
-        accessorKey: 'event_num_property_5',
-        header: 'Event num  property 5',
-        size: 150
-      },
-      {
-        accessorKey: 'offer_type',
-        header: 'Offer type'
-      },
-      {
-        accessorKey: 'off',
-        header: 'Off'
-      },
-      {
-        accessorKey: 'limit',
-        header: 'Limit'
-      },
-      {
-        accessorKey: 'tpr',
-        header: 'TPR'
-      },
-      {
-        accessorKey: 'off_2',
-        header: 'OFF 2'
-      },
-      {
-        accessorKey: 'gc_buy',
-        header: 'GC-Buy'
-      },
-      {
-        accessorKey: 'gc_save',
-        header: 'GC-Save'
-      },
-      {
-        accessorKey: 'percentage',
-        header: 'Percentage(%)'
       }
     ],
-    []
+    [region]
   );
   return columns;
 };

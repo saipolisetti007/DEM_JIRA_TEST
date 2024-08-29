@@ -15,13 +15,14 @@ const StepEventAdditionalData = ({ control, settings }) => {
       </Typography>
 
       <Grid container spacing={2}>
-        {settings.expected_shipments_forecast && (
+        {(region === 'EU' || settings.expected_shipments_forecast) && (
           <Grid item xs={6}>
             <FormInputControl
               control={control}
               name="expected_shipments_forecast"
               label="Expected shipments forecast"
               type="text"
+              isRequired={region === 'EU'}
               rules={{
                 validationType: 'intValidation'
               }}
@@ -41,16 +42,18 @@ const StepEventAdditionalData = ({ control, settings }) => {
             />
           </Grid>
         )}
-        <Grid item xs={6}>
-          <FormInputControl
-            control={control}
-            name="item_type"
-            label="Item type"
-            type="select"
-            isRequired={true}
-            options={itemTypeOptions}
-          />
-        </Grid>
+        {(region !== 'EU' || settings.item_type) && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="item_type"
+              label="Item type"
+              type="select"
+              isRequired={region !== 'EU'}
+              options={itemTypeOptions}
+            />
+          </Grid>
+        )}
         {settings.bu && (
           <Grid item xs={6}>
             <FormInputControl control={control} name="bu" label="BU" type="text" />
@@ -75,18 +78,20 @@ const StepEventAdditionalData = ({ control, settings }) => {
             options={iDTypeOptions}
           />
         </Grid>
-        <Grid item xs={6}>
-          <FormInputControl
-            control={control}
-            name="customer_item_number"
-            label="Customer item number"
-            isRequired={true}
-            type="text"
-            rules={{
-              validationType: 'intValidation'
-            }}
-          />
-        </Grid>
+        {(region !== 'EU' || settings.customer_item_number) && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="customer_item_number"
+              label="Customer item number"
+              isRequired={region !== 'EU'}
+              type="text"
+              rules={{
+                validationType: 'intValidation'
+              }}
+            />
+          </Grid>
+        )}
         {settings.proxy_like_item_number && (
           <Grid item xs={6}>
             <FormInputControl
@@ -121,7 +126,6 @@ const StepEventAdditionalData = ({ control, settings }) => {
             />
           </Grid>
         )}
-
         <Grid item xs={6}>
           <FormInputControl
             control={control}
@@ -179,24 +183,6 @@ const StepEventAdditionalData = ({ control, settings }) => {
                 validationType: 'floatValidation'
               }}
             />
-          </Grid>
-        )}
-        {region !== 'NA' && settings.minerva_volume && (
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="minerva_volume"
-              label="Minerva volume"
-              type="text"
-              rules={{
-                validationType: 'floatValidation'
-              }}
-            />
-          </Grid>
-        )}
-        {settings.status && (
-          <Grid item xs={6}>
-            <FormInputControl control={control} name="status" label="Status" type="text" />
           </Grid>
         )}
       </Grid>

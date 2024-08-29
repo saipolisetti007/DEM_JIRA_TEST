@@ -11,6 +11,147 @@ const StepEventProperties = ({ control, settings }) => {
       </Typography>
 
       <Grid container spacing={2}>
+        {settings.offer_type && (
+          <Grid item xs={6}>
+            <FormInputControl control={control} name="offer_type" label="Offer type" type="text" />
+          </Grid>
+        )}
+
+        {settings.multi_category_offer && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="multi_category_offer"
+              label="Multi Category Offer"
+              type="text"
+              rules={{
+                validationType: 'floatValidation'
+              }}
+            />
+          </Grid>
+        )}
+
+        {settings.multi_manufacturer_offer && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="multi_manufacturer_offer"
+              label="Multi Manufacturer Offer"
+              type="text"
+              rules={{
+                validationType: 'floatValidation'
+              }}
+            />
+          </Grid>
+        )}
+
+        {settings.off && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="off"
+              label="Off"
+              type="text"
+              rules={{
+                validationType: 'floatValidation'
+              }}
+            />
+          </Grid>
+        )}
+        {settings.limit && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="limit"
+              label="Limit"
+              type="text"
+              rules={{
+                validationType: 'floatValidation'
+              }}
+            />
+          </Grid>
+        )}
+
+        {settings.off_2 && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="off_2"
+              label="OFF 2"
+              type="text"
+              rules={{
+                validationType: 'floatValidation'
+              }}
+            />
+          </Grid>
+        )}
+
+        {settings.quantity_threshold && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="quantity_threshold"
+              label="Quantity Threshold"
+              type="text"
+              rules={{
+                validationType: 'floatValidation'
+              }}
+            />
+          </Grid>
+        )}
+        {settings.x_free && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="x_free"
+              label="X Free"
+              type="text"
+              rules={{
+                validationType: 'floatValidation'
+              }}
+            />
+          </Grid>
+        )}
+        {settings.gc_buy && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="gc_buy"
+              label="GC-Buy"
+              type="text"
+              rules={{
+                validationType: 'floatValidation'
+              }}
+            />
+          </Grid>
+        )}
+        {settings.gc_save && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="gc_save"
+              label="GC-Save"
+              type="text"
+              rules={{
+                validationType: 'floatValidation'
+              }}
+            />
+          </Grid>
+        )}
+        {settings.percentage && (
+          <Grid item xs={6}>
+            <FormInputControl
+              control={control}
+              name="percentage"
+              label="% Discount"
+              type="text"
+              rules={{
+                validationType: 'floatValidation'
+              }}
+            />
+          </Grid>
+        )}
+
         {settings.event_string_property_1 && (
           <Grid item xs={6}>
             <FormInputControl
@@ -51,16 +192,7 @@ const StepEventProperties = ({ control, settings }) => {
             />
           </Grid>
         )}
-        {settings.event_string_property_5 && (
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="event_string_property_5"
-              label="Event string property 5"
-              type="text"
-            />
-          </Grid>
-        )}
+
         {settings.event_num_property_1 && (
           <Grid item xs={6}>
             <FormInputControl
@@ -93,128 +225,6 @@ const StepEventProperties = ({ control, settings }) => {
               control={control}
               name="event_num_property_3"
               label="Event num  property 3"
-              type="text"
-              rules={{
-                validationType: 'floatValidation'
-              }}
-            />
-          </Grid>
-        )}
-        {settings.event_num_property_4 && (
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="event_num_property_4"
-              label="Event num  property 4"
-              type="text"
-              rules={{
-                validationType: 'floatValidation'
-              }}
-            />
-          </Grid>
-        )}
-        {settings.event_num_property_5 && (
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="event_num_property_5"
-              label="Event num  property 5"
-              type="text"
-              rules={{
-                validationType: 'floatValidation'
-              }}
-            />
-          </Grid>
-        )}
-        {settings.offer_type && (
-          <Grid item xs={6}>
-            <FormInputControl control={control} name="offer_type" label="Offer type" type="text" />
-          </Grid>
-        )}
-        {settings.off && (
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="off"
-              label="Off"
-              type="text"
-              rules={{
-                validationType: 'intValidation'
-              }}
-            />
-          </Grid>
-        )}
-        {settings.limit && (
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="limit"
-              label="Limit"
-              type="text"
-              rules={{
-                validationType: 'floatValidation'
-              }}
-            />
-          </Grid>
-        )}
-        {settings.tpr && (
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="tpr"
-              label="TPR"
-              type="text"
-              rules={{
-                validationType: 'floatValidation'
-              }}
-            />
-          </Grid>
-        )}
-        {settings.off_2 && (
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="off_2"
-              label="OFF 2"
-              type="text"
-              rules={{
-                validationType: 'floatValidation'
-              }}
-            />
-          </Grid>
-        )}
-        {settings.gc_buy && (
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="gc_buy"
-              label="GC-Buy"
-              type="text"
-              rules={{
-                validationType: 'floatValidation'
-              }}
-            />
-          </Grid>
-        )}
-        {settings.gc_save && (
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="gc_save"
-              label="GC-Save"
-              type="text"
-              rules={{
-                validationType: 'floatValidation'
-              }}
-            />
-          </Grid>
-        )}
-        {settings.percentage && (
-          <Grid item xs={6}>
-            <FormInputControl
-              control={control}
-              name="percentage"
-              label="Percentage"
               type="text"
               rules={{
                 validationType: 'floatValidation'

@@ -132,11 +132,17 @@ const FormInputControl = ({
                 ''
               )
             }>
-            {options.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
+            {options.length > 0 ? (
+              options.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))
+            ) : (
+              <MenuItem value="" disabled>
+                No Options Available
               </MenuItem>
-            ))}
+            )}
           </TextField>
         );
       case 'autocomplete':

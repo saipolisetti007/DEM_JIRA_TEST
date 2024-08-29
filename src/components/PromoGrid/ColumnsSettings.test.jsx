@@ -24,11 +24,6 @@ describe('Column Settings Component', () => {
     dispatch = jest.fn();
     handleClose = jest.fn();
     useDispatch.mockReturnValue(dispatch);
-    useSelector.mockReturnValue({
-      settings: { start_of_shipments: true, end_of_shipments: false },
-      isLoading: false,
-      isSaving: false
-    });
   });
 
   afterEach(() => {
@@ -36,6 +31,12 @@ describe('Column Settings Component', () => {
   });
 
   test('renders Settings component', () => {
+    useSelector.mockReturnValue({
+      settings: { start_of_shipments: true, end_of_shipments: false },
+      userData: { region: 'NA' },
+      isLoading: false,
+      isSaving: false
+    });
     render(<ColumnsSettings handleClose={handleClose} />);
     expect(screen.getByText('Event Main Parameters')).toBeInTheDocument();
     expect(screen.getByText(/start of shipments/i)).toBeInTheDocument();
@@ -44,7 +45,25 @@ describe('Column Settings Component', () => {
     expect(screen.getByLabelText(/end of shipments/i)).not.toBeChecked();
   });
 
+  test('renders Settings component for EU', () => {
+    useSelector.mockReturnValue({
+      settings: { end_of_shipments: false },
+      userData: { region: 'EU' },
+      isLoading: false,
+      isSaving: false
+    });
+    render(<ColumnsSettings handleClose={handleClose} />);
+    expect(screen.getByText('Event Main Parameters')).toBeInTheDocument();
+    expect(screen.queryByLabelText(/start of shipments/i)).not.toBeInTheDocument();
+  });
+
   test('handles accordion panel change', async () => {
+    useSelector.mockReturnValue({
+      settings: { start_of_shipments: true, end_of_shipments: false },
+      userData: { region: 'NA' },
+      isLoading: false,
+      isSaving: false
+    });
     render(<ColumnsSettings handleClose={handleClose} />);
 
     fireEvent.click(screen.getByText('Event Main Parameters'));
@@ -57,12 +76,24 @@ describe('Column Settings Component', () => {
   });
 
   test('handle checkbox changes and dispatches action correctly', () => {
+    useSelector.mockReturnValue({
+      settings: { start_of_shipments: true, end_of_shipments: false },
+      userData: { region: 'NA' },
+      isLoading: false,
+      isSaving: false
+    });
     render(<ColumnsSettings handleClose={handleClose} />);
     fireEvent.click(screen.getByLabelText(/end of shipments/i));
     expect(dispatch).toHaveBeenCalledWith(toggleSetting('end_of_shipments'));
   });
 
   test('handles save action and shows snackbar', async () => {
+    useSelector.mockReturnValue({
+      settings: { start_of_shipments: true, end_of_shipments: false },
+      userData: { region: 'NA' },
+      isLoading: false,
+      isSaving: false
+    });
     render(<ColumnsSettings handleClose={handleClose} />);
     fireEvent.click(screen.getByLabelText(/end of shipments/i));
     expect(dispatch).toHaveBeenCalledWith(toggleSetting('end of shipments'));

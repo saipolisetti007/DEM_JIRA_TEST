@@ -54,7 +54,7 @@ const AccordionPanel = ({
                   disabled={isLoading}
                 />
               }
-              label={field.replace(/_/g, ' ')}
+              label={field === 'percentage' ? '% Discount' : field.replace(/_/g, ' ')}
             />
           </Grid>
         ))}
@@ -72,7 +72,16 @@ const ColumnsSettings = ({ handleClose }) => {
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
   const { userData } = useSelector((state) => state.userProfileData);
   const region = userData?.region;
-  const hiddenFieldsNA = ['unique_event_id', 'minerva_volume'];
+  const hiddenFieldsNA = [
+    'minerva_volume',
+    'event_type',
+    'event_subtype',
+    'event_description',
+    'event_sales_channel',
+    'item_type',
+    'customer_item_number'
+  ];
+  const hiddenFieldsEU = ['start_of_shipments', 'expected_shipments_forecast'];
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -100,11 +109,14 @@ const ColumnsSettings = ({ handleClose }) => {
   return (
     <>
       {steps.map((step, index) => {
-        //Filter fields based on region "NA"
-        const filteredFields =
-          region === 'NA'
-            ? settingsFields[index].filter((field) => !hiddenFieldsNA.includes(field))
-            : settingsFields[index];
+        //Filter fields based on region
+        let filteredFields = settingsFields[index];
+        if (region === 'NA') {
+          filteredFields = settingsFields[index].filter((field) => !hiddenFieldsNA.includes(field));
+        } else if (region === 'EU') {
+          filteredFields = settingsFields[index].filter((field) => !hiddenFieldsEU.includes(field));
+        }
+
         return (
           <AccordionPanel
             key={step}
