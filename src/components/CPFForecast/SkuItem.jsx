@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Accordion,
   AccordionDetails,
@@ -18,6 +18,7 @@ import InfoSnackBar from '../Common/InfoSnackBar';
 import { cpfDecisions, cpfSkuForecast } from '../../api/cpfForecastApi';
 import NewForecastColumns from './NewForecastColumns';
 import ConfirmationDialog from './ConfirmationDialog';
+import PreviousForecastColumns from './PreviousForecastColumns';
 
 const SkuItem = ({
   sku,
@@ -193,23 +194,11 @@ const SkuItem = ({
     }
   }, [editedValues]);
 
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: 'week',
-        header: 'Weeks'
-      },
-      {
-        accessorKey: 'prevUnits',
-        header: 'Units',
-        Cell: ({ row, column }) => convertedUnits(row.original[column.id], selectedUnit)
-      }
-    ],
-    [convertedUnits]
-  );
-
   const previousForecastTable = useMaterialReactTable({
-    columns,
+    columns: PreviousForecastColumns({
+      selectedUnit,
+      convertedUnits
+    }),
     data: data || [],
     muiTableProps: {
       sx: {
