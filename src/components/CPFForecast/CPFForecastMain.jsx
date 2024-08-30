@@ -35,9 +35,9 @@ const CPFForecastMain = () => {
     sku: [],
     prodName: [],
     customerItemNumber: [],
+    customerId: [],
     eventType: [],
-    eventSubtype: [],
-    customerId: []
+    eventSubtype: []
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
@@ -124,7 +124,7 @@ const CPFForecastMain = () => {
   const handleFilterChange = (filterKey, values) => {
     const updatedFilters = {
       ...selectedFilters,
-      [filterKey]: values
+      [filterKey]: filterKey === 'customerId' ? [values] : values
     };
 
     setSelectedFilters(updatedFilters);

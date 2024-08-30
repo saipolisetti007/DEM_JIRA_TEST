@@ -32,7 +32,7 @@ const TabPanel = (props) => {
   );
 };
 
-const AddEditEventDialog = ({ open, rowData, isEdit, handleClose }) => {
+const AddEditEventDialog = ({ open, rowData, isEdit, handleClose, customerId }) => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -98,7 +98,7 @@ const AddEditEventDialog = ({ open, rowData, isEdit, handleClose }) => {
               {isEdit ? (
                 <EditEventForm rowData={rowData} handleClose={handleClose} />
               ) : (
-                <AddEventForm handleClose={handleClose} />
+                <AddEventForm handleClose={handleClose} customerId={customerId} />
               )}
             </TabPanel>
             <TabPanel value={value} index={1}>

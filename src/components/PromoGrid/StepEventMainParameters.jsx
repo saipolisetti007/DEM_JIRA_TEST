@@ -6,10 +6,9 @@ import FormInputControl from '../Common/FormInputControl';
 import { useSelector } from 'react-redux';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-const StepEventMainParameters = ({ control, settings }) => {
+const StepEventMainParameters = ({ control, settings, customerId }) => {
   const { setValue } = useFormContext();
   const { userData } = useSelector((state) => state.userProfileData);
-  const customerId = userData?.customers[0];
   const region = userData?.region;
 
   const { eventsData, eventTypeOptions } = useSelector((state) => state.eventsData);

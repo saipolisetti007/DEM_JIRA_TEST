@@ -55,7 +55,7 @@ const stepFields = {
     'event_publish_to_demand',
     ...commonFieldsStep0
   ],
-  1: ['product_id', 'id_type', 'country_code', ...commonFieldsStep0],
+  1: ['product_id', 'id_type', 'country_code', ...commonFieldsStep1],
   2: [...commonFieldsStep2]
 };
 const dateFields = [

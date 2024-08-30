@@ -116,6 +116,7 @@ describe('promoGridApi', () => {
         active: [],
         sku: [],
         customerItemNumber: [],
+        customerId: [],
         custFlag: [],
         prodName: []
       },
@@ -176,7 +177,8 @@ describe('promoGridApi', () => {
       category: ['Auto Dish'],
       brand: ['Cascade'],
       brandForm: ['brandForm4'],
-      sku: ['sku4']
+      sku: ['sku4'],
+      customerId: ['123']
     };
     performApiRequest.mockResolvedValueOnce(mockFilters);
     const result = await promoGridFilters();
@@ -189,6 +191,7 @@ describe('promoGridApi', () => {
       active: [],
       sku: [],
       customerItemNumber: [],
+      customerId: [],
       custFlag: [],
       prodName: []
     });
@@ -252,6 +255,7 @@ describe('promoGridApi', () => {
         active: [],
         sku: [],
         customerItemNumber: [],
+        customerId: [],
         custFlag: [],
         prodName: []
       },
@@ -285,15 +289,12 @@ describe('promoGridApi', () => {
       .mockReturnValue(mockAnchorElement);
     const appendChildSpy = jest.spyOn(document.body, 'appendChild');
     const removeChildSpy = jest.spyOn(document.body, 'removeChild');
+    const customerId = '123';
 
-    await downloadBlankExcel();
+    await downloadBlankExcel(customerId);
+    const url = `promo/excel-template/download/?customerId=${customerId}`;
 
-    expect(performApiRequest).toHaveBeenCalledWith(
-      'promo/excel-template/download/',
-      'GET',
-      null,
-      'blob'
-    );
+    expect(performApiRequest).toHaveBeenCalledWith(url, 'GET', null, 'blob');
     expect(window.URL.createObjectURL).toHaveBeenCalled();
     expect(createElementSpy).toHaveBeenCalledWith('a');
     expect(appendChildSpy).toHaveBeenCalledWith(mockAnchorElement);
@@ -336,6 +337,7 @@ describe('promoGridApi', () => {
         active: [],
         sku: [],
         customerItemNumber: [],
+        customerId: [],
         custFlag: [],
         prodName: []
       },
@@ -397,12 +399,18 @@ describe('promoGridApi', () => {
     const removeChildSpy = jest.spyOn(document.body, 'removeChild');
 
     const selectedEventIds = [1, 2, 3];
-    await downloadSelectedDataExcel(selectedEventIds);
+    const customerId = ['123'];
+    await downloadSelectedDataExcel(selectedEventIds, customerId);
+
+    const body = {
+      events: selectedEventIds,
+      customerId: customerId
+    };
 
     expect(performApiRequest).toHaveBeenCalledWith(
       'promo/selected-data/download/',
       'POST',
-      { events: selectedEventIds },
+      body,
       'blob'
     );
     expect(window.URL.createObjectURL).toHaveBeenCalled();

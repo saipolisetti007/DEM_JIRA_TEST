@@ -13,10 +13,10 @@ function formatFilterKey(filterKey) {
     brandForm: 'Brand Form',
     prodName: 'Product Name',
     customerItemNumber: 'Customer Item Number',
+    customerId: 'Customer ID',
     custFlag: 'Customization Flag',
     eventType: 'Event Type',
-    eventSubtype: 'Event Subtype',
-    customerId: 'Customer ID'
+    eventSubtype: 'Event Subtype'
   };
 
   return customLabels[filterKey] || filterKey.charAt(0).toUpperCase() + filterKey.slice(1);

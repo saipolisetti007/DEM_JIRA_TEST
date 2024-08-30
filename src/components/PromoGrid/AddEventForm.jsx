@@ -13,7 +13,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useSelector } from 'react-redux';
 import DialogComponent from '../Common/DialogComponent';
 
-const AddEventForm = ({ handleClose }) => {
+const AddEventForm = ({ handleClose, customerId }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [stepErrors, setStepErrors] = useState({});
   const [stepCompleted, setStepCompleted] = useState({});
@@ -29,7 +29,11 @@ const AddEventForm = ({ handleClose }) => {
   const { settings } = useSelector((state) => state.settingsData);
 
   const visibleSteps = useMemo(() => {
-    return steps.filter((_, index) => stepFields[index].some((field) => settings[field]));
+    return steps.filter((_, index) => {
+      const anyFieldTrue = stepFields[index].some((field) => settings[field]);
+      const hasExtraFields = stepFields[index].some((field) => settings[field] === undefined);
+      return anyFieldTrue || hasExtraFields;
+    });
   }, [settings]);
 
   const handleNext = async () => {
@@ -204,7 +208,13 @@ const AddEventForm = ({ handleClose }) => {
       <FormProvider {...methods}>
         <form>
           <Box sx={{ minHeight: 400 }}>
-            {activeStep === 0 && <StepEventMainParameters control={control} settings={settings} />}
+            {activeStep === 0 && (
+              <StepEventMainParameters
+                control={control}
+                settings={settings}
+                customerId={customerId}
+              />
+            )}
             {activeStep === 1 && <StepEventAdditionalData control={control} settings={settings} />}
             {activeStep === 2 && <StepEventProperties control={control} settings={settings} />}
           </Box>

@@ -7,8 +7,7 @@ import {
   downloadBlankExcel,
   getData,
   promoGridFilters,
-  uploadDataExcel,
-  downloadSelectedDataExcel
+  uploadDataExcel
 } from '../../api/promoGridApi';
 import PromoGridData from './PromoGridData';
 import { BrowserRouter } from 'react-router-dom';
@@ -96,7 +95,8 @@ const mockFilters = {
   brandForm: ['brandForm4'],
   sku: ['sku4'],
   prod_name: ['Product1'],
-  customer_item_number: ['123456']
+  customer_item_number: ['123456'],
+  customer_id: ['2000038335']
 };
 
 const store = configureStore({

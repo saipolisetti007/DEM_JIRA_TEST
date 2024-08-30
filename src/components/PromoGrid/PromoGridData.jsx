@@ -34,6 +34,7 @@ import { getSettings } from './settingsSlice';
 import { reduceFilters, mapFilterParams } from '../../utils/filterUtils';
 import ManageColumns from './ManageColumns';
 import createDebouncedFetchFilters from '../../utils/debounceUtils';
+import DefaultPageLoader from '../Common/DefaultPageLoader';
 
 const PromoGridData = () => {
   const location = useLocation();
@@ -57,6 +58,7 @@ const PromoGridData = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [isHistoricalEvent, setIsHistoricalEvent] = useState(false);
   const [isCanceling, setIsCanceling] = useState(false);
+  const [filtersUpdated, setFiltersUpdated] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10
@@ -70,6 +72,7 @@ const PromoGridData = () => {
     sku: [],
     prodName: [],
     customerItemNumber: [],
+    customerId: [],
     custFlag: [],
     active: ['Active']
   });
@@ -83,6 +86,7 @@ const PromoGridData = () => {
     prodName: [],
     customerItemNumber: [],
     custFlag: [],
+    customerId: [],
     active: ['Active']
   });
 
@@ -92,7 +96,7 @@ const PromoGridData = () => {
   }, [dispatch]);
 
   const { userData } = useSelector((state) => state.userProfileData);
-  const customerId = userData?.customers[0];
+  const customersId = selectedFilters.customerId;
   const region = userData?.region;
 
   const fetchFilters = async (filters = {}) => {
@@ -108,10 +112,17 @@ const PromoGridData = () => {
         prodName: response?.prod_name || prevOptions.prodName,
         customerItemNumber: response?.customer_item_number || prevOptions.customerItemNumber,
         custFlag: response?.cust_flag || prevOptions.custFlag,
+        customerId: response?.customer_id || prevOptions.customerId,
         active: response?.active || prevOptions.active
       }));
       setIsDataLoading(false);
+      setSelectedFilters((prevFilters) => ({
+        ...prevFilters,
+        customerId: [response?.customer_id[0]]
+      }));
+      setFiltersUpdated(true);
     } catch (error) {
+      setFiltersUpdated(true);
       setIsLoading(false);
       setIsError(true);
       setIsSnackOpen(true);
@@ -144,9 +155,14 @@ const PromoGridData = () => {
   const debouncedFetchData = useCallback(debounce(fetchData, 500), []);
 
   useEffect(() => {
-    debouncedFetchData(pagination.pageIndex, pagination.pageSize, selectedFilters);
-    return () => debouncedFetchData.cancel();
-  }, [pagination, selectedFilters]);
+    if (filtersUpdated) {
+      debouncedFetchData(pagination.pageIndex, pagination.pageSize, selectedFilters);
+    }
+
+    return () => {
+      debouncedFetchData.cancel();
+    };
+  }, [pagination, selectedFilters, filtersUpdated]);
 
   useEffect(() => {
     fetchFilters(selectedFilters);
@@ -166,8 +182,7 @@ const PromoGridData = () => {
   const debouncedFetchFilters = useCallback(
     createDebouncedFetchFilters(promoGridFilters, setFilterOptions, setIsSnackOpen, setSnackBar, [
       'eventType',
-      'eventSubtype',
-      'customerId'
+      'eventSubtype'
     ]),
     []
   );
@@ -175,7 +190,7 @@ const PromoGridData = () => {
   const handleFilterChange = (filterKey, values) => {
     const updatedFilters = {
       ...selectedFilters,
-      [filterKey]: values
+      [filterKey]: filterKey === 'customerId' ? [values] : values
     };
 
     setSelectedFilters(updatedFilters);
@@ -213,7 +228,7 @@ const PromoGridData = () => {
     try {
       const payload = {
         cpf_id: selectedEventIds,
-        golden_customer_id: customerId
+        golden_customer_id: customersId
       };
       await cancelRowData(payload);
       setRowSelection({});
@@ -243,7 +258,7 @@ const PromoGridData = () => {
 
   const handleDownloadBlankExcel = async () => {
     try {
-      await downloadBlankExcel();
+      await downloadBlankExcel(customersId);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Excel template downloaded successfully !!!',
@@ -290,7 +305,7 @@ const PromoGridData = () => {
     }
 
     try {
-      await downloadSelectedDataExcel(selectedIds);
+      await downloadSelectedDataExcel(selectedIds, customersId);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Selected Excel data downloaded successfully !!!',
@@ -519,6 +534,10 @@ const PromoGridData = () => {
     setCancelDialogOpen(false);
   };
 
+  if (!filtersUpdated) {
+    return <DefaultPageLoader />;
+  }
+
   return (
     <>
       <PageSection>
@@ -574,6 +593,7 @@ const PromoGridData = () => {
           handleClose={handleAddEventClose}
           rowData={rowData}
           isEdit={isEdit}
+          customerId={customersId}
         />
       )}
       {openDialog && (

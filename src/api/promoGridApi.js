@@ -57,8 +57,9 @@ const downloadExcel = async (endpoint, request, filename, body = null) => {
   document.body.removeChild(downloadLink);
 };
 
-export const downloadBlankExcel = async () => {
-  await downloadExcel('promo/excel-template/download/', 'GET', 'DEM - Promo Grid Template.xlsx');
+export const downloadBlankExcel = async (customersId) => {
+  const url = `promo/excel-template/download/?customerId=${customersId}`;
+  await downloadExcel(url, 'GET', 'DEM - Promo Grid Template.xlsx');
 };
 
 export const downloadDataExcel = async (filters = {}) => {
@@ -70,6 +71,7 @@ export const downloadDataExcel = async (filters = {}) => {
     active: filters.active || [],
     sku: filters.sku || [],
     customerItemNumber: filters.customerItemNumber || [],
+    customerId: filters.customerId || [],
     custFlag: filters.custFlag || [],
     prodName: filters.prodName || []
   };
@@ -78,9 +80,10 @@ export const downloadDataExcel = async (filters = {}) => {
   await downloadExcel(endpoint, 'POST', 'DEM - Promo Grid Data.xlsx', body);
 };
 
-export const downloadSelectedDataExcel = async (selectedEventIds) => {
+export const downloadSelectedDataExcel = async (selectedEventIds, customerId) => {
   const body = {
-    events: selectedEventIds
+    events: selectedEventIds,
+    customerId: customerId
   };
 
   const endpoint = 'promo/selected-data/download/';
@@ -117,7 +120,8 @@ export const promoGridFilters = async (filters = {}) => {
     sku: [],
     customerItemNumber: [],
     custFlag: [],
-    prodName: []
+    prodName: [],
+    customerId: []
   };
 
   const payload = { ...defaultFilters, ...filters };

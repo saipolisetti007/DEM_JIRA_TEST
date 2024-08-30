@@ -31,7 +31,11 @@ const formatRowData = (rowData) => {
 };
 
 const AccordionPanel = ({ panel, index, expanded, handleChange, title, control, settings }) => {
-  const isVisible = stepFields[index].some((field) => settings[field]);
+  const anyFieldTrue = stepFields[index].some((field) => settings[field]);
+  const hasExtraFields = stepFields[index].some((field) => settings[field] === undefined);
+
+  const isVisible = anyFieldTrue || hasExtraFields;
+
   if (!isVisible) {
     return null;
   }
