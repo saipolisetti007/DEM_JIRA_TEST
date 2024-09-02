@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, Typography, Avatar, Menu, MenuItem } from '@mui/material';
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
 import { loginRequest } from '../../auth/authConfig';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { fetchUserProfile } from './userProfileSlice';
-import { fetchEvents } from '../PromoGrid/eventsSlice';
 import { fetchCountries } from '../PromoGrid/countryCodeSlice';
 
 const NavBar = () => {
@@ -59,15 +58,6 @@ const NavBar = () => {
       setHasFetchData(false);
     }
   };
-
-  const { userData } = useSelector((state) => state.userProfileData);
-  const customerId = userData?.customers[0];
-
-  useEffect(() => {
-    if (customerId) {
-      dispatch(fetchEvents(customerId));
-    }
-  }, [customerId, dispatch]);
 
   return (
     <nav data-testid="navbar">

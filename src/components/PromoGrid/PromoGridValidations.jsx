@@ -33,7 +33,7 @@ const PromoGridValidationTable = () => {
   const [warningDialogOpen, setWarningDialogOpen] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
-
+  const [selectedCustomer, setSelectedCustomer] = useState();
   // State for the dialog
   const [dialogOpen, setDialogOpen] = useState(false);
   const [navigateTarget, setNavigateTarget] = useState(null);
@@ -45,6 +45,7 @@ const PromoGridValidationTable = () => {
       setIsLoading(false);
       setIsRefetching(false);
       setUpdatedData(data);
+      setSelectedCustomer(data.rows[0]?.golden_customer_id);
     } catch (error) {
       setIsLoading(true);
       setIsError(true);
@@ -161,7 +162,10 @@ const PromoGridValidationTable = () => {
       };
       await promoGridSubmit(promoHeader);
       navigate('/promo-grid', {
-        state: { messageData: 'Excel file data uploaded successfully !!!' }
+        state: {
+          messageData: 'Excel file data uploaded successfully !!!',
+          selectedCustomer: selectedCustomer
+        }
       });
     } catch (error) {
       setIsSnackOpen(true);

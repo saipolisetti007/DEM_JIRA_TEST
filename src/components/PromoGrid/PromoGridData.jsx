@@ -35,6 +35,7 @@ import { reduceFilters, mapFilterParams } from '../../utils/filterUtils';
 import ManageColumns from './ManageColumns';
 import createDebouncedFetchFilters from '../../utils/debounceUtils';
 import DefaultPageLoader from '../Common/DefaultPageLoader';
+import { fetchEvents } from './eventsSlice';
 
 const PromoGridData = () => {
   const location = useLocation();
@@ -99,6 +100,12 @@ const PromoGridData = () => {
   const customersId = selectedFilters.customerId;
   const region = userData?.region;
 
+  useEffect(() => {
+    if (customersId && customersId.length > 0) {
+      dispatch(fetchEvents(customersId[0]));
+    }
+  }, [customersId]);
+
   const fetchFilters = async (filters = {}) => {
     try {
       const response = await promoGridFilters(filters);
@@ -118,7 +125,9 @@ const PromoGridData = () => {
       setIsDataLoading(false);
       setSelectedFilters((prevFilters) => ({
         ...prevFilters,
-        customerId: [response?.customer_id[0]]
+        customerId: location?.state?.selectedCustomer
+          ? [location.state.selectedCustomer]
+          : [response?.customer_id[0]]
       }));
       setFiltersUpdated(true);
     } catch (error) {
