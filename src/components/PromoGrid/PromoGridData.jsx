@@ -228,7 +228,7 @@ const PromoGridData = () => {
     try {
       const payload = {
         cpf_id: selectedEventIds,
-        golden_customer_id: customersId
+        golden_customer_id: customersId[0]
       };
       await cancelRowData(payload);
       setRowSelection({});
@@ -593,7 +593,7 @@ const PromoGridData = () => {
           handleClose={handleAddEventClose}
           rowData={rowData}
           isEdit={isEdit}
-          customerId={customersId}
+          customerId={customersId[0]}
         />
       )}
       {openDialog && (
