@@ -74,7 +74,8 @@ const PromoGridColumns = ({ region }) => {
         ? [
             {
               accessorKey: 'minerva_volume',
-              header: 'Minerva volume'
+              header: 'Calculate Volume',
+              Cell: ({ row, column }) => RadioCellValue(row.original[column.id])
             }
           ]
         : []),

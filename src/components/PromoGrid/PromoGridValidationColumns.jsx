@@ -250,15 +250,15 @@ const PromoGridValidationColumns = ({
         ? [
             {
               accessorKey: 'minerva_volume',
-              header: 'Minerva volume',
+              header: 'Calculate Volume',
               Edit: ({ column, row }) => {
                 return (
-                  <InputTextComponent
+                  <InputRadioComponent
                     row={row}
                     column={column}
+                    isRequired={true}
                     isError={!!validationErrors[row.index]?.minerva_volume}
                     helperText={validationErrors[row.index]?.minerva_volume}
-                    validationType="floatValidation"
                     handleInputChange={handleInputChange}
                   />
                 );

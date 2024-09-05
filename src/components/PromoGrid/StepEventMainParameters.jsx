@@ -162,16 +162,14 @@ const StepEventMainParameters = ({ control, settings, customerId }) => {
               />
             </Grid>
           )}
-          {region === 'EU' && settings.minerva_volume && (
+          {region === 'EU' && (
             <Grid item xs={6}>
               <FormInputControl
                 control={control}
                 name="minerva_volume"
-                label="Minerva volume"
-                type="text"
-                rules={{
-                  validationType: 'floatValidation'
-                }}
+                label="Calculate Volume"
+                type="switch"
+                isChecked={true}
               />
             </Grid>
           )}

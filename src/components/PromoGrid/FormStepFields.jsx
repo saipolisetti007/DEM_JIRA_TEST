@@ -6,7 +6,6 @@ const commonFieldsStep0 = [
   'event_subtype',
   'umbrella_event',
   'comments',
-  'minerva_volume',
   'event_description',
   'event_sales_channel'
 ];
@@ -52,6 +51,7 @@ const stepFields = {
     'event_in_store_start_date',
     'event_in_store_end_date',
     'unique_event_id',
+    'minerva_volume',
     'event_publish_to_demand',
     ...commonFieldsStep0
   ],
