@@ -220,7 +220,7 @@ const ThresholdSettingsData = () => {
   };
 
   const handleChange = (event) => {
-    const value = event.target.value;
+    const { value } = event.target;
     setSelectedCustomer(value);
     fetchData(value);
   };

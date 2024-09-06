@@ -127,7 +127,7 @@ describe('PromoGridValidations', () => {
       expect(promoGridValidate).toHaveBeenCalledTimes(1);
 
       expect(
-        screen.getByText('Validation Succesfull, please submit the data !!!')
+        screen.getByText('Validation Successful, please submit the data !!!')
       ).toBeInTheDocument();
     });
   });
@@ -236,7 +236,7 @@ describe('PromoGridValidations', () => {
     await waitFor(() => {
       expect(promoGridValidate).toHaveBeenCalledTimes(1);
       expect(
-        screen.getByText('Validation Succesfull, please submit the data !!!')
+        screen.getByText('Validation Successful, please submit the data !!!')
       ).toBeInTheDocument();
     });
     const submitButton = screen.getByText('Submit');
@@ -280,7 +280,7 @@ describe('PromoGridValidations', () => {
     await waitFor(() => {
       expect(promoGridValidate).toHaveBeenCalledTimes(1);
       expect(
-        screen.getByText('Validation Succesfull, please submit the data !!!')
+        screen.getByText('Validation Successful, please submit the data !!!')
       ).toBeInTheDocument();
     });
     const submitButton = screen.getByText('Submit');
@@ -289,7 +289,7 @@ describe('PromoGridValidations', () => {
     await waitFor(() => {
       expect(promoGridSubmit).toHaveBeenCalledTimes(1);
       expect(
-        screen.getByText('Error occured while updating the data ! Please try again !!!')
+        screen.getByText('Error occurred while updating the data ! Please try again !!!')
       ).toBeInTheDocument();
     });
   });

@@ -276,7 +276,7 @@ const PromoGridData = () => {
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Error occured while downloading ! Please try again !!!',
+        message: 'Error occurred while downloading ! Please try again !!!',
         severity: 'error'
       });
     }
@@ -295,7 +295,7 @@ const PromoGridData = () => {
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Error occured while data downloading ! Please try again !!!',
+        message: 'Error occurred while data downloading ! Please try again !!!',
         severity: 'error'
       });
     }
@@ -385,7 +385,7 @@ const PromoGridData = () => {
           });
         } else {
           setSnackBar({
-            message: 'Error occured while updating the data! Please try again!!!',
+            message: 'Error occurred while updating the data! Please try again!!!',
             severity: 'error',
             dataTestId: 'snackbar-error'
           });

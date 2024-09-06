@@ -6,8 +6,7 @@ export const getSettings = createAsyncThunk(
   'promogrid/getSettings',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await promoGridColumnSettings();
-      return response;
+      return await promoGridColumnSettings();
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -19,8 +18,7 @@ export const updateSettings = createAsyncThunk(
   'promogrid/updateSettings',
   async (newSettings, { rejectWithValue }) => {
     try {
-      const response = await promoGridColumnCreate(newSettings);
-      return response;
+      return await promoGridColumnCreate(newSettings);
     } catch (error) {
       return rejectWithValue(error.message);
     }

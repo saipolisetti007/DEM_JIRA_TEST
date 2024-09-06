@@ -67,10 +67,12 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
       if (unitsValue !== '%') {
         setValue('unit', '%');
       }
-    } else if (operation === 'Abs. unit difference') {
-      if (unitsValue !== '' && !volumsUnitOptions.includes(unitsValue)) {
-        setValue('unit', '');
-      }
+    } else if (
+      operation === 'Abs. unit difference' &&
+      unitsValue !== '' &&
+      !volumsUnitOptions.includes(unitsValue)
+    ) {
+      setValue('unit', '');
     }
   }, [operation, getValues, setValue]);
 

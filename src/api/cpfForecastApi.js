@@ -1,10 +1,5 @@
 import { performApiRequest } from './apiUtils';
 
-export const cpfGetData = async () => {
-  const response = await performApiRequest('cpf/pending-cpf-forecasts/');
-  return response;
-};
-
 export const cpfFilters = async (filters = {}) => {
   const defaultFilters = {
     brand: [],
@@ -22,8 +17,7 @@ export const cpfFilters = async (filters = {}) => {
   const payload = { ...defaultFilters, ...filters };
 
   const url = 'cpf/filters/';
-  const response = await performApiRequest(url, 'POST', payload);
-  return response;
+  return await performApiRequest(url, 'POST', payload);
 };
 
 export const cpfGetForecast = async (filters = {}) => {
@@ -42,13 +36,11 @@ export const cpfGetForecast = async (filters = {}) => {
     customerId: filters.customerId || []
   };
 
-  const response = await performApiRequest(url, 'POST', body);
-  return response;
+  return await performApiRequest(url, 'POST', body);
 };
 
 export const cpfSkuForecast = async (skuData) => {
-  const response = await performApiRequest('cpf/cpf-sku-forecast/', 'POST', skuData);
-  return response;
+  return await performApiRequest('cpf/cpf-sku-forecast/', 'POST', skuData);
 };
 
 export const cpfDecisions = async (selectedData) => {
@@ -56,18 +48,12 @@ export const cpfDecisions = async (selectedData) => {
 };
 
 export const cpfPendingCount = async () => {
-  const response = await performApiRequest('cpf/count-pending-approvals/');
-  return response;
-};
-
-export const cpfDecisionAction = async (selections) => {
-  await performApiRequest('cpf/cpf-decision/', 'POST', selections);
+  return await performApiRequest('cpf/count-pending-approvals/');
 };
 
 export const cpfThresholdList = async (customerId) => {
   const url = `/cpf/items/?customer=${customerId}`;
-  const response = await performApiRequest(url);
-  return response;
+  return await performApiRequest(url);
 };
 
 export const cpfThresholdAdd = async (data) => {
@@ -85,6 +71,5 @@ export const cpfThresholdDelete = async (rowId) => {
 };
 
 export const fetchThresholdFilters = async () => {
-  const response = await performApiRequest('cpf/threshold-rules/filters/');
-  return response;
+  return await performApiRequest('cpf/threshold-rules/filters/');
 };

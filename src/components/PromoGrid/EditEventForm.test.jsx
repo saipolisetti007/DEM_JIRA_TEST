@@ -235,7 +235,7 @@ describe('Edit Event Form Component', () => {
       expect(screen.getByText(/There are warnings in the form submission/i)).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByText('Procced to Submit'));
+    fireEvent.click(screen.getByText('Proceed to Submit'));
   });
   test('should handle form Warnings and show catch error', async () => {
     const warningResponse = {
@@ -277,9 +277,9 @@ describe('Edit Event Form Component', () => {
       expect(screen.getByText(/There are warnings in the form submission/i)).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByText('Procced to Submit'));
+    fireEvent.click(screen.getByText('Proceed to Submit'));
     await waitFor(() => {
-      expect(screen.getByText(/Error Occured while updating the data/i)).toBeInTheDocument();
+      expect(screen.getByText(/Error occurred while updating the data/i)).toBeInTheDocument();
     });
   });
 

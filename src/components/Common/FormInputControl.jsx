@@ -31,7 +31,7 @@ const FormInputControl = ({
   rules
 }) => {
   const { clearErrors } = useFormContext();
-  const getValidtionRules = () => {
+  const getValidationRules = () => {
     let validationRules = rules;
     if (isRequired) {
       validationRules = {
@@ -44,7 +44,7 @@ const FormInputControl = ({
         ...validationRules,
         pattern: {
           value: /^[+-]?\d+$/,
-          message: 'Only interger values are allowed'
+          message: 'Only integer values are allowed'
         }
       };
     }
@@ -265,7 +265,7 @@ const FormInputControl = ({
       name={name}
       control={control}
       defaultValue={defaultValue ?? (type === 'date' ? null : type === 'switch' ? isChecked : '')}
-      rules={getValidtionRules()}
+      rules={getValidationRules()}
       render={({ field, fieldState: { error } }) => renderField(field, error)}
     />
   );

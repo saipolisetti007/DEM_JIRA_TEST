@@ -33,15 +33,13 @@ const DatePickerComponent = ({
     const accessorKey = column.id;
     const rowIndex = row.index;
     const startDate = moment(row._valuesCache[startDateField], 'MM/DD/YYYY');
-    const formatedDate = newValue ? selectedDate.format('MM/DD/YYYY') : null;
-    row._valuesCache[column.id] = formatedDate;
+    const formattedDate = newValue ? selectedDate.format('MM/DD/YYYY') : null;
+    row._valuesCache[column.id] = formattedDate;
 
-    if (validationType === 'startDate') {
-      if (!selectedDate && isRequired) {
-        setError(true);
-        setHelperMsg('Required');
-        return;
-      }
+    if (validationType === 'startDate' && !selectedDate && isRequired) {
+      setError(true);
+      setHelperMsg('Required');
+      return;
     }
 
     if (validationType === 'endDate') {
@@ -58,7 +56,7 @@ const DatePickerComponent = ({
     setError(false);
     setHelperMsg(null);
     if (handleInputChange) {
-      handleInputChange(formatedDate, rowIndex, accessorKey, null);
+      handleInputChange(formattedDate, rowIndex, accessorKey, null);
     }
   };
 

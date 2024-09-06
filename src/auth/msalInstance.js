@@ -33,7 +33,7 @@ if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0
 
 msalInstance.addEventCallback((event) => {
   if (event.eventType === EventType.LOGIN_SUCCESS && event.payload.account) {
-    const account = event.payload.account;
+    const { account } = event.payload;
     msalInstance.setActiveAccount(account);
   }
 });

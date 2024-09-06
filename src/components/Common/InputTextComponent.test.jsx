@@ -71,7 +71,7 @@ describe('InputText Component', () => {
     expect(inputElement.value).toBe('');
   });
 
-  test('updates state and calls handleTextChnage', () => {
+  test('updates state and calls handleTextChange', () => {
     render(
       <InputTextComponent
         row={row}

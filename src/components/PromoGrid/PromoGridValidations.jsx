@@ -138,7 +138,7 @@ const PromoGridValidationTable = () => {
         setSubmitDisabled(false);
         setIsSnackOpen(true);
         setSnackBar({
-          message: 'Validation Succesfull, please submit the data !!!',
+          message: 'Validation Successful, please submit the data !!!',
           severity: 'success'
         });
       }
@@ -170,7 +170,7 @@ const PromoGridValidationTable = () => {
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Error occured while updating the data ! Please try again !!!',
+        message: 'Error occurred while updating the data ! Please try again !!!',
         severity: 'error'
       });
     }
@@ -244,12 +244,12 @@ const PromoGridValidationTable = () => {
             <DefaultPageHeader
               title="Promo Grid Validations"
               subtitle={
-                !allErrorsNull ? (
-                  <Typography color="error">Fix and Validate errors before submitting</Typography>
-                ) : (
+                allErrorsNull ? (
                   <Typography className="text-green-700">
                     Validate the data and proceed to submit
                   </Typography>
+                ) : (
+                  <Typography color="error">Fix and Validate errors before submitting</Typography>
                 )
               }
             />
@@ -298,7 +298,7 @@ const PromoGridValidationTable = () => {
         dialogHeading="There are warnings in the form submission"
         dialogContent="Do you want to proceed?"
         cancelText="Return to PromoGrid"
-        confirmText="Procced to Submit"
+        confirmText="Proceed to Submit"
         handleConfirm={handleSubmit}
         handleClose={handleDialogClose}
       />

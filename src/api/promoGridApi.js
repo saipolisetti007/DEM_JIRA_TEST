@@ -8,9 +8,7 @@ export const getData = async (pageIndex, pageSize, filters = {}) => {
     return acc;
   }, {});
 
-  const response = await performApiRequest(url, 'POST', filterParams);
-
-  return response;
+  return await performApiRequest(url, 'POST', filterParams);
 };
 
 export const getUserProfile = async () => {
@@ -19,23 +17,19 @@ export const getUserProfile = async () => {
 
 export const getEvents = async (customerId) => {
   const url = `promo/event-types/?golden_customer_id=${customerId}`;
-  const response = await performApiRequest(url);
-  return response;
+  return await performApiRequest(url);
 };
 
 export const getCountries = async () => {
-  const response = await performApiRequest('masterdata/countries/');
-  return response;
+  return await performApiRequest('masterdata/countries/');
 };
 
 export const addNewRowData = async (rowData) => {
-  const response = await performApiRequest('promo/promo-grid-add/', 'POST', rowData);
-  return response;
+  return await performApiRequest('promo/promo-grid-add/', 'POST', rowData);
 };
 
 export const updateRowData = async (newData) => {
-  const response = await performApiRequest('promo/promo-grid-edit/', 'POST', newData);
-  return response;
+  return await performApiRequest('promo/promo-grid-edit/', 'POST', newData);
 };
 
 export const cancelRowData = async (rowData) => {
@@ -91,19 +85,16 @@ export const downloadSelectedDataExcel = async (selectedEventIds, customerId) =>
 };
 
 export const uploadDataExcel = async (formData) => {
-  const response = await performApiRequest('promo/promo-grid-file-upload/', 'POST', formData);
-  return response;
+  return await performApiRequest('promo/promo-grid-file-upload/', 'POST', formData);
 };
 
 export const promoGridGetValidations = async (promoHeader) => {
   const url = `promo/promo-grid-validate/?promo_header=${promoHeader}`;
-  const response = await performApiRequest(url);
-  return response;
+  return await performApiRequest(url);
 };
 
 export const promoGridValidate = async (rowData) => {
-  const response = await performApiRequest('promo/promo-grid-validate/', 'POST', rowData);
-  return response;
+  return await performApiRequest('promo/promo-grid-validate/', 'POST', rowData);
 };
 
 export const promoGridSubmit = async (promoHeader) => {
@@ -127,13 +118,11 @@ export const promoGridFilters = async (filters = {}) => {
   const payload = { ...defaultFilters, ...filters };
 
   const url = 'promo/filter/';
-  const response = await performApiRequest(url, 'POST', payload);
-  return response;
+  return await performApiRequest(url, 'POST', payload);
 };
 
 export const promoGridColumnSettings = async () => {
-  const response = await performApiRequest('promo/promo-grid-column-settings/', 'GET');
-  return response;
+  return await performApiRequest('promo/promo-grid-column-settings/', 'GET');
 };
 
 export const promoGridColumnCreate = async (columnsData) => {

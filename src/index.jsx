@@ -14,12 +14,11 @@ import App from './App';
 import Home from './pages/Home';
 import { Provider } from 'react-redux';
 import store from './store/store';
-import ErrorBoundary from './errorHanlding/ErrorBoundary';
+import ErrorBoundary from './errorHandling/ErrorBoundary';
 import SignIn from './components/SignIn/SignIn';
 import PromoGrid from './pages/PromoGrid';
 import CPFForecast from './pages/CPFForecast';
 import PromoGridValidations from './components/PromoGrid/PromoGridValidations';
-import StoreToDcMapping from './pages/StoreToDcMapping';
 import ThresholdSettings from './pages/ThresholdSettings';
 
 const router = createBrowserRouter(
@@ -27,7 +26,6 @@ const router = createBrowserRouter(
     <Route path="/" element={<App />}>
       <Route path="" element={<Home />} />
       <Route path="/signin" element={<SignIn />} />
-      <Route path="/store-to-dc-mapping" element={<StoreToDcMapping />} />
       <Route path="/promo-grid" element={<PromoGrid />} />
       <Route path="/promo-grid-validations" element={<PromoGridValidations />} />
       <Route path="/cpf-forecast" element={<CPFForecast />} />

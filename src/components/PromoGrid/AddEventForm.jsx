@@ -175,7 +175,7 @@ const AddEventForm = ({ handleClose, customerId }) => {
       setIsLoading(false);
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Error Occured while updating the data',
+        message: 'Error Occurred while updating the data',
         severity: 'error'
       });
     }
@@ -268,7 +268,7 @@ const AddEventForm = ({ handleClose, customerId }) => {
         dialogHeading="There are warnings in the form submission"
         dialogContent="Do you want to proceed?"
         cancelText="Return to PromoGrid"
-        confirmText="Procced to Submit"
+        confirmText="Proceed to Submit"
         handleConfirm={handleDialogConfirm}
         handleClose={handleDialogClose}
       />

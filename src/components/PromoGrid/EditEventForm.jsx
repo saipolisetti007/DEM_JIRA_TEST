@@ -155,7 +155,7 @@ const EditEventForm = ({ rowData, handleClose }) => {
       setIsLoading(false);
       setIsSnackOpen(true);
       setSnackBar({
-        message: 'Error Occured while updating the data',
+        message: 'Error occurred while updating the data',
         severity: 'error'
       });
     }
@@ -220,11 +220,10 @@ const EditEventForm = ({ rowData, handleClose }) => {
         dialogHeading="There are warnings in the form submission"
         dialogContent="Do you want to proceed?"
         cancelText="Return to PromoGrid"
-        confirmText="Procced to Submit"
+        confirmText="Proceed to Submit"
         handleConfirm={handleDialogConfirm}
         handleClose={handleDialogClose}
       />
-
       {isSnackOpen && snackBar && (
         <InfoSnackBar
           isOpen={isSnackOpen}

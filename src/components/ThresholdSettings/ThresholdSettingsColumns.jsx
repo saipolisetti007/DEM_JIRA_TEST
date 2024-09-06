@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 const ThresholdSettingsColumns = () => {
-  const columns = useMemo(
+  return useMemo(
     () => [
       { accessorKey: 'subsector', header: 'Subsector' },
       { accessorKey: 'category', header: 'Category' },
@@ -24,6 +24,5 @@ const ThresholdSettingsColumns = () => {
     ],
     []
   );
-  return columns;
 };
 export default ThresholdSettingsColumns;

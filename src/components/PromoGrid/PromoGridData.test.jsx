@@ -335,7 +335,7 @@ describe('PromoGridData Component', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('snackbar-error')).toHaveTextContent(
-        'Error occured while updating the data! Please try again!!!'
+        'Error occurred while updating the data! Please try again!!!'
       );
     });
   });
@@ -418,7 +418,7 @@ describe('PromoGridData Component', () => {
 
   test('handles fail data Excel file download', async () => {
     downloadDataExcel.mockRejectedValueOnce(
-      new Error('Error occured while data downloading ! Please try again !!!')
+      new Error('Error occurred while data downloading ! Please try again !!!')
     );
 
     await act(async () => {
@@ -441,7 +441,7 @@ describe('PromoGridData Component', () => {
     await waitFor(() => {
       expect(downloadDataExcel).toHaveBeenCalled();
       expect(
-        screen.getByText('Error occured while data downloading ! Please try again !!!')
+        screen.getByText('Error occurred while data downloading ! Please try again !!!')
       ).toBeInTheDocument();
     });
   });

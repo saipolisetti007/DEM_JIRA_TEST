@@ -54,8 +54,7 @@ const Filters = ({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
   const renderLabel = (filterKey) => {
     const count = selectedFilters[filterKey]?.length || 0;
     const baseLabel = formatFilterKey(filterKey);
-    const label = count > 0 ? `${baseLabel} (${count})` : baseLabel;
-    return label;
+    return count > 0 ? `${baseLabel} (${count})` : baseLabel;
   };
 
   return (

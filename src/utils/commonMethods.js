@@ -5,10 +5,8 @@ const validateFloat = (value) => /^\d+(\.\d+)?$/.exec(String(value));
 
 const handleValidate = (validationType, isRequired, value) => {
   let errorMessage = '';
-  if (isRequired === 'required') {
-    if (!validateRequired(value) || value == null) {
-      errorMessage += 'Required.';
-    }
+  if (isRequired === 'required' && (!validateRequired(value) || value == null)) {
+    errorMessage += 'Required.';
   }
 
   switch (validationType) {

@@ -29,7 +29,7 @@ const PromoGridValidationColumns = ({
     setSelectedOptions((prev) => ({ ...prev, [rowIndex]: newState }));
   };
 
-  const columns = useMemo(
+  return useMemo(
     () => [
       {
         accessorKey: 'cpf_id',
@@ -870,7 +870,5 @@ const PromoGridValidationColumns = ({
       selectedOptions
     ]
   );
-
-  return columns;
 };
 export default PromoGridValidationColumns;
