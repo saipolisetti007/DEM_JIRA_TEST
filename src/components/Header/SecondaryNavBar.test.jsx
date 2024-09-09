@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen,fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import SecondaryNavBar from './SecondaryNavBar';
 import '@testing-library/jest-dom/extend-expect';
@@ -39,7 +39,7 @@ describe('SecondaryNavBar component', () => {
     expect(screen.getByText(/Event Promo Plan/i).closest('a')).not.toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
-    expect(screen.getByText(/CPF Forecast/i).closest('a')).not.toHaveClass(
+    expect(screen.getByText(/CPF Forecast/i).closest('div')).not.toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
   });
@@ -52,14 +52,14 @@ describe('SecondaryNavBar component', () => {
     expect(screen.getByText(/Dashboard/i).closest('a')).not.toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
-    expect(screen.getByText(/CPF Forecast/i).closest('a')).not.toHaveClass(
+    expect(screen.getByText(/CPF Forecast/i).closest('div')).not.toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
   });
 
   test('applies active class to the correct link when navigating to /cpf-forecast', () => {
     renderWithRouter(<SecondaryNavBar />, { route: '/cpf-forecast' });
-    expect(screen.getByText(/CPF Forecast/i).closest('a')).toHaveClass(
+    expect(screen.getByText(/CPF Forecast/i).closest('div')).toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
     expect(screen.getByText(/Dashboard/i).closest('a')).not.toHaveClass(
@@ -77,6 +77,9 @@ describe('SecondaryNavBar component', () => {
       'href',
       '/promo-grid'
     );
-    expect(screen.getByText(/CPF Forecast/i).closest('a')).toHaveAttribute('href', '/cpf-forecast');
+    const cpfButton = screen.getByText(/CPF Forecast/i);
+    expect(cpfButton).toBeInTheDocument();
+    fireEvent.click(cpfButton);
+    expect(screen.getByText('Forecast Review')).toBeInTheDocument();
   });
 });
