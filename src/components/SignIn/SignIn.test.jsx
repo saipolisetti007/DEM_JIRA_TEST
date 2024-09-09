@@ -16,7 +16,7 @@ describe('SignIn component', () => {
     });
     render(<SignIn />);
 
-    const textComponent = screen.getByText(/Sign in to Digital Event Manager/i);
+    const textComponent = screen.getByText(/Sign in to Customer Promo Forecaster/i);
     expect(textComponent).toBeInTheDocument();
 
     const signinButton = screen.getByRole('button', { name: /Sign In/i });

@@ -21,13 +21,13 @@ const SignIn = () => {
           <div className="flex-1 text-center p-8">
             <img src={LogoImage} alt="DEM Logo" width={100} height={100} className="m-auto" />
             <Typography component="h1" variant="h5">
-              Digital Event Manager
+              Customer Promo Forecaster
             </Typography>
           </div>
 
           <div className="flex-1 text-center">
             <Typography component="h2" variant="h2" color="primary" className="mb-2">
-              Sign in to Digital Event Manager
+              Sign in to Customer Promo Forecaster
             </Typography>
 
             <Typography component="p" variant="body1" className="mb-4">
