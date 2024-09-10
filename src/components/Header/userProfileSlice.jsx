@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getUserProfile } from '../../api/promoGridApi';
 
 export const fetchUserProfile = createAsyncThunk('api/fetchUserProfile', async () => {
-  const userData = await getUserProfile();
+  let userData = await getUserProfile();
   return userData;
 });
 
@@ -11,9 +11,14 @@ const userProfileSlice = createSlice({
   initialState: {
     userData: null,
     status: 'idle',
-    error: null
+    error: null,
+    customerId: null
   },
-  reducers: {},
+  reducers: {
+    setCustomerId: (state, action) => {
+      state.customerId = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserProfile.pending, (state) => {
@@ -22,6 +27,7 @@ const userProfileSlice = createSlice({
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.userData = action.payload;
+        state.customerId = action.payload.customers && Object.keys(action.payload.customers)[0];
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.status = 'failed';
@@ -29,5 +35,5 @@ const userProfileSlice = createSlice({
       });
   }
 });
-
+export const { setCustomerId } = userProfileSlice.actions;
 export default userProfileSlice.reducer;

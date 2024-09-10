@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Typography, Avatar, Menu, MenuItem } from '@mui/material';
+import {
+  Button,
+  Typography,
+  Avatar,
+  Menu,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel
+} from '@mui/material';
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
 import { loginRequest } from '../../auth/authConfig';
-import { useDispatch } from 'react-redux';
-import { fetchUserProfile } from './userProfileSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserProfile, setCustomerId } from './userProfileSlice';
 import { fetchCountries } from '../PromoGrid/countryCodeSlice';
 
 const NavBar = () => {
@@ -12,6 +21,10 @@ const NavBar = () => {
   const dispatch = useDispatch();
   const { instance } = useMsal();
   let activeAccount;
+
+  const { userData } = useSelector((state) => state.userProfileData);
+  const { customerId } = useSelector((state) => state.userProfileData);
+  const customers = userData?.customers;
 
   if (instance) {
     activeAccount = instance.getActiveAccount();
@@ -33,6 +46,9 @@ const NavBar = () => {
     setAnchorEl(null);
   };
 
+  const isSelectBoxDisabled = () => {
+    return Object.keys(customers).length === 1;
+  };
   const getInitials = (name) => {
     const names = name.split(' ');
     const initials = names
@@ -58,13 +74,46 @@ const NavBar = () => {
       setHasFetchData(false);
     }
   };
-
   return (
     <nav data-testid="navbar">
       <AuthenticatedTemplate>
         <div className="flex gap-2 items-center font-bold">
           {activeAccount ? (
             <>
+              {customerId && (
+                <FormControl sx={{ minWidth: 250 }} size="small">
+                  <InputLabel id="customer-id">
+                    <Typography variant="h5" component="h5">
+                      Customer Name
+                    </Typography>
+                  </InputLabel>
+                  <Select
+                    labelId="customer-id"
+                    id="customer-id"
+                    data-testid="customer-id"
+                    value={customerId}
+                    label="Customer Name"
+                    onChange={(e) => {
+                      dispatch(setCustomerId(e.target.value));
+                    }}
+                    disabled={isSelectBoxDisabled()}
+                    sx={{
+                      '& .MuiSelect-icon': {
+                        display: isSelectBoxDisabled() ? 'none' : 'block'
+                      },
+                      'div[role=combobox]': {
+                        WebkitTextFillColor: 'rgba(0, 0, 0, 1)'
+                      }
+                    }}>
+                    {customers &&
+                      Object.entries(customers).map(([key, value]) => (
+                        <MenuItem key={key} value={key}>
+                          {value}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              )}
               <Avatar
                 data-testid="user-avatar"
                 onClick={handleMenuOpen}

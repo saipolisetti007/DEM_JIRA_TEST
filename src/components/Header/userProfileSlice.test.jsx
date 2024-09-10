@@ -8,7 +8,8 @@ describe('userProfileSlice', () => {
   const initialState = {
     userData: null,
     status: 'idle',
-    error: null
+    error: null,
+    customerId: null
   };
 
   let store;
@@ -22,7 +23,12 @@ describe('userProfileSlice', () => {
   });
 
   it('should return userData when fetchUserProfile is fulfilled', async () => {
-    const userData = { name: 'John Doe', age: 30 };
+    const userData = {
+      name: 'John Doe',
+      age: 30,
+      customers: { 2000038335: 'Costco', 2000000000: 'Dummy Customer' }
+    };
+    const customerId = '2000000000';
     getUserProfile.mockResolvedValueOnce(userData);
 
     await store.dispatch(fetchUserProfile());
@@ -30,10 +36,15 @@ describe('userProfileSlice', () => {
     const state = store.getState().userProfileData;
     expect(state.status).toBe('succeeded');
     expect(state.userData).toEqual(userData);
+    expect(state.customerId).toEqual(customerId);
   });
 
   it('should set state.status to "succeeded" and update userData when fetchUserProfile is fulfilled', async () => {
-    const userData = { name: 'John Doe', age: 30 };
+    const userData = {
+      name: 'John Doe',
+      age: 30,
+      customers: { 2000038335: 'Costco', 2000000000: 'Dummy Customer' }
+    };
     getUserProfile.mockResolvedValueOnce(userData);
 
     await store.dispatch(fetchUserProfile());
