@@ -15,7 +15,7 @@ import {
   fetchThresholdFilters
 } from '../../api/cpfForecastApi';
 import ThresholdSettingsColumns from './ThresholdSettingsColumns';
-import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { Button } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RowActions from '../Common/RowActions';
 import AddEditFormDialog from '../Common/AddEditFormDialog';
@@ -24,7 +24,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import InfoSnackBar from '../Common/InfoSnackBar';
 import DialogComponent from '../Common/DialogComponent';
 import { useSelector } from 'react-redux';
-import DefaultPageLoader from '../Common/DefaultPageLoader';
 
 const ThresholdSettingsData = () => {
   const [data, setData] = useState([]);
@@ -40,10 +39,7 @@ const ThresholdSettingsData = () => {
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
   const [errorMessage, setErrorMessage] = useState('');
-  const { userData } = useSelector((state) => state.userProfileData);
-  const customerOptions = userData?.customers || [];
-  const [selectedCustomer, setSelectedCustomer] = useState(customerOptions[0]);
-
+  const { customerId } = useSelector((state) => state.userProfileData);
   const methods = useForm({ mode: 'onChange', defaultValues: rowData || {} });
   const { handleSubmit, control, formState } = methods;
 
@@ -57,17 +53,11 @@ const ThresholdSettingsData = () => {
   });
 
   useEffect(() => {
-    if (customerOptions.length > 0 && !selectedCustomer) {
-      setSelectedCustomer(customerOptions[0]);
-    }
-  }, [customerOptions, selectedCustomer]);
-
-  useEffect(() => {
-    if (selectedCustomer) {
-      fetchData(selectedCustomer);
+    if (customerId) {
+      fetchData(customerId);
     }
     fetchFilters();
-  }, [selectedCustomer]);
+  }, [customerId]);
 
   useEffect(() => {
     if (isMode === 'edit' && rowData) {
@@ -118,7 +108,7 @@ const ThresholdSettingsData = () => {
   const onSubmit = async (data) => {
     setIsSaving(true);
     try {
-      data.customer = selectedCustomer.toString();
+      data.customer = customerId;
       await cpfThresholdAdd(data);
       setIsSaving(false);
       setOpenDialog(false);
@@ -127,7 +117,7 @@ const ThresholdSettingsData = () => {
         message: 'New threshold rule has been added successfully',
         severity: 'success'
       });
-      await fetchData(selectedCustomer);
+      await fetchData(customerId);
     } catch (error) {
       setIsSaving(false);
       if (error.response?.data?.message) {
@@ -166,7 +156,7 @@ const ThresholdSettingsData = () => {
         message: 'Threshold rule has been changed successfully ',
         severity: 'success'
       });
-      await fetchData(selectedCustomer);
+      await fetchData(customerId);
     } catch (error) {
       setIsSaving(false);
       if (error.response?.data?.message) {
@@ -198,7 +188,7 @@ const ThresholdSettingsData = () => {
         message: 'Threshold rule has been deleted successfully',
         severity: 'success'
       });
-      await fetchData(selectedCustomer);
+      await fetchData(customerId);
     } catch {
       setIsSaving(false);
       setIsSnackOpen(true);
@@ -217,12 +207,6 @@ const ThresholdSettingsData = () => {
   const handleSnackbar = () => {
     setIsSnackOpen(false);
     setSnackBar(null);
-  };
-
-  const handleChange = (event) => {
-    const { value } = event.target;
-    setSelectedCustomer(value);
-    fetchData(value);
   };
 
   const ThresholdTable = useMaterialReactTable({
@@ -311,30 +295,11 @@ const ThresholdSettingsData = () => {
     }
   });
 
-  if (!selectedCustomer) {
-    return <DefaultPageLoader />;
-  }
-
   return (
     <>
       <PageSection>
         <DefaultPageHeader title="Threshold Settings" subtitle="Manage CPF parameters" />
         <div className="flex justify-end items-baseline gap-2 mb-4">
-          <FormControl sx={{ minWidth: 250 }} size="small">
-            <InputLabel id="customer-select-label">Select Customer</InputLabel>
-            <Select
-              labelId="customer-select-label"
-              id="customer-select"
-              value={selectedCustomer}
-              label="Select Customer"
-              onChange={handleChange}>
-              {customerOptions?.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
           <Button
             variant="outlined"
             color="success"

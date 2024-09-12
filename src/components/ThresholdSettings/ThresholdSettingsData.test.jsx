@@ -20,9 +20,7 @@ jest.mock('../../api/cpfForecastApi');
 // Mock store
 const initialState = {
   userProfileData: {
-    userData: {
-      customers: ['Customer 1', 'Customer 2']
-    }
+    customerId: '2000038335'
   }
 };
 
@@ -154,7 +152,7 @@ describe('ThresholdSettingsData Component', () => {
       )
     );
 
-    expect(cpfThresholdList).toHaveBeenCalledWith('Customer 1');
+    expect(cpfThresholdList).toHaveBeenCalledWith('2000038335');
   });
 
   test('handle error fetches data', async () => {
@@ -167,37 +165,7 @@ describe('ThresholdSettingsData Component', () => {
       )
     );
 
-    expect(cpfThresholdList).toHaveBeenCalledWith('Customer 1');
-  });
-
-  test('should update customer options and fetches data', async () => {
-    await act(async () =>
-      render(
-        <Provider store={store}>
-          <ThresholdSettingsData />
-        </Provider>
-      )
-    );
-    expect(screen.getByText('Customer 1')).toBeInTheDocument();
-
-    await act(async () => {
-      const selectCustomer = screen.getByRole('combobox', {
-        name: /Select Customer/i
-      });
-      fireEvent.mouseDown(selectCustomer);
-    });
-
-    await waitFor(() => {
-      const selectCustomerOptions = screen.getByRole('listbox', {
-        name: /Select Customer/i
-      });
-      expect(selectCustomerOptions).toBeInTheDocument();
-      fireEvent.click(within(selectCustomerOptions).getByText('Customer 2'));
-    });
-
-    await waitFor(() => {
-      expect(cpfThresholdList).toHaveBeenCalledWith('Customer 2');
-    });
+    expect(cpfThresholdList).toHaveBeenCalledWith('2000038335');
   });
 
   test('opens Add Rule dialog', async () => {
