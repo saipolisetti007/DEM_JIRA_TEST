@@ -12,6 +12,7 @@ import ConfirmationDialog from './ConfirmationDialog';
 import { reduceFilters, mapFilterParams } from '../../utils/filterUtils';
 import createDebouncedFetchFilters from '../../utils/debounceUtils';
 import DefaultPageLoader from '../Common/DefaultPageLoader';
+import { useSearchParams } from 'react-router-dom';
 
 const CPFForecastMain = () => {
   const [cpfData, setCpfData] = useState([]);
@@ -26,6 +27,8 @@ const CPFForecastMain = () => {
   const [pendingUnitChange, setPendingUnitChange] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [filtersUpdated, setFiltersUpdated] = useState(false);
+  const [searchParams] = useSearchParams();
+  const status = searchParams.get('status');
 
   const [filterOptions, setFilterOptions] = useState({
     subsector: [],
@@ -37,7 +40,8 @@ const CPFForecastMain = () => {
     customerItemNumber: [],
     customerId: [],
     eventType: [],
-    eventSubtype: []
+    eventSubtype: [],
+    status: []
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
@@ -50,7 +54,8 @@ const CPFForecastMain = () => {
     customerItemNumber: [],
     eventType: [],
     eventSubtype: [],
-    customerId: []
+    customerId: [],
+    status: []
   });
 
   const fetchFilters = async (filters = {}) => {
@@ -68,12 +73,14 @@ const CPFForecastMain = () => {
         customerItemNumber: response?.customer_item_number || prevOptions.customerItemNumber,
         eventType: response?.event_type || prevOptions.eventType,
         eventSubtype: response?.event_subtype || prevOptions.eventSubtype,
-        customerId: response?.customer_id || prevOptions.customerId
+        customerId: response?.customer_id || prevOptions.customerId,
+        status: response?.status || prevOptions.status
       }));
       setIsLoading(false);
       setSelectedFilters((prevFilters) => ({
         ...prevFilters,
-        customerId: [response?.customer_id[0]]
+        customerId: [response?.customer_id[0]],
+        status: status ? [status] : []
       }));
       setFiltersUpdated(true);
     } catch (error) {
@@ -225,6 +232,9 @@ const CPFForecastMain = () => {
                     onAccordionChange={() => handleAccordionChange(index)}
                     selectedFilters={selectedFilters}
                     cpfEnabled={cpfEnabled}
+                    pendingCount={item.pending_approvals_count}
+                    missingCount={item.missing_count}
+                    warningCount={item.warning_count}
                   />
                 ))
               )}

@@ -25,6 +25,7 @@ export const mapFilterParams = (filterParams) => {
     prodName: filterParams.prodName,
     eventType: filterParams.eventType,
     eventSubtype: filterParams.eventSubtype,
-    customerId: filterParams.customerId
+    customerId: filterParams.customerId,
+    status: filterParams.status
   };
 };

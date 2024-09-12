@@ -28,11 +28,15 @@ describe('CPFForecast', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('Pending Approval : ...')).toBeInTheDocument();
   });
 
   test('should fetch and display data correctly', async () => {
-    cpfPendingCount.mockResolvedValueOnce({ pending_approvals_count: 5 });
+    cpfPendingCount.mockResolvedValueOnce({
+      pending_approvals_count: 5,
+      missing_count: 3,
+      warning_count: 2
+    });
 
     render(
       <MemoryRouter>
@@ -40,7 +44,11 @@ describe('CPFForecast', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(screen.getByText('Pending Approval: 5')).toBeInTheDocument());
+    await waitFor(() => {
+      expect(screen.getByText('Pending Approval : 5')).toBeInTheDocument();
+      expect(screen.getByText('Forecast Warning : 2')).toBeInTheDocument();
+      expect(screen.getByText('Forecast Missing : 3')).toBeInTheDocument();
+    });
   });
 
   test('should handle error state correctly', async () => {
@@ -52,8 +60,7 @@ describe('CPFForecast', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(screen.getByText('Loading...')).toBeInTheDocument());
-    // You can add more assertions here based on how you handle the error state in your component
+    await waitFor(() => expect(screen.getByText('Pending Approval : ...')).toBeInTheDocument());
   });
 
   test('should render NavigationButton components correctly', () => {
@@ -62,8 +69,9 @@ describe('CPFForecast', () => {
         <CPFForecast />
       </MemoryRouter>
     );
-
-    expect(screen.getByText('See More')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Loading...' })).toBeInTheDocument();
+    // Check if the link with the correct URL and text is present in the document
+    const linkElement = screen.getByRole('link', { name: 'Forecast Missing : ...' });
+    expect(linkElement).toBeInTheDocument();
+    expect(linkElement).toHaveAttribute('href', '/cpf-forecast?status=Forecast Missing');
   });
 });

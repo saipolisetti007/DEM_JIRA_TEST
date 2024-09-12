@@ -33,7 +33,8 @@ export const cpfGetForecast = async (filters = {}) => {
     customerItemNumber: filters.customerItemNumber || [],
     eventType: filters.eventType || [],
     eventSubtype: filters.eventSubtype || [],
-    customerId: filters.customerId || []
+    customerId: filters.customerId || [],
+    status: filters.status || []
   };
 
   return await performApiRequest(url, 'POST', body);

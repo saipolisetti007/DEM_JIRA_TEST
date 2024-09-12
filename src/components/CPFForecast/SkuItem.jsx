@@ -20,6 +20,9 @@ import NewForecastColumns from './NewForecastColumns';
 import ConfirmationDialog from './ConfirmationDialog';
 import PreviousForecastColumns from './PreviousForecastColumns';
 
+import StatusBadges from './StatusBadges';
+import CellCheckboxComponent from './CellCheckboxComponent';
+
 const SkuItem = ({
   sku,
   prod_name,
@@ -30,7 +33,10 @@ const SkuItem = ({
   index,
   selectedFilters,
   onAccordionChange,
-  cpfEnabled
+  cpfEnabled,
+  pendingCount,
+  missingCount,
+  warningCount
 }) => {
   const [data, setData] = useState([]);
   const [lastSelectedSku, setLastSelectedSku] = useState(null);
@@ -53,7 +59,8 @@ const SkuItem = ({
         sku: sku,
         customerId: selectedFilters.customerId[0],
         eventType: selectedFilters.eventType,
-        eventSubtype: selectedFilters.eventSubtype
+        eventSubtype: selectedFilters.eventSubtype,
+        status: selectedFilters.status
       };
       const response = await cpfSkuForecast(requestbody);
       setIsLoading(false);
@@ -245,6 +252,16 @@ const SkuItem = ({
     }
   });
 
+  // Define the function to handle checkbox change
+  const handleCheckboxChange = (event, row, setRowSelection) => {
+    const isChecked = event.target.checked;
+    // Update the row selection state based on the checkbox state
+    setRowSelection((prevSelection) => ({
+      ...prevSelection,
+      [row.id]: isChecked
+    }));
+  };
+
   const NewForecastTable = useMaterialReactTable({
     columns: NewForecastColumns({
       selectedUnit,
@@ -315,7 +332,15 @@ const SkuItem = ({
             backgroundColor: theme.palette.primary.dark,
             color: theme.palette.primary.contrastText
           })
-        }
+        },
+        Cell: ({ row }) => (
+          <CellCheckboxComponent
+            row={row}
+            rowSelection={rowSelection}
+            handleCheckboxChange={handleCheckboxChange}
+            setRowSelection={setRowSelection}
+          />
+        )
       }
     },
     state: {
@@ -350,6 +375,11 @@ const SkuItem = ({
                   ({prod_name})
                 </Typography>
               </Typography>
+              <StatusBadges
+                pendingCount={pendingCount}
+                warningCount={warningCount}
+                missingCount={missingCount}
+              />
             </div>
             <Button
               variant="outlined"

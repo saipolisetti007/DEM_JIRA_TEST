@@ -1,10 +1,17 @@
 import React from 'react';
-import { render, screen, act, waitFor, fireEvent, within } from '@testing-library/react';
+import { render, screen, act, waitFor, fireEvent } from '@testing-library/react';
 import CPFForecastMain from './CPFForecastMain';
 import { cpfGetForecast, cpfFilters, cpfSkuForecast } from '../../api/cpfForecastApi';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter, useParams } from 'react-router-dom';
 
 jest.mock('../../api/cpfForecastApi');
+
+// Mock useParams
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: jest.fn()
+}));
 
 const mockFilters = {
   subsector: ['Skin and Personal Care'],
@@ -12,7 +19,8 @@ const mockFilters = {
   brand: ['Cascade'],
   brandForm: ['brandForm4'],
   sku: ['sku4'],
-  customer_id: ['2000038335']
+  customer_id: ['2000038335'],
+  status: ['Forecast Missing']
 };
 
 const mockData = {
@@ -49,6 +57,7 @@ describe('CPFForecastMain', () => {
     cpfFilters.mockResolvedValue(mockFilters);
     cpfGetForecast.mockResolvedValue(mockData);
     cpfSkuForecast.mockResolvedValue(cpfData);
+    useParams.mockReturnValue({ status: 'Pending approval' });
   });
 
   afterEach(() => {
@@ -56,11 +65,23 @@ describe('CPFForecastMain', () => {
   });
 
   test('should render without crashing', async () => {
-    await act(async () => render(<CPFForecastMain />));
+    await act(async () =>
+      render(
+        <MemoryRouter>
+          <CPFForecastMain />
+        </MemoryRouter>
+      )
+    );
   });
 
   test('should fetch and render filters', async () => {
-    await act(async () => render(<CPFForecastMain />));
+    await act(async () =>
+      render(
+        <MemoryRouter>
+          <CPFForecastMain />
+        </MemoryRouter>
+      )
+    );
     await waitFor(() => {
       expect(cpfFilters).toHaveBeenCalled();
     });
@@ -71,7 +92,13 @@ describe('CPFForecastMain', () => {
 
   test('should handle filter fetch error', async () => {
     cpfFilters.mockRejectedValueOnce(new Error('Network Error'));
-    await act(async () => render(<CPFForecastMain />));
+    await act(async () =>
+      render(
+        <MemoryRouter>
+          <CPFForecastMain />
+        </MemoryRouter>
+      )
+    );
     await waitFor(() => {
       expect(cpfFilters).toHaveBeenCalled();
     });
@@ -82,18 +109,30 @@ describe('CPFForecastMain', () => {
 
   test('should fetch and render data', async () => {
     cpfGetForecast.mockResolvedValue(mockData);
-    await act(async () => render(<CPFForecastMain />));
+    await act(async () =>
+      render(
+        <MemoryRouter>
+          <CPFForecastMain />
+        </MemoryRouter>
+      )
+    );
     await waitFor(() => {
       expect(cpfGetForecast).toHaveBeenCalled();
     });
     await waitFor(() => {
-      const skuElement = screen.getByText((content, element) => content.includes('sku4'));
+      const skuElement = screen.getByText((content) => content.includes('sku4'));
       expect(skuElement).toBeInTheDocument();
     });
   });
 
   test('update data based on filter change and render data', async () => {
-    await act(async () => render(<CPFForecastMain />));
+    await act(async () =>
+      render(
+        <MemoryRouter>
+          <CPFForecastMain />
+        </MemoryRouter>
+      )
+    );
     await waitFor(() => {
       expect(cpfFilters).toHaveBeenCalled();
     });
@@ -118,7 +157,13 @@ describe('CPFForecastMain', () => {
 
   test('should handle fetch error', async () => {
     cpfGetForecast.mockRejectedValueOnce(new Error('Network Error'));
-    await act(async () => render(<CPFForecastMain />));
+    await act(async () =>
+      render(
+        <MemoryRouter>
+          <CPFForecastMain />
+        </MemoryRouter>
+      )
+    );
     await waitFor(() => {
       expect(cpfGetForecast).toHaveBeenCalled();
     });
@@ -130,7 +175,13 @@ describe('CPFForecastMain', () => {
   test('handles accordion change', async () => {
     cpfGetForecast.mockResolvedValue(mockData);
     cpfSkuForecast.mockResolvedValue(cpfData);
-    await act(async () => render(<CPFForecastMain />));
+    await act(async () =>
+      render(
+        <MemoryRouter>
+          <CPFForecastMain />
+        </MemoryRouter>
+      )
+    );
     await waitFor(() => {
       expect(cpfFilters).toHaveBeenCalled();
     });
@@ -147,17 +198,13 @@ describe('CPFForecastMain', () => {
   });
 
   test('handles empty filter values including "All"', async () => {
-    const filters = {
-      subsector: ['All'],
-      category: [],
-      brand: ['All'],
-      brandForm: [],
-      sku: [],
-      prodName: [],
-      customerItemNumber: []
-    };
-
-    await act(async () => render(<CPFForecastMain />));
+    await act(async () =>
+      render(
+        <MemoryRouter>
+          <CPFForecastMain />
+        </MemoryRouter>
+      )
+    );
     await waitFor(() => {
       expect(cpfFilters).toHaveBeenCalled();
     });
@@ -181,7 +228,13 @@ describe('CPFForecastMain', () => {
   });
 
   test('handles unit button click and unit change', async () => {
-    await act(async () => render(<CPFForecastMain />));
+    await act(async () =>
+      render(
+        <MemoryRouter>
+          <CPFForecastMain />
+        </MemoryRouter>
+      )
+    );
     await waitFor(() => {
       expect(cpfFilters).toHaveBeenCalled();
     });
@@ -198,27 +251,18 @@ describe('CPFForecastMain', () => {
     cpfGetForecast.mockResolvedValue(mockData);
     cpfSkuForecast.mockResolvedValue(cpfData);
 
-    await act(async () => render(<CPFForecastMain />));
+    await act(async () =>
+      render(
+        <MemoryRouter>
+          <CPFForecastMain />
+        </MemoryRouter>
+      )
+    );
     await waitFor(() => {
       expect(cpfFilters).toHaveBeenCalled();
     });
     await waitFor(() => {
       expect(cpfGetForecast).toHaveBeenCalled();
     });
-
-    // await waitFor(() => {
-    //   const accordionItem = screen.getByTestId('accordion-item-0');
-    //   fireEvent.click(accordionItem);
-    // });
-    // await waitFor(() => {
-    //   const tableData = screen.getAllByRole('table');
-    //   const inputDiv = within(tableData).getByTestId('editedUnit');
-    //   const input = within(inputDiv).getByPlaceholderText('Edited Units');
-    //   fireEvent.change(input, { target: { value: '3000' } });
-    //   expect(input).toHaveValue(3000);
-    // });
-    // await act(async () => {
-    //   fireEvent.click(screen.getByText('msu'));
-    // });
   });
 });

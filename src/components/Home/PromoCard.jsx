@@ -6,7 +6,7 @@ const PromoCard = ({ backgroundImage, backgroundColor, children }) => {
     <Box
       sx={{
         position: 'relative',
-        width: '49%',
+        width: '32.5%',
         height: '100%',
         minHeight: '250px',
         backgroundImage: `url(${backgroundImage})`,

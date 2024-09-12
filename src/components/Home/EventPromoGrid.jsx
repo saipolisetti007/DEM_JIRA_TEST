@@ -1,9 +1,9 @@
 import React from 'react';
 import BackgroundLaptop from '../../assets/dashboard/bg_laptop.svg';
 import EVENT_GROUP_ICON from '../../assets/dashboard/group.svg';
-import { Typography } from '@mui/material';
-import NavigationButton from './NavigationButton';
+import { Button, Typography } from '@mui/material';
 import PromoCard from './PromoCard';
+import { Link } from 'react-router-dom';
 
 const EventPromoGrid = () => {
   return (
@@ -16,9 +16,21 @@ const EventPromoGrid = () => {
         <Typography variant="subtitle1">Manage events in your promo grid</Typography>
       </div>
       <div className="text-right mx-8">
-        <NavigationButton navUrl="/promo-grid" color={'white'} textColor={'primary'}>
+        <Button
+          component={Link}
+          to="/promo-grid"
+          variant="outlined"
+          color="info"
+          size="small"
+          sx={{
+            backgroundColor: '#fff',
+            paddingX: 5,
+            '&:hover': {
+              backgroundColor: '#f1f1f1'
+            }
+          }}>
           See More
-        </NavigationButton>
+        </Button>
       </div>
     </PromoCard>
   );

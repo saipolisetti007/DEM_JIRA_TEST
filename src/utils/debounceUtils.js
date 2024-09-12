@@ -67,6 +67,12 @@ const createDebouncedFetchFilters = (
               ? Array.from(new Set([...prevOptions.active, ...response.active]))
               : response.active || [];
         }
+        if (!excludeKeys.includes('status')) {
+          newOptions.status =
+            updatedFilters.status?.length && Array.isArray(response.status)
+              ? Array.from(new Set([...prevOptions.status, ...response.status]))
+              : response.status || [];
+        }
 
         return newOptions;
       });

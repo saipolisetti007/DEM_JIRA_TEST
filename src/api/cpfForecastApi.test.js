@@ -96,7 +96,8 @@ describe('cpfForecastApi', () => {
       customerItemNumber: [],
       eventType: [],
       eventSubtype: [],
-      customerId: []
+      customerId: [],
+      status: []
     });
   });
 
@@ -105,7 +106,8 @@ describe('cpfForecastApi', () => {
       brand: ['Dawn'],
       prodName: ['Product1'],
       customerItemNumber: ['123456'],
-      customerId: ['123']
+      customerId: ['123'],
+      status: ['Pending']
     }; // Updated keys
     const data = {
       sku: '100123456'
@@ -123,7 +125,8 @@ describe('cpfForecastApi', () => {
       customerItemNumber: ['123456'],
       eventType: [],
       eventSubtype: [],
-      customerId: ['123']
+      customerId: ['123'],
+      status: ['Pending']
     });
   });
 

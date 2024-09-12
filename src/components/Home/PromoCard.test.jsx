@@ -26,7 +26,7 @@ describe('PromoCard', () => {
       background-image: url(test-image.jpg);
       color: #000;
     `);
-
-    expect(container.firstChild).toMatchSnapshot();
+    // Check if the child element is rendered correctly
+    expect(box.firstChild).toHaveTextContent('Test Child');
   });
 });

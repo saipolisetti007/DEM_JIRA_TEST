@@ -11,15 +11,16 @@ const getColorFromType = (type) => {
 };
 
 const EventAvatar = ({ event }) => {
-  const firstLetter = event.event_type.charAt(0).toUpperCase();
-  const color = getColorFromType(event.event_type);
+  const eventType = event.event_type ? event.event_type : 'NA';
+  const firstLetter = eventType.charAt(0).toUpperCase();
+  const color = getColorFromType(eventType);
   return (
     <Tooltip
       placement="top"
       arrow
       title={
         <>
-          <div>{`Event Type: ${event.event_type}`}</div>
+          <div>{`Event Type: ${eventType}`}</div>
           <div>{`Event Subtype: ${event.event_subtype}`}</div>
           <div>{`Event store in window:`}</div>
           <div>
@@ -27,9 +28,7 @@ const EventAvatar = ({ event }) => {
           </div>
         </>
       }>
-      <Avatar
-        sx={{ bgcolor: color, width: 20, height: 20 }}
-        data-testid={`avatar-${event.event_type}`}>
+      <Avatar sx={{ bgcolor: color, width: 20, height: 20 }} data-testid={`avatar-${eventType}`}>
         <Typography component="span" variant="h6">
           {firstLetter}
         </Typography>

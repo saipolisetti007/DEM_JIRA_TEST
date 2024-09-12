@@ -40,7 +40,8 @@ describe('SkuItem', () => {
   const selectedFilters = {
     customerId: ['123'],
     eventType: ['text'],
-    eventSubtype: ['text']
+    eventSubtype: ['text'],
+    status: ['text']
   };
 
   const sku = 'test';

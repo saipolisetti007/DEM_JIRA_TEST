@@ -4,12 +4,6 @@ import '@testing-library/jest-dom/extend-expect';
 import { MemoryRouter } from 'react-router-dom';
 import EventPromoGrid from './EventPromoGrid';
 
-jest.mock('./NavigationButton', () => (props) => (
-  <div data-testid="navigation-button" {...props}>
-    {props.children}
-  </div>
-));
-
 describe('EventPromoGrid', () => {
   test('should render the component correctly', () => {
     render(
@@ -45,18 +39,15 @@ describe('EventPromoGrid', () => {
     expect(screen.getByText('Manage events in your promo grid')).toBeInTheDocument();
   });
 
-  test('should render NavigationButton component with correct props', () => {
+  test('should render Button component with correct props', () => {
     render(
       <MemoryRouter>
         <EventPromoGrid />
       </MemoryRouter>
     );
 
-    const navigationButton = screen.getByTestId('navigation-button');
-    expect(navigationButton).toBeInTheDocument();
-    expect(navigationButton).toHaveTextContent('See More');
-    expect(navigationButton).toHaveAttribute('navUrl', '/promo-grid');
-    expect(navigationButton).toHaveAttribute('color', 'white');
-    expect(navigationButton).toHaveAttribute('textColor', 'primary');
+    const linkElement = screen.getByRole('link', { name: 'See More' });
+    expect(linkElement).toBeInTheDocument();
+    expect(linkElement).toHaveAttribute('href', '/promo-grid');
   });
 });
