@@ -422,7 +422,11 @@ describe('Add Event Form Component', () => {
             {
               field: 'Event in store end date',
               warning: 'event end date should be within 365 days of start date'
-            }
+            },
+            {
+              field: 'customer_item_number',
+              warning: 'Customer and Proxy Like Item Number not found. Cold Start Logic will be used'
+            },
           ]
         }
       }
@@ -547,6 +551,14 @@ describe('Add Event Form Component', () => {
             {
               field: 'Event in store end date',
               warning: 'event end date should be within 365 days of start date'
+            },
+            {
+              field: 'customer_item_number',
+              warning: 'Customer and Proxy Like Item Number not found. Cold Start Logic will be used'
+            },
+            {
+              field: 'proxy_like_item_number',
+              warning: 'Customer and Proxy Like Item Number not found. Cold Start Logic will be used'
             }
           ]
         }

@@ -25,7 +25,7 @@ const AddEventForm = ({ handleClose, customerId }) => {
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
   const methods = useForm({ mode: 'onChange' });
   const { handleSubmit, trigger, control, setError, formState } = methods;
-
+  const [warningMessage, setWarningMessage] = useState('');
   const { settings } = useSelector((state) => state.settingsData);
 
   const visibleSteps = useMemo(() => {
@@ -156,6 +156,21 @@ const AddEventForm = ({ handleClose, customerId }) => {
       } else if (Object.keys(transformedWarnings).length > 0) {
         handleFieldMessages(transformedWarnings, 'warning');
         setDialogOpen(true);
+        let warningMsg = ``;
+        if (
+          Object.hasOwn(transformedWarnings, 'customer_item_number') &&
+          Object.hasOwn(transformedWarnings, 'proxy_like_item_number')
+        ) {
+          warningMsg += `<strong>Customer item and Proxy like item not found in modelling data.</strong>
+          <h5>Cold start logic will be used for forecasting.</h5>
+          `;
+        } else if (Object.hasOwn(transformedWarnings, 'customer_item_number')) {
+          warningMsg += `<strong>Customer item not found in modelling data.</strong>
+          <h5>Proxy like item will be used for forecasting.</h5>
+          `;
+        }
+        warningMsg += `<h5>Are you sure you want to save this data?</h5>`;
+        setWarningMessage(warningMsg);
       }
     }
   };
@@ -266,7 +281,7 @@ const AddEventForm = ({ handleClose, customerId }) => {
         open={dialogOpen}
         title="Confirm submission"
         dialogHeading="There are warnings in the form submission"
-        dialogContent="Do you want to proceed?"
+        dialogContent={warningMessage}
         cancelText="Return to PromoGrid"
         confirmText="Proceed to Submit"
         handleConfirm={handleDialogConfirm}

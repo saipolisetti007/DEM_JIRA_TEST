@@ -335,4 +335,38 @@ describe('Edit Event Form Component', () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  test('customer item number not found warning', async () => {
+    const warningResponse = {
+      response: {
+        data: {
+          warnings: [{
+            field: 'customer_item_number',
+            warning: 'Customer and Proxy Like Item Number not found. Cold Start Logic will be used'
+          }]
+        }
+      }
+    };
+    updateRowData.mockRejectedValueOnce(warningResponse);
+    const handleClose = jest.fn();
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <EditEventForm rowData={mockData} handleClose={handleClose} />
+        </Provider>
+      );
+    });
+
+    fireEvent.click(screen.getByText('Event Additional Data'));
+    const accordionDiv = screen.getByTestId('panel2');
+    expect(accordionDiv).toHaveAttribute('aria-expanded', 'true');
+    const customer_item_number = screen.getByRole('textbox', {
+      name: /Customer item number/i
+    });
+    fireEvent.change(customer_item_number, {
+      target: { value: '6609610' }
+    });
+    
+    fireEvent.click(screen.getByText('Save changes'));
+  });
 });

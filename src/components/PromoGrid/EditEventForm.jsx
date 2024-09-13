@@ -74,7 +74,7 @@ const EditEventForm = ({ rowData, handleClose }) => {
   const methods = useForm({ mode: 'onChange', defaultValues: formattedData });
   const { handleSubmit, control, setError, formState } = methods;
   const [expanded, setExpanded] = React.useState('panel1');
-
+  const [warningMessage, setWarningMessage] = useState('');
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
@@ -132,10 +132,26 @@ const EditEventForm = ({ rowData, handleClose }) => {
           severity: 'error'
         });
       } else if (Object.keys(transformedWarnings).length > 0) {
+        console.log('warnings', transformedWarnings);
         for (const field in transformedWarnings) {
           setError(field, { type: 'warning', message: transformedWarnings[field] });
         }
         setDialogOpen(true);
+        let warningMsg = ``;
+        if (
+          Object.hasOwn(transformedWarnings, 'customer_item_number') &&
+          Object.hasOwn(transformedWarnings, 'proxy_like_item_number')
+        ) {
+          warningMsg += `<strong>Customer item and Proxy like item not found in modelling data.</strong>
+          <h5>Cold start logic will be used for forecasting.</h5>
+          `;
+        } else if (Object.hasOwn(transformedWarnings, 'customer_item_number')) {
+          warningMsg += `<strong>Customer item not found in modelling data.</strong>
+          <h5>Proxy like item will be used for forecasting.</h5>
+          `;
+        }
+        warningMsg += `<h5>Are you sure you want to save this data?</h5>`;
+        setWarningMessage(warningMsg);
       }
     }
   };
@@ -218,7 +234,7 @@ const EditEventForm = ({ rowData, handleClose }) => {
         open={dialogOpen}
         title="Confirm submission"
         dialogHeading="There are warnings in the form submission"
-        dialogContent="Do you want to proceed?"
+        dialogContent={warningMessage}
         cancelText="Return to PromoGrid"
         confirmText="Proceed to Submit"
         handleConfirm={handleDialogConfirm}

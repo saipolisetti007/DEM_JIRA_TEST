@@ -34,6 +34,7 @@ const PromoGridValidationTable = () => {
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
   const [selectedCustomer, setSelectedCustomer] = useState();
+  const [warningMessage, setWarningMessage] = useState(``);
   // State for the dialog
   const [dialogOpen, setDialogOpen] = useState(false);
   const [navigateTarget, setNavigateTarget] = useState(null);
@@ -120,12 +121,49 @@ const PromoGridValidationTable = () => {
         // Assuming response contains updated rows with validation warnings
         const warnings = response.rows.map((row) => row.validation_warning || {});
         const hasWarnings = warnings.some((warning) => Object.keys(warning).length > 0);
-
         if (hasWarnings) {
           setUpdatedData(response);
           setValidationErrors(warnings);
           setValidationWarnings(warnings);
           setWarningDialogOpen(true);
+          let cpfId1 = [];
+          let cpfId2 = [];
+          response.rows.forEach((row) => {
+            let warning = row.validation_warning;
+            if (
+              Object.hasOwn(warning, 'customer_item_number') &&
+              Object.hasOwn(warning, 'proxy_like_item_number')
+            ) {
+              cpfId1.push(row.cpf_id);
+            } else if (Object.hasOwn(warning, 'customer_item_number')) {
+              cpfId2.push(row.cpf_id);
+            }
+          });
+          let warningMsg = ``;
+          if (cpfId2.length > 0) {
+            let eventIds =
+              cpfId2.length > 5
+                ? `${cpfId2.slice(0, 5).join(',')} +${cpfId2.length - 5} more`
+                : cpfId2.join(',');
+            warningMsg = `<strong>Customer item not found in modelling data for Event IDs:
+                  ${eventIds}</strong>
+                  <h5>Proxy like item will be used for forecasting.</h5>
+                  `;
+          }
+          if (cpfId1.length > 0) {
+            let eventIds =
+              cpfId1.length > 5
+                ? `${cpfId1.slice(0, 5).join(',')} +${cpfId1.length - 5} more`
+                : cpfId1.join(',');
+            warningMsg =
+              warningMsg +
+              `<strong>Customer item and Proxy like item not found in modelling data for Event IDs:
+               ${eventIds}</strong>
+               <h5>Cold start logic will be used for forecasting.</h5>
+               `;
+          }
+          warningMsg = warningMsg + `<h5>Do you want to proceed?</h5>`;
+          setWarningMessage(warningMsg);
         } else {
           setSubmitDisabled(false);
           setIsSnackOpen(true);
@@ -296,7 +334,7 @@ const PromoGridValidationTable = () => {
         open={warningDialogOpen}
         title="Confirm submission"
         dialogHeading="There are warnings in the form submission"
-        dialogContent="Do you want to proceed?"
+        dialogContent={warningMessage}
         cancelText="Return to PromoGrid"
         confirmText="Proceed to Submit"
         handleConfirm={handleSubmit}

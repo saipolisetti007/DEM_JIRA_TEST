@@ -41,7 +41,10 @@ const DialogComponent = ({
         <DialogContentText variant="h5" sx={{ mb: 1 }}>
           {dialogHeading}
         </DialogContentText>
-        <DialogContentText>{dialogContent}</DialogContentText>
+        <DialogContentText
+          style={{ whiteSpace: 'pre-line' }}
+          dangerouslySetInnerHTML={{ __html: dialogContent }}
+        />
       </DialogContent>
       <DialogActions sx={{ mb: 1 }}>
         <Button color="primary" variant="outlined" onClick={handleClose}>
