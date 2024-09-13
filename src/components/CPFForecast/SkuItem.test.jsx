@@ -293,6 +293,7 @@ describe('SkuItem', () => {
     render(
       <SkuItem
         sku={sku}
+        index={0}
         prod_name={prod_name}
         selectedUnit={selectedUnit}
         editedValues={editedValues}

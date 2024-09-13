@@ -77,7 +77,7 @@ export const downloadDataExcel = async (filters = {}) => {
 export const downloadSelectedDataExcel = async (selectedEventIds, customerId) => {
   const body = {
     events: selectedEventIds,
-    customerId: customerId
+    customerId: [customerId]
   };
 
   const endpoint = 'promo/selected-data/download/';

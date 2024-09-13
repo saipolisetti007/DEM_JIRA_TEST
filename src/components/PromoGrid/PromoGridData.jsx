@@ -64,6 +64,7 @@ const PromoGridData = () => {
     pageIndex: 0,
     pageSize: 10
   });
+  const { customerId } = useSelector((state) => state.userProfileData);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [filterOptions, setFilterOptions] = useState({
     subsector: [],
@@ -73,7 +74,6 @@ const PromoGridData = () => {
     sku: [],
     prodName: [],
     customerItemNumber: [],
-    customerId: [],
     custFlag: [],
     active: ['Active']
   });
@@ -87,7 +87,6 @@ const PromoGridData = () => {
     prodName: [],
     customerItemNumber: [],
     custFlag: [],
-    customerId: [],
     active: ['Active']
   });
 
@@ -97,17 +96,18 @@ const PromoGridData = () => {
   }, [dispatch]);
 
   const { userData } = useSelector((state) => state.userProfileData);
-  const customersId = selectedFilters.customerId;
+  //const customersId = selectedFilters.customerId;
   const region = userData?.region;
 
   useEffect(() => {
-    if (customersId && customersId.length > 0) {
-      dispatch(fetchEvents(customersId[0]));
+    if (customerId) {
+      dispatch(fetchEvents(customerId));
     }
-  }, [customersId]);
+  }, [customerId]);
 
   const fetchFilters = async (filters = {}) => {
     try {
+      filters.customerId = [customerId];
       const response = await promoGridFilters(filters);
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
@@ -119,7 +119,6 @@ const PromoGridData = () => {
         prodName: response?.prod_name || prevOptions.prodName,
         customerItemNumber: response?.customer_item_number || prevOptions.customerItemNumber,
         custFlag: response?.cust_flag || prevOptions.custFlag,
-        customerId: response?.customer_id || prevOptions.customerId,
         active: response?.active || prevOptions.active
       }));
       setIsDataLoading(false);
@@ -127,7 +126,7 @@ const PromoGridData = () => {
         ...prevFilters,
         customerId: location?.state?.selectedCustomer
           ? [location.state.selectedCustomer]
-          : [response?.customer_id[0]]
+          : [customerId]
       }));
       setFiltersUpdated(true);
     } catch (error) {
@@ -141,6 +140,21 @@ const PromoGridData = () => {
       });
     }
   };
+
+  useEffect(() => {
+    setSelectedFilters((prevFilters) => ({
+      ...prevFilters,
+      customerId: [customerId]
+    }));
+  }, [customerId]);
+
+  // Reset pagination when customerId changes
+  useEffect(() => {
+    setPagination((prev) => ({
+      ...prev,
+      pageIndex: 0
+    }));
+  }, [customerId]);
 
   const fetchData = async (pageIndex, pageSize, filters) => {
     setIsLoading(true);
@@ -175,7 +189,7 @@ const PromoGridData = () => {
 
   useEffect(() => {
     fetchFilters(selectedFilters);
-  }, []);
+  }, [customerId]);
 
   useEffect(() => {
     if (location.state && location.state.messageData) {
@@ -238,7 +252,7 @@ const PromoGridData = () => {
     try {
       const payload = {
         cpf_id: selectedEventIds,
-        golden_customer_id: customersId[0]
+        golden_customer_id: customerId
       };
       await cancelRowData(payload);
       setRowSelection({});
@@ -268,7 +282,7 @@ const PromoGridData = () => {
 
   const handleDownloadBlankExcel = async () => {
     try {
-      await downloadBlankExcel(customersId);
+      await downloadBlankExcel(customerId);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Excel template downloaded successfully !!!',
@@ -315,7 +329,7 @@ const PromoGridData = () => {
     }
 
     try {
-      await downloadSelectedDataExcel(selectedIds, customersId);
+      await downloadSelectedDataExcel(selectedIds, customerId);
       setIsSnackOpen(true);
       setSnackBar({
         message: 'Selected Excel data downloaded successfully !!!',
@@ -603,7 +617,7 @@ const PromoGridData = () => {
           handleClose={handleAddEventClose}
           rowData={rowData}
           isEdit={isEdit}
-          customerId={customersId[0]}
+          customerId={customerId}
         />
       )}
       {openDialog && (

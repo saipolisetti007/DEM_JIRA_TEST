@@ -13,6 +13,7 @@ import { reduceFilters, mapFilterParams } from '../../utils/filterUtils';
 import createDebouncedFetchFilters from '../../utils/debounceUtils';
 import DefaultPageLoader from '../Common/DefaultPageLoader';
 import { useSearchParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const CPFForecastMain = () => {
   const [cpfData, setCpfData] = useState([]);
@@ -29,7 +30,7 @@ const CPFForecastMain = () => {
   const [filtersUpdated, setFiltersUpdated] = useState(false);
   const [searchParams] = useSearchParams();
   const status = searchParams.get('status');
-
+  const { customerId } = useSelector((state) => state.userProfileData);
   const [filterOptions, setFilterOptions] = useState({
     subsector: [],
     category: [],
@@ -38,7 +39,6 @@ const CPFForecastMain = () => {
     sku: [],
     prodName: [],
     customerItemNumber: [],
-    customerId: [],
     eventType: [],
     eventSubtype: [],
     status: []
@@ -54,13 +54,13 @@ const CPFForecastMain = () => {
     customerItemNumber: [],
     eventType: [],
     eventSubtype: [],
-    customerId: [],
     status: []
   });
 
   const fetchFilters = async (filters = {}) => {
     setIsLoading(true);
     try {
+      filters.customerId = [customerId];
       const response = await cpfFilters(filters);
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
@@ -73,13 +73,12 @@ const CPFForecastMain = () => {
         customerItemNumber: response?.customer_item_number || prevOptions.customerItemNumber,
         eventType: response?.event_type || prevOptions.eventType,
         eventSubtype: response?.event_subtype || prevOptions.eventSubtype,
-        customerId: response?.customer_id || prevOptions.customerId,
         status: response?.status || prevOptions.status
       }));
       setIsLoading(false);
       setSelectedFilters((prevFilters) => ({
         ...prevFilters,
-        customerId: [response?.customer_id[0]],
+        customerId: [customerId],
         status: status ? [status] : []
       }));
       setFiltersUpdated(true);
@@ -116,8 +115,16 @@ const CPFForecastMain = () => {
   };
 
   useEffect(() => {
+    setSelectedFilters((prevFilters) => ({
+      ...prevFilters,
+      customerId: [customerId]
+    }));
+  }, [customerId]);
+
+  useEffect(() => {
     fetchFilters(selectedFilters);
-  }, []);
+  }, [customerId]);
+
   const debouncedFetchData = useCallback(debounce(fetchData, 500), []);
 
   const debouncedFetchFilters = useCallback(

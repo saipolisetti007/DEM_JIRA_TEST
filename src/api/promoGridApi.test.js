@@ -399,12 +399,12 @@ describe('promoGridApi', () => {
     const removeChildSpy = jest.spyOn(document.body, 'removeChild');
 
     const selectedEventIds = [1, 2, 3];
-    const customerId = ['123'];
+    const customerId = '123';
     await downloadSelectedDataExcel(selectedEventIds, customerId);
 
     const body = {
       events: selectedEventIds,
-      customerId: customerId
+      customerId: [customerId]
     };
 
     expect(performApiRequest).toHaveBeenCalledWith(

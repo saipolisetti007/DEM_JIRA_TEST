@@ -39,10 +39,7 @@ const createDebouncedFetchFilters = (
                   ...(response.customer_item_number || [])
                 ])
               )
-            : response.customer_item_number || [],
-          customerId: updatedFilters.customerId.length
-            ? Array.from(new Set([...prevOptions.customerId, ...(response.customer_id || [])]))
-            : response.customer_id || []
+            : response.customer_item_number || []
         };
 
         if (!excludeKeys.includes('eventType')) {
