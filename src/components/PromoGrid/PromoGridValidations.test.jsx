@@ -441,4 +441,165 @@ describe('PromoGridValidations', () => {
       expect(mockNavigate).toHaveBeenCalledWith('/promo-grid');
     });
   });
+
+  test('test promo grid warning messages for customer item number and proxy item number', async () => {
+    const mockResponseData = {
+      rows: [
+        {
+          golden_customer_id: '1',
+          validations: {
+            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
+            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
+            product_id: "Duplicate event line entry in Promo Grid - 814.1",
+            event_type: "Duplicate event line entry in Promo Grid - 814.1",
+            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+          },
+          validation_warning: {
+            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
+            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
+            product_id: "Duplicate event line entry in Promo Grid - 814.1",
+            event_type: "Duplicate event line entry in Promo Grid - 814.1",
+            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+            customer_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used",
+            proxy_like_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used"
+          }
+        },
+        {
+          golden_customer_id: '2',
+          validations: {
+            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
+            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
+            product_id: "Duplicate event line entry in Promo Grid - 814.1",
+            event_type: "Duplicate event line entry in Promo Grid - 814.1",
+            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+          },
+          validation_warning: {
+            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
+            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
+            product_id: "Duplicate event line entry in Promo Grid - 814.1",
+            event_type: "Duplicate event line entry in Promo Grid - 814.1",
+            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+            customer_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used",
+          }
+        }
+      ]
+    };
+
+    promoGridValidate.mockResolvedValue(mockResponseData);
+    await act(async () =>
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
+      )
+    );
+    const validateButton = screen.getByText('Validate');
+    expect(validateButton).toBeInTheDocument();
+    fireEvent.click(validateButton);
+    await waitFor(() => {
+      expect(promoGridValidate).toHaveBeenCalledTimes(1);
+    });
+    const divElement = screen.getByTestId('product_id');
+    const inputElement = divElement.querySelector('input');
+    expect(inputElement).toBeInTheDocument();
+    fireEvent.change(inputElement, { target: { value: '73010718493' } });
+    await waitFor(() => {
+      expect(inputElement.value).toBe('73010718493');
+    });
+  });
+
+  test('test if similar kind of errors disappears on input change', async () => {
+    const mockLocation = {
+          state: {
+            responseData: {
+              promo_header: '10',
+              rows: [
+                {
+                  golden_customer_id: '1',
+                  validations: {
+                    event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
+                    event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
+                    product_id: "Duplicate event line entry in Promo Grid - 814.1",
+                    event_type: "Duplicate event line entry in Promo Grid - 814.1",
+                    event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+                  },
+                  validation_warning: {
+                    event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
+                    event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
+                    product_id: "Duplicate event line entry in Promo Grid - 814.1",
+                    event_type: "Duplicate event line entry in Promo Grid - 814.1",
+                    event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+                    customer_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used",
+                  }
+                }
+              ]
+            }
+          }
+        };
+    useLocation.mockReturnValue(mockLocation);
+    const mockResponseData = {
+      rows: [
+        {
+          golden_customer_id: '1',
+          validations: {
+            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
+            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
+            product_id: "Duplicate event line entry in Promo Grid - 814.1",
+            event_type: "Duplicate event line entry in Promo Grid - 814.1",
+            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+          },
+          validation_warning: {
+            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
+            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
+            product_id: "Duplicate event line entry in Promo Grid - 814.1",
+            event_type: "Duplicate event line entry in Promo Grid - 814.1",
+            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+            customer_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used",
+            proxy_like_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used"
+          }
+        },
+        {
+          golden_customer_id: '2',
+          validations: {
+            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
+            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
+            product_id: "Duplicate event line entry in Promo Grid - 814.1",
+            event_type: "Duplicate event line entry in Promo Grid - 814.1",
+            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+          },
+          validation_warning: {
+            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
+            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
+            product_id: "Duplicate event line entry in Promo Grid - 814.1",
+            event_type: "Duplicate event line entry in Promo Grid - 814.1",
+            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+            customer_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used",
+          }
+        }
+      ]
+    };
+
+    promoGridValidate.mockResolvedValue(mockResponseData);
+    await act(async () =>
+      render(
+        <Provider store={store}>
+          <BrowserRouter>
+            <PromoGridValidations />
+          </BrowserRouter>
+        </Provider>
+      )
+    );
+    const validateButton = screen.getByText('Validate');
+    expect(validateButton).toBeInTheDocument();
+    fireEvent.click(validateButton);
+    const divElement = screen.getByTestId('product_id');
+    const inputElement = divElement.querySelector('input');
+    expect(inputElement).toBeInTheDocument();
+    fireEvent.change(inputElement, { target: { value: '73010718493' } });
+    await waitFor(() => {
+      expect(inputElement.value).toBe('73010718493');
+    });
+  });
 });

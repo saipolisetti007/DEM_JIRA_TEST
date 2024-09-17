@@ -77,15 +77,13 @@ const PromoGridValidationTable = () => {
     }
     const updatedErrors = [...validationErrors];
 
-    updatedErrors[rowIndex][accessorKey] = errorMessage !== undefined ? errorMessage : null;
+    const errMsg = updatedErrors[rowIndex][accessorKey];
 
     const updatedValues = [...updatedData.rows];
-    // Check if all error messages are the same or null
-    const errorMessages = Object.values(updatedErrors[rowIndex]);
-    const uniqueErrors = new Set(errorMessages.filter((error) => error !== null));
-    const allErrorsSameOrNull = uniqueErrors.size <= 1;
-    if (allErrorsSameOrNull) {
-      for (let key in updatedErrors[rowIndex]) {
+    // checking for all fields with similar kind of errors and setting to null...
+    for (let key in updatedErrors[rowIndex]) {
+      let value = updatedErrors[rowIndex][key];
+      if (value === errMsg) {
         updatedErrors[rowIndex][key] = null;
       }
     }
