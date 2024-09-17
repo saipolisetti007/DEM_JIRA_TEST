@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Typography,
@@ -12,43 +12,42 @@ import {
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
 import { loginRequest } from '../../auth/authConfig';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserProfile, setCustomerId } from './userProfileSlice';
-import { fetchCountries } from '../PromoGrid/countryCodeSlice';
+import { setCustomerId } from './userProfileSlice';
 
 const NavBar = () => {
-  const [hasFetchData, setHasFetchData] = useState(false);
+  // State to manage the anchor element for the menu
   const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
   const { instance } = useMsal();
   let activeAccount;
-
-  const { userData } = useSelector((state) => state.userProfileData);
-  const { customerId } = useSelector((state) => state.userProfileData);
+  // Extract user data and customer ID from the Redux store
+  const { userData, customerId } = useSelector((state) => state.userProfileData);
   const customers = userData?.customers;
-
+  // Get the active account from MSAL instance
   if (instance) {
     activeAccount = instance.getActiveAccount();
   }
-
+  // Handle login redirect
   const handleLoginRedirect = () => {
     instance.loginRedirect(loginRequest);
   };
-
+  // Handle logout redirect
   const handleLogoutRedirect = () => {
     instance.logoutRedirect();
   };
-
+  // Open the menu
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  // Close the menu
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
+  // Check if the select box should be disabled
   const isSelectBoxDisabled = () => {
     return Object.keys(customers).length === 1;
   };
+  // Get initials from the user's name
   const getInitials = (name) => {
     const names = name.split(' ');
     const initials = names
@@ -58,22 +57,6 @@ const NavBar = () => {
     return initials.toUpperCase();
   };
 
-  useEffect(() => {
-    fecthData();
-  }, [activeAccount, dispatch]);
-
-  useEffect(() => {
-    dispatch(fetchCountries());
-  }, [dispatch]);
-
-  const fecthData = async () => {
-    if (activeAccount && !hasFetchData) {
-      dispatch(fetchUserProfile());
-      setHasFetchData(true);
-    } else if (!activeAccount) {
-      setHasFetchData(false);
-    }
-  };
   return (
     <nav data-testid="navbar">
       <AuthenticatedTemplate>
