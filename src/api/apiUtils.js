@@ -7,12 +7,17 @@ axios.interceptors.request.use(
   async (config) => {
     let token = sessionStorage.getItem('accessToken');
     let expiration = sessionStorage.getItem('accessTokenExpiration');
+    const customerId = localStorage.getItem('customerId'); // Retrieve customer ID from local storage
     if (!token || (expiration && new Date(expiration) <= new Date())) {
       token = await getAccessToken();
     }
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
+    if (customerId) {
+      config.headers['CustomerID'] = customerId; // Add customer ID to headers
+    }
+
     return config;
   },
   (error) => {

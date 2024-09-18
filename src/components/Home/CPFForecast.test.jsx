@@ -4,17 +4,33 @@ import '@testing-library/jest-dom/extend-expect';
 import { MemoryRouter } from 'react-router-dom';
 import CPFForecast from './CPFForecast';
 import { cpfPendingCount } from '../../api/cpfForecastApi';
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from '../../store/reducers';
+import { Provider } from 'react-redux';
 
 jest.mock('../../api/cpfForecastApi', () => ({
   cpfPendingCount: jest.fn()
 }));
+// Mock store
+const initialState = {
+  userProfileData: {
+    customerId: '2000038335'
+  }
+};
+
+const store = configureStore({
+  reducer: rootReducer,
+  preloadedState: initialState
+});
 
 describe('CPFForecast', () => {
   test('should render the component correctly', () => {
     render(
-      <MemoryRouter>
-        <CPFForecast />
-      </MemoryRouter>
+      <Provider store={store}>
+        <MemoryRouter>
+          <CPFForecast />
+        </MemoryRouter>
+      </Provider>
     );
 
     expect(screen.getByText('CPF forecast')).toBeInTheDocument();
@@ -23,9 +39,11 @@ describe('CPFForecast', () => {
 
   test('should display loading state initially', () => {
     render(
-      <MemoryRouter>
-        <CPFForecast />
-      </MemoryRouter>
+      <Provider store={store}>
+        <MemoryRouter>
+          <CPFForecast />
+        </MemoryRouter>
+      </Provider>
     );
 
     expect(screen.getByText('Pending Approval : ...')).toBeInTheDocument();
@@ -39,9 +57,11 @@ describe('CPFForecast', () => {
     });
 
     render(
-      <MemoryRouter>
-        <CPFForecast />
-      </MemoryRouter>
+      <Provider store={store}>
+        <MemoryRouter>
+          <CPFForecast />
+        </MemoryRouter>
+      </Provider>
     );
 
     await waitFor(() => {
@@ -55,9 +75,11 @@ describe('CPFForecast', () => {
     cpfPendingCount.mockRejectedValueOnce(new Error('Network Error'));
 
     render(
-      <MemoryRouter>
-        <CPFForecast />
-      </MemoryRouter>
+      <Provider store={store}>
+        <MemoryRouter>
+          <CPFForecast />
+        </MemoryRouter>
+      </Provider>
     );
 
     await waitFor(() => expect(screen.getByText('Pending Approval : ...')).toBeInTheDocument());
@@ -65,9 +87,11 @@ describe('CPFForecast', () => {
 
   test('should render NavigationButton components correctly', () => {
     render(
-      <MemoryRouter>
-        <CPFForecast />
-      </MemoryRouter>
+      <Provider store={store}>
+        <MemoryRouter>
+          <CPFForecast />
+        </MemoryRouter>
+      </Provider>
     );
     // Check if the link with the correct URL and text is present in the document
     const linkElement = screen.getByRole('link', { name: 'Forecast Missing : ...' });

@@ -132,7 +132,6 @@ const EditEventForm = ({ rowData, handleClose }) => {
           severity: 'error'
         });
       } else if (Object.keys(transformedWarnings).length > 0) {
-        console.log('warnings', transformedWarnings);
         for (const field in transformedWarnings) {
           setError(field, { type: 'warning', message: transformedWarnings[field] });
         }

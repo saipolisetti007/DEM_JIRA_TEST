@@ -9,6 +9,56 @@ jest.mock('../auth/msalInstance', () => ({
   getAccessToken: jest.fn()
 }));
 
+describe('axios request interceptor', () => {
+  let requestInterceptor;
+
+  beforeAll(() => {
+    // Get the request interceptor
+    requestInterceptor = axios.interceptors.request.use.mock.calls[0][0];
+  });
+
+  beforeEach(() => {
+    // Clear all instances and calls to constructor and all methods:
+    jest.clearAllMocks();
+  });
+
+  test('should set Authorization header with token from sessionStorage', async () => {
+    const token = 'mockToken';
+    sessionStorage.setItem('accessToken', token);
+    sessionStorage.setItem('accessTokenExpiration', new Date(Date.now() + 10000).toString());
+
+    const config = { headers: {} };
+    const result = await requestInterceptor(config);
+
+    expect(result.headers['Authorization']).toBe(`Bearer ${token}`);
+  });
+
+  test('should get a new token if the token is missing or expired', async () => {
+    const newToken = 'newMockToken';
+    getAccessToken.mockResolvedValue(newToken);
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.setItem('accessTokenExpiration', new Date(Date.now() - 10000).toString());
+
+    const config = { headers: {} };
+    const result = await requestInterceptor(config);
+
+    expect(getAccessToken).toHaveBeenCalled();
+    expect(result.headers['Authorization']).toBe(`Bearer ${newToken}`);
+  });
+
+  test('should not set Authorization header if no token is available', async () => {
+    getAccessToken.mockResolvedValue(null);
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('accessTokenExpiration');
+
+    const config = { headers: {} };
+    const result = await requestInterceptor(config);
+
+    expect(getAccessToken).toHaveBeenCalled();
+    expect(result.headers['Authorization']).toBeUndefined();
+  });
+});
+
 describe('API Utils', () => {
   afterEach(() => {
     jest.clearAllMocks();

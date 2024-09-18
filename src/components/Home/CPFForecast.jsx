@@ -5,15 +5,18 @@ import { Button, Typography } from '@mui/material';
 import { cpfPendingCount } from '../../api/cpfForecastApi';
 import PromoCard from './PromoCard';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const CPFForecast = () => {
   const [count, setCount] = useState(null);
   const [missingCount, setMissingCount] = useState(null);
   const [warningCount, setWarningCount] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { customerId } = useSelector((state) => state.userProfileData);
 
   const fetchCpfPendingCount = async () => {
     try {
+      setLoading(true);
       const response = await cpfPendingCount();
       setCount(response.pending_approvals_count);
       setMissingCount(response.missing_count);
@@ -27,7 +30,7 @@ const CPFForecast = () => {
 
   useEffect(() => {
     fetchCpfPendingCount();
-  }, []);
+  }, [customerId]);
 
   return (
     <PromoCard backgroundImage={LogoImage} backgroundColor="#003DA5">
