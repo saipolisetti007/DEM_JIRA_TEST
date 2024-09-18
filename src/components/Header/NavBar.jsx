@@ -13,12 +13,14 @@ import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/
 import { loginRequest } from '../../auth/authConfig';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCustomerId } from './userProfileSlice';
+import { useLocation } from 'react-router-dom';
 
 const NavBar = () => {
   // State to manage the anchor element for the menu
   const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
   const { instance } = useMsal();
+  const location = useLocation();
   let activeAccount;
   // Extract user data and customer ID from the Redux store
   const { userData, customerId } = useSelector((state) => state.userProfileData);
@@ -45,7 +47,7 @@ const NavBar = () => {
   };
   // Check if the select box should be disabled
   const isSelectBoxDisabled = () => {
-    return Object.keys(customers).length === 1;
+    return Object.keys(customers).length === 1 || location.pathname === '/promo-grid-validations';
   };
   // Get initials from the user's name
   const getInitials = (name) => {
@@ -64,7 +66,7 @@ const NavBar = () => {
           {activeAccount ? (
             <>
               {customerId && (
-                <FormControl sx={{ minWidth: 250 }} size="small">
+                <FormControl sx={{ minWidth: 250, mr: 2 }} size="small">
                   <InputLabel id="customer-id">
                     <Typography variant="h5" component="h5">
                       Customer Name
