@@ -7,11 +7,13 @@ import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '../../auth/authConfig';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
+// SignIn component
 const SignIn = () => {
-  const { instance } = useMsal();
+  const { instance } = useMsal(); // Get the MSAL instance
 
+  // Function to handle login redirect
   const handleLoginRedirect = () => {
-    instance.loginRedirect(loginRequest);
+    instance.loginRedirect(loginRequest); // Trigger login redirect with the specified login request
   };
 
   return (

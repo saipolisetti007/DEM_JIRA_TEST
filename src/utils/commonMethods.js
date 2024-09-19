@@ -1,14 +1,21 @@
+// Validate if the value is required (non-empty)
 const validateRequired = (value) => String(value).length;
+// Validate if the value is an integer
 const validateInteger = (value) => /^-?\d+$/.exec(String(value));
+// Validate if the value is a string (alphanumeric and not containing newlines)
 const validateString = (value) => /^[A-Za-z0-9][^\r\n]*$/.exec(String(value));
+// Validate if the value is a float
 const validateFloat = (value) => /^\d+(\.\d+)?$/.exec(String(value));
 
+// Handle validation based on the type and requirement
 const handleValidate = (validationType, isRequired, value) => {
   let errorMessage = '';
+  // Check if the value is required and not provided
   if (isRequired === 'required' && (!validateRequired(value) || value == null)) {
     errorMessage += 'Required.';
   }
 
+  // Perform specific validation based on the validation type
   switch (validationType) {
     case 'stringValidation':
       if (!validateString(value)) {
@@ -30,11 +37,13 @@ const handleValidate = (validationType, isRequired, value) => {
   return errorMessage;
 };
 
+// Handle change validation based on the new value and validation type
 const handleChangeValidate = (newValue, validationType) => {
   if (!newValue) {
     return undefined;
   }
   let errorMessage;
+  // Perform specific validation based on the validation type
   switch (validationType) {
     case 'stringValidation':
       if (!validateString(newValue)) {
@@ -61,6 +70,7 @@ const handleChangeValidate = (newValue, validationType) => {
   return errorMessage;
 };
 
+// Parse values based on their types and convert them accordingly
 const parseValues = (values, stringFields) => {
   const parsedValues = {};
   Object.keys(values).forEach((key) => {

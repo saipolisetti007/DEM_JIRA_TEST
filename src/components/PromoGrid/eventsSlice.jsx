@@ -1,6 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getEvents } from '../../api/promoGridApi';
 
+/**
+ * Async thunk to fetch events data from the API.
+ * @param {string} customerId - The customer ID to fetch events for.
+ * @param {Object} thunkAPI - The thunk API object.
+ * @returns {Promise<Object>} - The fetched events data.
+ */
 export const fetchEvents = createAsyncThunk(
   'api/fecthEvents',
   async (customerId, { rejectWithValue }) => {
@@ -13,6 +19,9 @@ export const fetchEvents = createAsyncThunk(
   }
 );
 
+/**
+ * Slice to manage events data state.
+ */
 const eventsSlice = createSlice({
   name: 'eventsData',
   initialState: {
@@ -24,15 +33,18 @@ const eventsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Handle pending and fulfilled states.
       .addCase(fetchEvents.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
+      // Handle pending and rejected states.
       .addCase(fetchEvents.fulfilled, (state, action) => {
         state.isLoading = false;
         state.eventsData = action.payload;
         state.eventTypeOptions = Object.keys(action.payload);
       })
+      // Handle pending and rejected states.
       .addCase(fetchEvents.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;

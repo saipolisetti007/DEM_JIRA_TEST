@@ -5,14 +5,17 @@ import DashboardIcon from '../../assets/dashboard/DashboardIcon';
 import GraphIcon from '../../assets/dashboard/GraphIcon';
 import ListIcon from '../../assets/dashboard/ListIcon';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-// import TruckIcon from '../../assets/dashboard/TruckIcon';
-
+// Seconday Nav bar for Navigation MenuNa
 const SecondaryNavBar = () => {
-  const location = useLocation();
+  const location = useLocation(); // Get the current location from react-router
   const [isOpen, setIsOpen] = useState(false);
+
+  // Function to toggle the dropdown menu
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
+  // Function to check if the current screen is CPF related
   const isCPFScreen = () => {
     return (
       location.pathname === '/cpf-forecast' || location.pathname === '/threshold-settings' || isOpen

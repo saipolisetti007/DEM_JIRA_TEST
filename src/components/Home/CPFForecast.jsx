@@ -7,6 +7,7 @@ import PromoCard from './PromoCard';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+// CPFForecast Card component
 const CPFForecast = () => {
   const [count, setCount] = useState(null);
   const [missingCount, setMissingCount] = useState(null);
@@ -14,6 +15,7 @@ const CPFForecast = () => {
   const [loading, setLoading] = useState(true);
   const { customerId } = useSelector((state) => state.userProfileData);
 
+  // Function to fetch CPF pending count from the API
   const fetchCpfPendingCount = async () => {
     try {
       setLoading(true);
@@ -27,7 +29,7 @@ const CPFForecast = () => {
       setLoading(false);
     }
   };
-
+  // useEffect hook to fetch CPF pending count when customerId changes
   useEffect(() => {
     fetchCpfPendingCount();
   }, [customerId]);

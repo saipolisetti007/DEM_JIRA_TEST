@@ -5,6 +5,7 @@ import DefaultPageHeader from '../components/Common/DefaultPageHeader';
 import PageSection from '../components/Common/PageSection';
 import ThresholdSettings from '../components/Home/ThresholdSettings';
 
+// Home page component
 const Home = () => {
   return (
     <PageSection>

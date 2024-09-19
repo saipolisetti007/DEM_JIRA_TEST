@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import ErrorBoundary from '../errorHandling/ErrorBoundary';
 import CPFForecastMain from '../components/CPFForecast/CPFForecastMain';
 
+// Lazy load the CPFForecastMain component
 const CPFForecast = () => {
   return (
     <ErrorBoundary>

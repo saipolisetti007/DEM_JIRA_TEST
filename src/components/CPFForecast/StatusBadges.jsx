@@ -1,5 +1,12 @@
 import { Button } from '@mui/material';
 import React from 'react';
+/**
+ * StatusBadges component to display status badges for warnings, missing items, and pending approvals.
+ * @param {Object} props - Component props.
+ * @param {number} props.missingCount - Number of missing items.
+ * @param {number} props.pendingCount - Number of pending items.
+ * @param {number} props.warningCount - Number of warning items.
+ */
 
 const StatusBadges = ({ missingCount, pendingCount, warningCount }) => {
   return (

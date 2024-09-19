@@ -10,15 +10,16 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
+// DialogComponent is a functional component that renders a customizable dialog.
 const DialogComponent = ({
-  open,
-  title,
-  dialogHeading,
-  dialogContent,
-  cancelText,
-  confirmText,
-  handleConfirm,
-  handleClose
+  open, // Boolean indicating if the dialog is open.
+  title, // The title of the dialog.
+  dialogHeading, // The heading text of the dialog content.
+  dialogContent, // The main content text of the dialog.
+  cancelText, // The text for the cancel button.
+  confirmText, // The text for the confirm button.
+  handleConfirm, // Callback function to handle confirm action.
+  handleClose // Callback function to handle close action.
 }) => {
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="lg">

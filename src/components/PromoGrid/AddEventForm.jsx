@@ -13,6 +13,13 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useSelector } from 'react-redux';
 import DialogComponent from '../Common/DialogComponent';
 
+/**
+ * AddEventForm component to add a new event.
+ * @param {Object} props - Component props.
+ * @param {Function} props.handleClose - Function to handle closing the form.
+ * @param {string} props.customerId - Customer ID for adding a new event.
+ */
+
 const AddEventForm = ({ handleClose, customerId }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [stepErrors, setStepErrors] = useState({});
@@ -28,6 +35,7 @@ const AddEventForm = ({ handleClose, customerId }) => {
   const [warningMessage, setWarningMessage] = useState('');
   const { settings } = useSelector((state) => state.settingsData);
 
+  // Memoized visible steps based on settings
   const visibleSteps = useMemo(() => {
     return steps.filter((_, index) => {
       const anyFieldTrue = stepFields[index].some((field) => settings[field]);
@@ -36,6 +44,7 @@ const AddEventForm = ({ handleClose, customerId }) => {
     });
   }, [settings]);
 
+  // Handle "Next" button click
   const handleNext = async () => {
     setIsNextDisabled(true);
     const isValid = await trigger();
@@ -61,6 +70,7 @@ const AddEventForm = ({ handleClose, customerId }) => {
     }
   };
 
+  // Handle step click
   const handleStep = async (step) => {
     if (step !== activeStep) {
       const isValid = await trigger(stepFields[activeStep]);
@@ -72,6 +82,7 @@ const AddEventForm = ({ handleClose, customerId }) => {
     }
   };
 
+  // Format data for submission
   const formatDataForSubmit = (data) => {
     const formattedData = {};
     Object.keys(data).forEach((key) => {
@@ -94,6 +105,7 @@ const AddEventForm = ({ handleClose, customerId }) => {
     return formattedData;
   };
 
+  // Handle form submission
   const onSubmit = async (data) => {
     setIsLoading(true);
     const formattedData = formatDataForSubmit(data);
@@ -117,7 +129,7 @@ const AddEventForm = ({ handleClose, customerId }) => {
 
       const transformedErrors = transformErrors(response?.errors || [], 'error');
       const transformedWarnings = transformErrors(response?.warnings || [], 'warning');
-
+      // Handle field messages
       const handleFieldMessages = (messages, type) => {
         for (const field in messages) {
           setError(field, { type, message: messages[field] });
@@ -175,6 +187,7 @@ const AddEventForm = ({ handleClose, customerId }) => {
     }
   };
 
+  // Handle dialog confirmation
   const handleDialogConfirm = async () => {
     setDialogOpen(false);
     try {
@@ -195,10 +208,12 @@ const AddEventForm = ({ handleClose, customerId }) => {
       });
     }
   };
+  // Handle dialog close
   const handleDialogClose = () => {
     setDialogOpen(false);
   };
 
+  // Handle snackbar close
   const handleSnackbar = () => {
     setIsSnackOpen(false);
     setSnackBar(null);

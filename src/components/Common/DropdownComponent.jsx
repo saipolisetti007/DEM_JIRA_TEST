@@ -4,19 +4,20 @@ import ErrorIcon from '@mui/icons-material/Error';
 import WarningIcon from '@mui/icons-material/Warning';
 import { useTheme } from '@emotion/react';
 
+// DropdownComponent is a functional component that renders a dropdown (select) input with validation and error handling.
 const DropdownComponent = ({
-  row,
-  column,
-  label,
-  options,
-  isError,
-  isWarning,
-  helperText,
-  isEventSelected,
-  onChange,
-  clearEventErrors,
-  handleInputChange,
-  selectedState
+  row, // The row data containing the value for the dropdown.
+  column, // The column definition containing the column id.
+  label, // The label for the dropdown.
+  options, // The options for the dropdown.
+  isError, // Boolean indicating if there is an error.
+  isWarning, // Boolean indicating if there is a warning.
+  helperText, // The helper text to display when there is an error or warning.
+  isEventSelected, // Boolean indicating if an event is selected.
+  onChange, // Callback function to handle change events.
+  clearEventErrors, // Callback function to clear event errors.
+  handleInputChange, // Callback function to handle input changes.
+  selectedState // The selected state of the dropdown.
 }) => {
   const theme = useTheme();
   const rowValue = row.original[column.id] || '';
@@ -27,6 +28,7 @@ const DropdownComponent = ({
   const rowIndex = row.index;
   const [helperMsg, setHelperMsg] = useState(helperText);
 
+  // useEffect to update error and helper text when isError or helperText props change.
   useEffect(() => {
     setError(isError);
     setHelperMsg(helperText);
@@ -39,12 +41,14 @@ const DropdownComponent = ({
     }
   }, [isError, helperText, isInitValue]);
 
+  // useEffect to reset value when selectedState changes.
   useEffect(() => {
     if (!isInitValue && selectedState === '') {
       setValue('');
     }
   }, [selectedState]);
 
+  // Handle change event for the dropdown.
   const handleChange = (event) => {
     const newValue = event.target.value;
     setValue(newValue);
@@ -58,11 +62,12 @@ const DropdownComponent = ({
     if (handleInputChange) {
       handleInputChange(newValue, rowIndex, accessorKey, null);
     }
-
+    // Clear error and helper text if validation passes.
     setError(false);
     setHelperMsg(null);
   };
 
+  // Update the row data with the current value.
   row._valuesCache[column.id] = value;
 
   return (
@@ -77,6 +82,7 @@ const DropdownComponent = ({
           color={isWarning ? 'warning' : ''}
           data-testid={column.id}
           onChange={handleChange}>
+          {/* Conditional rendering for options */}
           {!isEventSelected && (
             <MenuItem disabled value="">
               Please select event type first
@@ -94,6 +100,7 @@ const DropdownComponent = ({
             ))
           )}
         </Select>
+        {/* FormHelperText for displaying error or warning messages */}
         {error && (
           <FormHelperText>
             <span

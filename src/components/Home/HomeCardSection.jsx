@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, Container } from '@mui/material';
 import React from 'react';
-
+// Home page card section component
 const HomeCardSection = ({ title, children }) => {
   return (
     <Container maxWidth="xl" className="my-4">

@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography';
 import { Alert, Container, Link } from '@mui/material';
 const moment = require('moment');
 
+// Footer component
 const Footer = () => {
   return (
     <footer data-testid="footer">

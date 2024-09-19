@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
-
+/**
+ * PromoGridColumns component to define the columns for the promo grid table.
+ * @param {Object} props - Component props.
+ * @param {string} props.region - The region to determine specific columns.
+ * @returns {Array} - Array of column definitions.
+ */
 const PromoGridColumns = ({ region }) => {
+  // Function to convert boolean values to 'Yes' or 'No' strings.
   const RadioCellValue = (value) => {
     if (value === true) {
       return 'Yes';
@@ -9,7 +15,7 @@ const PromoGridColumns = ({ region }) => {
     }
     return '';
   };
-
+  // Memoize the columns array to optimize performance
   const columns = useMemo(
     () => [
       {

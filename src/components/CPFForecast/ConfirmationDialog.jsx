@@ -10,6 +10,7 @@ import {
 import React from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 
+//Common component for confirmation dialog
 const ConfirmationDialog = ({ open, title, contentHeading, contentDesp, onClose, onConfirm }) => {
   return (
     <Dialog

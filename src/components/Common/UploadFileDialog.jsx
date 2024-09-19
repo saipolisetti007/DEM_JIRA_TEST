@@ -9,15 +9,22 @@ import DropFileInput from './DropFileInput';
 import { Box, IconButton, CircularProgress, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
+// Transition component for the dialog, using a slide-up animation.
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const UploadFileDialog = ({ open, handleClose, handleUploadDataExcel }) => {
+// UploadFileDialog is a functional component that renders a dialog for uploading Excel files.
+const UploadFileDialog = ({
+  open, // Boolean indicating if the dialog is open.
+  handleClose, // Callback function to handle closing the dialog.
+  handleUploadDataExcel // Callback function to handle uploading the Excel file.
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [abortController, setAbortController] = useState(null);
 
+  // Cleanup effect to abort the upload if the component unmounts.
   useEffect(() => {
     return () => {
       if (abortController) {
@@ -26,12 +33,14 @@ const UploadFileDialog = ({ open, handleClose, handleUploadDataExcel }) => {
     };
   }, [abortController]);
 
+  // Effect to reset the error message when the dialog is closed.
   useEffect(() => {
     if (!open) {
       setErrorMessage('');
     }
   }, [open]);
 
+  // Handle file change event.
   const onFileChange = async (e) => {
     const newFile = e.target.files[0];
     if (newFile.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
@@ -55,6 +64,7 @@ const UploadFileDialog = ({ open, handleClose, handleUploadDataExcel }) => {
     }
   };
 
+  // Handle closing the dialog.
   const handleDialogClose = () => {
     setErrorMessage('');
     if (abortController) {

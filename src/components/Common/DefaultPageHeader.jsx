@@ -1,6 +1,7 @@
 import { Typography } from '@mui/material';
 import React from 'react';
 
+// DefaultPageHeader is a functional component that renders a page header with a title and subtitle.
 const DefaultPageHeader = ({ title, subtitle }) => {
   return (
     <div className="pt-2 pb-4">

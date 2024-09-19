@@ -15,22 +15,25 @@ import ErrorIcon from '@mui/icons-material/Error';
 import WarningIcon from '@mui/icons-material/Warning';
 import { useTheme } from '@emotion/react';
 
+// FormInputControl component for form fileds on add/ edit forms
 const FormInputControl = ({
-  control,
-  name,
-  label,
-  type,
-  options = [],
-  isMultiline,
-  rows,
-  maxLength,
-  isRequired,
-  isDisabled,
-  defaultValue,
-  isChecked,
-  rules
+  control, // Control object from react-hook-form to manage form state
+  name, // Name of the form field
+  label, // Label for the form field
+  type, // Type of the form field (e.g., text, number, select, autocomplete, switch, date)
+  options = [], // Options for select and autocomplete fields
+  isMultiline, // Boolean to determine if the text field should be multiline
+  rows, // Number of rows for multiline text field
+  maxLength, // Maximum length of the input value
+  isRequired, // Boolean to determine if the field is required
+  isDisabled, // Boolean to determine if the field is disabled
+  defaultValue, // Default value for the form field
+  isChecked, // Boolean to determine if the switch is checked by default
+  rules // Validation rules for the form field
 }) => {
+  // Get clearErrors function from useFormContext
   const { clearErrors } = useFormContext();
+  // Function to get validation rules based on props
   const getValidationRules = () => {
     let validationRules = rules;
     if (isRequired) {
@@ -59,8 +62,10 @@ const FormInputControl = ({
     }
     return validationRules;
   };
+  // Get theme for styling
   const theme = useTheme();
 
+  // Function to render the appropriate input field based on type (Text, Select, Autocomplete, Switch, Date)
   const renderField = (field, error) => {
     const isWarning = error?.type === 'warning';
 
@@ -260,6 +265,7 @@ const FormInputControl = ({
     }
   };
 
+  // Return the Controller component from react-hook-form with the appropriate props
   return (
     <Controller
       name={name}

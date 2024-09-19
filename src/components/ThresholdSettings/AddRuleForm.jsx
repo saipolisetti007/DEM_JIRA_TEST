@@ -3,13 +3,16 @@ import FormInputControl from '../Common/FormInputControl';
 import { Alert, Box, Grid, Typography } from '@mui/material';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+// Component for adding or editing a rule
 const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [brandForms, setBrandForms] = useState([]);
+  // Destructure methods from useFormContext
   const { setValue, getValues } = useFormContext();
-  const currentValues = getValues();
+  const currentValues = getValues(); // Get current form values
 
+  // Watch specific form fields for changes
   const subsector = useWatch({
     control,
     name: 'subsector'
@@ -25,6 +28,7 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
     name: 'brand'
   });
 
+  // Effect to update categories when subsector changes
   useEffect(() => {
     if (subsector) {
       const categories = filters.rawData[subsector] ? Object.keys(filters.rawData[subsector]) : [];
@@ -34,6 +38,7 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
     }
   }, [subsector, filters.rawData]);
 
+  // Effect to update brands when category changes
   useEffect(() => {
     if (category) {
       const brands = filters.rawData[subsector]?.[category]
@@ -44,6 +49,7 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
     }
   }, [category, subsector, filters.rawData]);
 
+  // Effect to update brand forms when brand changes
   useEffect(() => {
     if (brand) {
       const brandForms = filters.rawData[subsector]?.[category]?.[brand] || [];
@@ -51,10 +57,12 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
     }
   }, [brand, category, subsector, filters.rawData]);
 
+  // Options for select inputs
   const compareOptions = ['Customer Forecast'];
   const OperationOptions = ['% difference', 'Abs. unit difference'];
   const volumsUnitOptions = ['cs', 'it', 'su', 'msu'];
 
+  // Watch the operation type field for changes
   const operation = useWatch({
     control,
     name: 'operation_type'

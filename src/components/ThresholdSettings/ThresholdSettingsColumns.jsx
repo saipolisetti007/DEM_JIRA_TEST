@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-
+// Component to define the columns for the Threshold Settings table
 const ThresholdSettingsColumns = () => {
+  // useMemo hook to memoize the columns configuration
   return useMemo(
     () => [
       { accessorKey: 'subsector', header: 'Subsector' },

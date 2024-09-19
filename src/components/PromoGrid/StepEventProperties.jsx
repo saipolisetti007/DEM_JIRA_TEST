@@ -2,7 +2,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
 
 import FormInputControl from '../Common/FormInputControl';
-
+//Step 3 - Event Properties
 const StepEventProperties = ({ control, settings }) => {
   return (
     <Box sx={{ margin: '1.5rem 0px' }}>
@@ -11,6 +11,7 @@ const StepEventProperties = ({ control, settings }) => {
       </Typography>
 
       <Grid container spacing={2}>
+        {/* Conditionally render offer type input field based on settings */}
         {settings.offer_type && (
           <Grid item xs={6}>
             <FormInputControl control={control} name="offer_type" label="Offer type" type="text" />

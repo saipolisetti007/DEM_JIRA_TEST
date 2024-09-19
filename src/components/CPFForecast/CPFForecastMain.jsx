@@ -15,6 +15,7 @@ import DefaultPageLoader from '../Common/DefaultPageLoader';
 import { useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+// CPF Forecast main component to display the forecast data
 const CPFForecastMain = () => {
   const [cpfData, setCpfData] = useState([]);
   const [cpfEnabled, setCpfEnabled] = useState(true);
@@ -57,6 +58,7 @@ const CPFForecastMain = () => {
     status: []
   });
 
+  // Fetch filter options from API
   const fetchFilters = async (filters = {}) => {
     setIsLoading(true);
     try {
@@ -93,6 +95,7 @@ const CPFForecastMain = () => {
     }
   };
 
+  // Fetch forecast data from API
   const fetchData = async (filters) => {
     setIsPageLoading(true);
     try {
@@ -114,6 +117,7 @@ const CPFForecastMain = () => {
     }
   };
 
+  // Update selected filters when customerId changes
   useEffect(() => {
     setSelectedFilters((prevFilters) => ({
       ...prevFilters,
@@ -121,12 +125,15 @@ const CPFForecastMain = () => {
     }));
   }, [customerId]);
 
+  // Fetch filters when customerId changes
   useEffect(() => {
     fetchFilters(selectedFilters);
   }, [customerId]);
 
+  // Debounced fetch data function
   const debouncedFetchData = useCallback(debounce(fetchData, 500), []);
 
+  // Debounced fetch filters function
   const debouncedFetchFilters = useCallback(
     createDebouncedFetchFilters(cpfFilters, setFilterOptions, setIsSnackOpen, setSnackBar, [
       'active',
@@ -135,6 +142,7 @@ const CPFForecastMain = () => {
     []
   );
 
+  // Handle filter change
   const handleFilterChange = (filterKey, values) => {
     const updatedFilters = {
       ...selectedFilters,
@@ -145,6 +153,7 @@ const CPFForecastMain = () => {
     debouncedFetchFilters(updatedFilters);
   };
 
+  // Fetch data when filters are updated
   useEffect(() => {
     if (filtersUpdated) {
       debouncedFetchData(selectedFilters);
@@ -155,10 +164,12 @@ const CPFForecastMain = () => {
     };
   }, [selectedFilters, filtersUpdated]);
 
+  // Handle accordion change
   const handleAccordionChange = (index) => {
     setExpandedIndex((prevIndex) => (prevIndex === index ? -1 : index));
   };
 
+  // Handle unit change
   const handleUnitChange = (unit) => {
     if (Object.keys(editedValues).length > 0) {
       setPendingUnitChange(unit);
@@ -168,17 +179,20 @@ const CPFForecastMain = () => {
     }
   };
 
+  // Confirm unit change warning dialog
   const handleConfirmUnitChange = () => {
     setSelectedUnit(pendingUnitChange);
     setEditedValues({});
     setOpenDialog(false);
   };
 
+  // Close unit change warning dialog
   const handleCloseUnitChange = () => {
     setPendingUnitChange(null);
     setOpenDialog(false);
   };
 
+  // Render loading page if filters are not updated
   if (!filtersUpdated) {
     return <DefaultPageLoader />;
   }

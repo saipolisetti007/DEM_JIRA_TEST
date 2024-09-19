@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import EventList from './EventList';
-
+// Define columns for the previous forecast table
 const PreviousForecastColumns = ({ selectedUnit, convertedUnits }) => {
   const columns = useMemo(
     () => [

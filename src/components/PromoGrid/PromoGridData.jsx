@@ -37,6 +37,7 @@ import createDebouncedFetchFilters from '../../utils/debounceUtils';
 import DefaultPageLoader from '../Common/DefaultPageLoader';
 import { fetchEvents } from './eventsSlice';
 
+// PromoGridData component
 const PromoGridData = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -91,20 +92,23 @@ const PromoGridData = () => {
   });
 
   const dispatch = useDispatch();
+  // Fetch settings on component mount
   useEffect(() => {
     dispatch(getSettings());
   }, [dispatch]);
 
   const { userData } = useSelector((state) => state.userProfileData);
-  //const customersId = selectedFilters.customerId;
+
   const region = userData?.region;
 
+  // Fetch events when customerId changes
   useEffect(() => {
     if (customerId) {
       dispatch(fetchEvents(customerId));
     }
   }, [customerId]);
 
+  // Fetch filter options based on selected filters
   const fetchFilters = async (filters = {}) => {
     try {
       filters.customerId = [customerId];
@@ -141,6 +145,7 @@ const PromoGridData = () => {
     }
   };
 
+  // Update selected filters when customerId changes
   useEffect(() => {
     setSelectedFilters((prevFilters) => ({
       ...prevFilters,
@@ -156,6 +161,7 @@ const PromoGridData = () => {
     }));
   }, [customerId]);
 
+  // Fetch data based on pagination and filters
   const fetchData = async (pageIndex, pageSize, filters) => {
     setIsLoading(true);
     setIsError(false);
@@ -174,9 +180,9 @@ const PromoGridData = () => {
       setIsError(true);
     }
   };
-
+  // Debounced fetch data function
   const debouncedFetchData = useCallback(debounce(fetchData, 500), []);
-
+  // Fetch data when filters or pagination changes
   useEffect(() => {
     if (filtersUpdated) {
       debouncedFetchData(pagination.pageIndex, pagination.pageSize, selectedFilters);
@@ -187,10 +193,11 @@ const PromoGridData = () => {
     };
   }, [pagination, selectedFilters, filtersUpdated]);
 
+  // Fetch filters when customerId changes
   useEffect(() => {
     fetchFilters(selectedFilters);
   }, [customerId]);
-
+  // Show snackbar message if location state has messageData
   useEffect(() => {
     if (location.state && location.state.messageData) {
       setIsSnackOpen(true);
@@ -202,6 +209,7 @@ const PromoGridData = () => {
     }
   }, [location.state]);
 
+  // Debounced fetch filters function
   const debouncedFetchFilters = useCallback(
     createDebouncedFetchFilters(promoGridFilters, setFilterOptions, setIsSnackOpen, setSnackBar, [
       'eventType',
@@ -211,6 +219,7 @@ const PromoGridData = () => {
     []
   );
 
+  // Handle filter change
   const handleFilterChange = (filterKey, values) => {
     const updatedFilters = {
       ...selectedFilters,
@@ -226,7 +235,7 @@ const PromoGridData = () => {
     // Debounced fetching of updated filter options based on the current selections
     debouncedFetchFilters(updatedFilters);
   };
-
+  // Handle cancel event
   const handleCancel = (row = null) => {
     if (row) {
       // Cancel specific row event
@@ -245,7 +254,7 @@ const PromoGridData = () => {
       });
     }
   };
-
+  // Confirm cancel event
   const confirmCancel = async () => {
     setIsCanceling(true);
     setIsSaving(true);
@@ -279,7 +288,7 @@ const PromoGridData = () => {
       setIsSaving(false);
     }
   };
-
+  // Handle download blank Excel template
   const handleDownloadBlankExcel = async () => {
     try {
       await downloadBlankExcel(customerId);
@@ -296,7 +305,7 @@ const PromoGridData = () => {
       });
     }
   };
-
+  // Handle download data Excel
   const handleDataDownloadExcel = async () => {
     try {
       const filterParams = reduceFilters(selectedFilters);
@@ -315,7 +324,7 @@ const PromoGridData = () => {
       });
     }
   };
-
+  // Handle download selected data Excel
   const handleSelectedDataDownloadExcel = async () => {
     const selectedIds = Object.keys(rowSelection).map((key) => data[key].cpf_id);
 
@@ -343,7 +352,7 @@ const PromoGridData = () => {
       });
     }
   };
-
+  // Handle upload data Excel
   const handleUploadDataExcel = async (event, signal) => {
     try {
       const file = event.target.files[0];
@@ -411,17 +420,21 @@ const PromoGridData = () => {
     }
   };
 
+  // Handle snackbar close
   const handleSnackbar = () => {
     setIsSnackOpen(false);
     setSnackBar(null);
   };
 
+  // Handle column visibility change
   const handleColumnVisibilityChange = (changedColumnId, newVisibility) => {
     setColumnVisibility((prevColumnVisibility) => ({
       ...prevColumnVisibility,
       [changedColumnId]: newVisibility
     }));
   };
+
+  // Initialize table with material-react-table
 
   const table = useMaterialReactTable({
     columns: PromoGridColumns({ region }),
@@ -511,11 +524,12 @@ const PromoGridData = () => {
   });
 
   const selectedRowCount = Object.keys(rowSelection).length;
+  // Handle add event dialog open
   const handleAddEventOpen = () => {
     setOpenNewEventDialog(true);
     setIsHistoricalEvent(false);
   };
-
+  // Handle add event dialog close
   const handleAddEventClose = async (event, reason) => {
     setIsEdit(false);
     if (reason && reason === 'backdropClick') return;
@@ -550,14 +564,14 @@ const PromoGridData = () => {
       setIsHistoricalEvent(true);
     }
   };
-
+  // Handle dialog close
   const handleDialogClose = (event, reason) => {
     if (reason && reason === 'backdropClick') return;
     setOpenDialog(false);
     setIsHistoricalEvent(false);
     setCancelDialogOpen(false);
   };
-
+  // Show loader if filters are not updated
   if (!filtersUpdated) {
     return <DefaultPageLoader />;
   }

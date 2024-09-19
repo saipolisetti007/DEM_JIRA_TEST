@@ -12,6 +12,7 @@ const PromoGridValidationColumns = ({
   validationWarnings,
   handleInputChange
 }) => {
+  // Extract necessary data from Redux store
   const { eventsData, eventTypeOptions, isLoading } = useSelector((state) => state.eventsData);
   const [selectedEvents, setSelectedEvents] = useState({});
   const [eventSubTypeOptions, setEventSubTypeOptions] = useState({});
@@ -19,16 +20,17 @@ const PromoGridValidationColumns = ({
   const { countriesData } = useSelector((state) => state.countriesData);
   const { userData } = useSelector((state) => state.userProfileData);
   const region = userData?.region;
+  // Handle event type change
   const handleEventChange = (newValue, rowIndex) => {
     if (isLoading) return;
     setSelectedEvents((prev) => ({ ...prev, [rowIndex]: newValue }));
     setSelectedOptions((prev) => ({ ...prev, [rowIndex]: '' }));
   };
-
+  // Handle event subtype change
   const handleSubtypeChange = (newState, rowIndex) => {
     setSelectedOptions((prev) => ({ ...prev, [rowIndex]: newState }));
   };
-
+  // Memoize the columns configuration
   return useMemo(
     () => [
       {

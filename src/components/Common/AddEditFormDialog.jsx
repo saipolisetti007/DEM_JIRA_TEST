@@ -9,14 +9,15 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
+// Common AddEditFormDialog component for Add/Edit form dialog
 const AddEditFormDialog = ({
-  open,
-  title,
-  cancelText,
-  confirmText,
-  handleConfirm,
-  handleClose,
-  children
+  open, // Boolean to control the open state of the dialog
+  title, // Title of the dialog
+  cancelText, // Text for the cancel button
+  confirmText, // Text for the confirm button
+  handleConfirm, // Function to handle confirm action
+  handleClose, // Function to handle close action
+  children // Content to be displayed inside the dialog
 }) => {
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="lg">

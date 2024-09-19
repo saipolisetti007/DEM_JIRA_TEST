@@ -17,6 +17,14 @@ import EditEventForm from './EditEventForm';
 import EditIcon from '@mui/icons-material/Edit';
 import ColumnsSettings from './ColumnsSettings';
 
+/**
+ * TabPanel component to render the content of each tab.
+ * @param {Object} props - Component props.
+ * @param {React.ReactNode} props.children - The content to display inside the tab panel.
+ * @param {number} props.value - The current tab index.
+ * @param {number} props.index - The index of this tab panel.
+ */
+
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
 
@@ -32,9 +40,20 @@ const TabPanel = (props) => {
   );
 };
 
+/**
+ * AddEditEventDialog component to add or edit an event.
+ * @param {Object} props - Component props.
+ * @param {boolean} props.open - Boolean to control the dialog visibility.
+ * @param {Object} props.rowData - Data of the row to be edited.
+ * @param {boolean} props.isEdit - Boolean to determine if the dialog is in edit mode.
+ * @param {Function} props.handleClose - Function to handle closing the dialog.
+ * @param {string} props.customerId - Customer ID for adding a new event.
+ */
+
 const AddEditEventDialog = ({ open, rowData, isEdit, handleClose, customerId }) => {
   const [value, setValue] = useState(0);
 
+  //Handle tab change
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

@@ -10,7 +10,14 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-const ValidationPageDialog = ({ open, onClose, onConfirm, onReturnToPromoGrid, isCanceling }) => {
+// ValidationPageDialog is a functional component that renders a confirmation dialog for leaving the page.
+const ValidationPageDialog = ({
+  open, // Boolean indicating if the dialog is open.
+  onClose, // Callback function to handle closing the dialog.
+  onConfirm, // Callback function to handle confirming the action to leave the page.
+  onReturnToPromoGrid, // Callback function to handle returning to the Promo Grid Validation page.
+  isCanceling // Boolean indicating if the cancel action is in progress.
+}) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle sx={{ mb: 3, mt: 1 }} variant="h3" color="primary">

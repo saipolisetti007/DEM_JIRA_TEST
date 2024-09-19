@@ -3,6 +3,7 @@ import Logo from './Logo';
 import NavBar from './NavBar';
 import { Container } from '@mui/material';
 
+//Header component
 const Header = () => {
   return (
     <header data-testid="header" className="text-gray-600 body-font shadow-lg py-2">

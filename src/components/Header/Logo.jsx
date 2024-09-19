@@ -2,6 +2,7 @@ import React from 'react';
 import LogoImage from '../../assets/images/logo.svg';
 import { Link } from 'react-router-dom';
 
+//Logo component
 const Logo = () => {
   return (
     <div data-testid="logo">

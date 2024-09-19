@@ -3,12 +3,17 @@ import BackupIcon from '@mui/icons-material/Backup';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
+// DropFileInput component to upload file
 const DropFileInput = ({ onFileChange, reset }) => {
+  // Refs for DOM elements
   const wrapperRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  // State for the selected file and its validity
   const [file, setFile] = useState(null);
   const [fileTypeValid, setFileTypeValid] = useState(null);
 
+  // useEffect to reset the file input when the reset prop changes
   useEffect(() => {
     if (reset) {
       setFile(null);
@@ -16,6 +21,7 @@ const DropFileInput = ({ onFileChange, reset }) => {
     }
   }, [reset]);
 
+  // Handle drag enter event to add the dragover class
   const onDragEnter = (e) => {
     e.preventDefault();
     if (wrapperRef.current) {
@@ -23,6 +29,7 @@ const DropFileInput = ({ onFileChange, reset }) => {
     }
   };
 
+  // Handle drag leave event to remove the dragover class
   const onDragLeave = (e) => {
     e.preventDefault();
     if (wrapperRef.current) {
@@ -30,6 +37,7 @@ const DropFileInput = ({ onFileChange, reset }) => {
     }
   };
 
+  // Handle drop event to prevent default behavior and call handleFile function
   const onDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -42,6 +50,7 @@ const DropFileInput = ({ onFileChange, reset }) => {
     }
   };
 
+  // Handle file drop event file input change event
   const onFileDrop = (e) => {
     if (!file) {
       const newFile = e.target.files && e.target.files[0];
@@ -53,6 +62,7 @@ const DropFileInput = ({ onFileChange, reset }) => {
     }
   };
 
+  // Handle the selected file and its validity
   const handleFile = (newFile) => {
     if (newFile) {
       setFile(newFile);
@@ -63,6 +73,7 @@ const DropFileInput = ({ onFileChange, reset }) => {
     }
   };
 
+  // Handle click event to trigger file input
   const handleClick = () => {
     if (!file) {
       fileInputRef.current.click();

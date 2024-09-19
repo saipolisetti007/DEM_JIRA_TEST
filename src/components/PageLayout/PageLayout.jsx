@@ -2,6 +2,7 @@ import React from 'react';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 
+//Main App page Layout
 const PageLayout = (props) => {
   return (
     <div className="flex flex-col h-screen">

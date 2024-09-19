@@ -39,19 +39,21 @@ const ThresholdSettingsData = () => {
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
   const [errorMessage, setErrorMessage] = useState('');
-  const { customerId } = useSelector((state) => state.userProfileData);
-  const methods = useForm({ mode: 'onChange', defaultValues: rowData || {} });
-  const { handleSubmit, control, formState } = methods;
-
+  const { customerId } = useSelector((state) => state.userProfileData); // Get customerId from Redux store
+  const methods = useForm({ mode: 'onChange', defaultValues: rowData || {} }); // Initialize react-hook-form
+  const { handleSubmit, control, formState } = methods; // Destructure methods from useForm
+  // State to manage pagination
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10
   });
+  // State to manage filters
   const [filters, setFilters] = useState({
     subsectors: [],
     rawData: {}
   });
 
+  // Fetch data and filters when customerId changes
   useEffect(() => {
     if (customerId) {
       fetchData(customerId);
@@ -59,6 +61,7 @@ const ThresholdSettingsData = () => {
     fetchFilters();
   }, [customerId]);
 
+  // Reset form when mode or rowData changes
   useEffect(() => {
     if (isMode === 'edit' && rowData) {
       methods.reset(rowData);
@@ -67,6 +70,7 @@ const ThresholdSettingsData = () => {
     }
   }, [isMode, rowData, methods]);
 
+  // Fetch threshold data
   const fetchData = async (selectedCustomer) => {
     setIsLoading(true);
     setIsError(false);
@@ -81,6 +85,7 @@ const ThresholdSettingsData = () => {
     }
   };
 
+  // Fetch filters data
   const fetchFilters = async () => {
     try {
       const data = await fetchThresholdFilters();
@@ -101,10 +106,12 @@ const ThresholdSettingsData = () => {
     setOpenDialog(true);
   };
 
+  //Save Rule
   const handleSave = async () => {
     handleSubmit(onSubmit)();
   };
 
+  //Submit Rule
   const onSubmit = async (data) => {
     setIsSaving(true);
     try {
@@ -133,7 +140,6 @@ const ThresholdSettingsData = () => {
   };
 
   //Edit Rule functions
-
   const handleEditRule = (row) => {
     setIsMode('edit');
     setOpenDialog(true);
@@ -141,10 +147,12 @@ const ThresholdSettingsData = () => {
     setRowData(row.original);
   };
 
+  //Edit Save Rule
   const handleEditSave = async () => {
     handleSubmit(onEditSubmit)();
   };
 
+  //Edit Submit Rule
   const onEditSubmit = async (data) => {
     setIsSaving(true);
     try {
@@ -177,6 +185,7 @@ const ThresholdSettingsData = () => {
     setRowData(row.original);
   };
 
+  //Delete Rule
   const handleDelete = async () => {
     setIsSaving(true);
     try {
@@ -198,12 +207,12 @@ const ThresholdSettingsData = () => {
       });
     }
   };
-
+  //Close Dialog
   const handleDialogClose = () => {
     setOpenDialog(false);
     setOpenConfirmDialog(false);
   };
-
+  //Close Snackbar
   const handleSnackbar = () => {
     setIsSnackOpen(false);
     setSnackBar(null);

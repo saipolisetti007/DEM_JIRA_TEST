@@ -6,6 +6,7 @@ import Checkbox from '@mui/material/Checkbox';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+// Function to format filter keys into user-friendly labels
 function formatFilterKey(filterKey) {
   const customLabels = {
     sku: 'SKU',
@@ -22,6 +23,7 @@ function formatFilterKey(filterKey) {
   return customLabels[filterKey] || filterKey.charAt(0).toUpperCase() + filterKey.slice(1);
 }
 
+// Styled component for Autocomplete with custom styles
 const StyledAutocomplete = styled(Autocomplete)(({ theme, disabled }) => ({
   '& .MuiAutocomplete-tag': {
     display: 'none'
@@ -31,7 +33,9 @@ const StyledAutocomplete = styled(Autocomplete)(({ theme, disabled }) => ({
   }
 }));
 
+// Main Filters component with filter options, loading state, selected filters, and filter change handler
 const Filters = ({ filterOptions, isLoading, selectedFilters, onFilterChange }) => {
+  // Function to handle filter change
   const handleFilterChange = (filterKey) => (event, values, reason) => {
     if (reason === 'selectOption' && values.includes('All')) {
       onFilterChange(filterKey, ['All', ...filterOptions[filterKey]]);
@@ -51,6 +55,7 @@ const Filters = ({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
     }
   };
 
+  // Function to render filter label for each filter with count
   const renderLabel = (filterKey) => {
     const count = selectedFilters[filterKey]?.length || 0;
     const baseLabel = formatFilterKey(filterKey);
@@ -66,7 +71,10 @@ const Filters = ({ filterOptions, isLoading, selectedFilters, onFilterChange }) 
 
         <div className="flex items-center gap-2 flex-wrap">
           {Object.keys(filterOptions)?.map((filterKey) => {
+            // Determine if the filter is single-select based on the filter key
             const isSingleSelect = filterKey === 'customerId';
+            // If it's single-select, use the filter options directly
+            // Otherwise, add an 'All' option at the beginning
             const options = isSingleSelect
               ? filterOptions[filterKey] || []
               : ['All', ...(filterOptions[filterKey] || [])];

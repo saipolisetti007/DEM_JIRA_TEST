@@ -38,7 +38,7 @@ const PromoGridValidationTable = () => {
   // State for the dialog
   const [dialogOpen, setDialogOpen] = useState(false);
   const [navigateTarget, setNavigateTarget] = useState(null);
-
+  // Fetch data from responseData and update state
   const fetchData = async () => {
     try {
       const data = responseData || {};
@@ -52,21 +52,21 @@ const PromoGridValidationTable = () => {
       setIsError(true);
     }
   };
-
+  // Update table data and validation errors
   const updateData = (data) => {
     setTableData(data.rows || []);
     const errors = data.rows.map((row) => row.validations || {});
     setValidationErrors(errors);
   };
-
+  // Fetch data on component mount or when responseData changes
   useEffect(() => {
     fetchData();
   }, [responseData]);
-
+  // Check if all validation errors are null
   const allErrorsNull = Object.values(validationErrors).every((error) => {
     return Object.values(error).every((value) => value === null);
   });
-
+  // Handle input change and update validation errors
   const handleInputChange = (newValue, rowIndex, accessorKey, helperMessage, validationType) => {
     setSubmitDisabled(true);
     let errorMessage;
@@ -102,7 +102,7 @@ const PromoGridValidationTable = () => {
     updatedValues[rowIndex][accessorKey] = newValue;
     return errorMessage;
   };
-
+  // Handle validation of data
   const handleValidate = async () => {
     setIsDataLoading(true);
     if (!allErrorsNull) return;
@@ -189,7 +189,7 @@ const PromoGridValidationTable = () => {
       });
     }
   };
-
+  // Handle submission of data
   const handleSubmit = async () => {
     setWarningDialogOpen(false);
     try {
@@ -211,26 +211,27 @@ const PromoGridValidationTable = () => {
       });
     }
   };
-
+  // Handle dialog close
   const handleDialogClose = () => {
     setDialogOpen(false);
     setWarningDialogOpen(false);
   };
-
+  // Handle dialog confirm
   const handleDialogConfirm = () => {
     setDialogOpen(false);
     navigate(navigateTarget);
   };
-
+  // Handle navigation
   const handleNavigate = (target) => {
     setNavigateTarget(target);
     setDialogOpen(true);
   };
-
+  // Handle return to promo grid
   const handleReturnToPromoGrid = () => {
     navigate('/promo-grid');
   };
 
+  // Initialize table with data and columns
   const table = useMaterialReactTable({
     data: tableData,
     columns: PromoGridValidationColumns({

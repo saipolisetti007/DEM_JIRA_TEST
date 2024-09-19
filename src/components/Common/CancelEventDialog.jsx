@@ -11,7 +11,14 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-const CancelEventDialog = ({ open, onClose, onConfirm, eventCount, isCanceling }) => (
+// CancelEventDialog component for Cancel Events
+const CancelEventDialog = ({
+  open, // Boolean to control whether the dialog is open or closed
+  onClose, // Function to handle closing the dialog
+  onConfirm, // Function to handle confirming the cancellation
+  eventCount, // Number of events to be canceled
+  isCanceling // Boolean to indicate if the cancellation process is ongoing
+}) => (
   <Dialog open={open} onClose={onClose}>
     <DialogTitle sx={{ mb: 3, mt: 1 }} variant="h3" color="primary">
       Cancel Events

@@ -17,6 +17,18 @@ import { ArrowDropDown } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleSetting, updateSettings } from './settingsSlice';
 
+/**
+ * AccordionPanel component to render each accordion panel with checkboxes.
+ * @param {Object} props - Component props.
+ * @param {string} props.panel - The panel identifier.
+ * @param {string} props.expanded - The currently expanded panel.
+ * @param {Function} props.handleChange - Function to handle panel expansion.
+ * @param {string} props.title - The title of the panel.
+ * @param {Array} props.fields - The fields to display as checkboxes.
+ * @param {Object} props.localSettings - The current settings state.
+ * @param {boolean} props.isLoading - Boolean indicating if data is loading.
+ * @param {Function} props.handleCheckboxChange - Function to handle checkbox state change.
+ */
 const AccordionPanel = ({
   panel,
   expanded,
@@ -63,6 +75,11 @@ const AccordionPanel = ({
   </Accordion>
 );
 
+/**
+ * ColumnsSettings component to manage column settings.
+ * @param {Object} props - Component props.
+ * @param {Function} props.handleClose - Function to handle closing the settings.
+ */
 const ColumnsSettings = ({ handleClose }) => {
   const dispatch = useDispatch();
   const { settings, isLoading } = useSelector((state) => state.settingsData);
@@ -72,6 +89,7 @@ const ColumnsSettings = ({ handleClose }) => {
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
   const { userData } = useSelector((state) => state.userProfileData);
   const region = userData?.region;
+  // Fields to hide based on region NA
   const hiddenFieldsNA = [
     'minerva_volume',
     'event_type',
@@ -81,16 +99,19 @@ const ColumnsSettings = ({ handleClose }) => {
     'item_type',
     'customer_item_number'
   ];
+  // Fields to hide based on region EU
   const hiddenFieldsEU = ['start_of_shipments', 'expected_shipments_forecast'];
 
+  // Handle panel expansion change.
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
-
+  //Handle checkbox state change.
   const handleCheckboxChange = (field) => {
     dispatch(toggleSetting(field));
   };
 
+  //Handle save button click.
   const handleSave = () => {
     setIsSaving(true);
     dispatch(updateSettings(settings));
@@ -100,7 +121,7 @@ const ColumnsSettings = ({ handleClose }) => {
       severity: 'success'
     });
   };
-
+  //Handle snackbar close
   const handleSnackbar = () => {
     setIsSnackOpen(false);
     setSnackBar(null);

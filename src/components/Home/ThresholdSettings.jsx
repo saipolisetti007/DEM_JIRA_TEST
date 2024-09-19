@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import LogoImage from '../../assets/dashboard/bg_threshold.svg';
 import Threshold_settings from '../../assets/dashboard/Threshold_settings_icon.svg';
 
+// Threshold settings component card
 const ThresholdSettings = () => {
   return (
     <PromoCard backgroundImage={LogoImage} backgroundColor="#003DA5">

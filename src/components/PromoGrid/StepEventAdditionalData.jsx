@@ -4,6 +4,7 @@ import FormInputControl from '../Common/FormInputControl';
 import { itemTypeOptions, iDTypeOptions } from './FormStepFields';
 import { useSelector } from 'react-redux';
 
+//step2 additional data
 const StepEventAdditionalData = ({ control, settings }) => {
   const { countriesData } = useSelector((state) => state.countriesData);
   const { userData } = useSelector((state) => state.userProfileData);
@@ -15,6 +16,7 @@ const StepEventAdditionalData = ({ control, settings }) => {
       </Typography>
 
       <Grid container spacing={2}>
+        {/* Conditionally render expected shipments forecast input based on region and settings */}
         {(region === 'EU' || settings.expected_shipments_forecast) && (
           <Grid item xs={6}>
             <FormInputControl

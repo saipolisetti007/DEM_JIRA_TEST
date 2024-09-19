@@ -3,13 +3,14 @@ import { Box, IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CancelIcon from '@mui/icons-material/Cancel';
 
+// RowActions is a functional component that renders action buttons for a table row.
 const RowActions = ({
-  row,
-  hoveredRow,
-  handleEdit,
-  editTooltip = 'Edit Event',
-  cancelTooltip = 'Cancel Event',
-  handleCancel
+  row, // The current row data object.
+  hoveredRow, // The id of the row that is currently hovered.
+  handleEdit, // Callback function to handle the edit action.
+  editTooltip = 'Edit Event', // Tooltip text for the edit button.
+  cancelTooltip = 'Cancel Event', // Tooltip text for the cancel button.
+  handleCancel // Callback function to handle the cancel action.
 }) => {
   return (
     <Box

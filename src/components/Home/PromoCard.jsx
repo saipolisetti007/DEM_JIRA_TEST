@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/material';
-
+// Home page promo card common component
 const PromoCard = ({ backgroundImage, backgroundColor, children }) => {
   return (
     <Box

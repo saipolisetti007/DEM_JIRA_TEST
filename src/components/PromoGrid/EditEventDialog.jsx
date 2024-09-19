@@ -6,8 +6,18 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import CloseIcon from '@mui/icons-material/Close';
 import { DialogContentText, IconButton } from '@mui/material';
+/**
+ * EditEventDialog component to confirm editing an event.
+ * @param {Object} props - Component props.
+ * @param {boolean} props.open - Boolean to control the dialog visibility.
+ * @param {Function} props.handleClose - Function to handle closing the dialog.
+ * @param {boolean} props.isHistoricalEvent - Boolean to determine if the event is historical.
+ * @param {Function} props.onConfirm - Function to handle the confirm action.
+ * @param {string} props.eventIds - The IDs of the events to be edited.
+ */
 
 const EditEventDialog = ({ open, handleClose, isHistoricalEvent, onConfirm, eventIds }) => {
+  //Handle the edit action.
   const handleEdit = () => {
     onConfirm();
     handleClose();

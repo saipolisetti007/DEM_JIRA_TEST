@@ -6,6 +6,7 @@ import FormInputControl from '../Common/FormInputControl';
 import { useSelector } from 'react-redux';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+// Component for Step 1: Event Main Parameters
 const StepEventMainParameters = ({ control, settings, customerId }) => {
   const { setValue } = useFormContext();
   const { userData } = useSelector((state) => state.userProfileData);
@@ -13,16 +14,19 @@ const StepEventMainParameters = ({ control, settings, customerId }) => {
 
   const { eventsData, eventTypeOptions } = useSelector((state) => state.eventsData);
 
+  // Watch for changes in the selected event type
   const selectedEventType = useWatch({
     control,
     name: 'event_type'
   });
 
+  // Watch for changes in the current event subtype
   const currentSubType = useWatch({
     control,
     name: 'event_subtype'
   });
 
+  // Memoize event subtype options based on the selected event type
   const eventSubTypeOptions = useMemo(() => {
     if (selectedEventType && eventsData[selectedEventType]) {
       return eventsData[selectedEventType];
@@ -31,12 +35,14 @@ const StepEventMainParameters = ({ control, settings, customerId }) => {
     }
   }, [selectedEventType]);
 
+  // Effect to reset event subtype if it is not valid for the selected event type
   useEffect(() => {
     if (selectedEventType && !eventsData[selectedEventType].includes(currentSubType)) {
       setValue('event_subtype', '');
     }
   }, [selectedEventType, currentSubType]);
 
+  // Validation function for end date fields
   const validateEndDate = (endDateField, startDateField) => (value, allValues) => {
     const startDate = allValues[startDateField];
     if (startDate && value?.isBefore(startDate)) {
@@ -92,6 +98,7 @@ const StepEventMainParameters = ({ control, settings, customerId }) => {
               }}
             />
           </Grid>
+          {/* Conditionally render event sales channel input field based on region and settings */}
           {(region === 'EU' || settings.start_of_shipments) && (
             <Grid item xs={6}>
               <FormInputControl
@@ -103,7 +110,7 @@ const StepEventMainParameters = ({ control, settings, customerId }) => {
               />
             </Grid>
           )}
-
+          {/* Conditionally render umbrella event input field based on settings */}
           {settings.end_of_shipments && (
             <Grid item xs={6}>
               <FormInputControl

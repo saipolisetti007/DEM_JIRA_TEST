@@ -19,6 +19,12 @@ import { ArrowDropDown } from '@mui/icons-material';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 import { useSelector } from 'react-redux';
 import DialogComponent from '../Common/DialogComponent';
+
+/**
+ * Format row data to convert date fields to moment objects.
+ * @param {Object} rowData - The row data to format.
+ * @returns {Object} - The formatted row data.
+ */
 const formatRowData = (rowData) => {
   const formattedData = { ...rowData };
 
@@ -30,6 +36,17 @@ const formatRowData = (rowData) => {
   return formattedData;
 };
 
+/**
+ * AccordionPanel component to render each accordion panel with form fields.
+ * @param {Object} props - Component props.
+ * @param {string} props.panel - The panel identifier.
+ * @param {number} props.index - The index of the panel.
+ * @param {string} props.expanded - The currently expanded panel.
+ * @param {Function} props.handleChange - Function to handle panel expansion.
+ * @param {string} props.title - The title of the panel.
+ * @param {Object} props.control - The control object from react-hook-form.
+ * @param {Object} props.settings - The settings object to determine field visibility.
+ */
 const AccordionPanel = ({ panel, index, expanded, handleChange, title, control, settings }) => {
   const anyFieldTrue = stepFields[index].some((field) => settings[field]);
   const hasExtraFields = stepFields[index].some((field) => settings[field] === undefined);
@@ -64,6 +81,12 @@ const AccordionPanel = ({ panel, index, expanded, handleChange, title, control, 
   );
 };
 
+/**
+ * EditEventForm component to edit an existing event.
+ * @param {Object} props - Component props.
+ * @param {Object} props.rowData - The data of the row to be edited.
+ * @param {Function} props.handleClose - Function to handle closing the form.
+ */
 const EditEventForm = ({ rowData, handleClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
@@ -75,16 +98,30 @@ const EditEventForm = ({ rowData, handleClose }) => {
   const { handleSubmit, control, setError, formState } = methods;
   const [expanded, setExpanded] = React.useState('panel1');
   const [warningMessage, setWarningMessage] = useState('');
+
+  /**
+   * Handle panel expansion change.
+   * @param {string} panel - The panel identifier.
+   * @returns {Function} - Function to handle panel expansion.
+   */
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
   const { settings } = useSelector((state) => state.settingsData);
 
+  /**
+   * Handle save button click.
+   */
   const handleSave = async () => {
     handleSubmit(onSubmit)();
   };
 
+  /**
+   * Format data for submission.
+   * @param {Object} data - The data to format.
+   * @returns {Object} - The formatted data.
+   */
   const formatDataForSubmit = (data) => {
     const formattedData = {};
     Object.keys(data).forEach((key) => {
@@ -101,6 +138,10 @@ const EditEventForm = ({ rowData, handleClose }) => {
     return formattedData;
   };
 
+  /**
+   * Handle form submission.
+   * @param {Object} data - The form data.
+   */
   const onSubmit = async (data) => {
     setIsLoading(true);
     const formattedData = formatDataForSubmit(data);
@@ -155,6 +196,9 @@ const EditEventForm = ({ rowData, handleClose }) => {
     }
   };
 
+  /**
+   * Handle dialog confirmation.
+   */
   const handleDialogConfirm = async () => {
     setDialogOpen(false);
     try {
@@ -175,10 +219,16 @@ const EditEventForm = ({ rowData, handleClose }) => {
       });
     }
   };
+  /**
+   * Handle dialog close.
+   */
   const handleDialogClose = () => {
     setDialogOpen(false);
   };
 
+  /**
+   * Handle snackbar close.
+   */
   const handleSnackbar = () => {
     setIsSnackOpen(false);
     setSnackBar(null);

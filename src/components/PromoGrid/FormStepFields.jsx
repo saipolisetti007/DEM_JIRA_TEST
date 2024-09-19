@@ -1,4 +1,7 @@
+// Define the steps for the form wizard
 const steps = ['Event Main Parameters', 'Event Additional Data', 'Event Properties'];
+
+// Common fields for step 0
 const commonFieldsStep0 = [
   'start_of_shipments',
   'end_of_shipments',
@@ -9,6 +12,8 @@ const commonFieldsStep0 = [
   'event_description',
   'event_sales_channel'
 ];
+
+// Common fields for step 1
 const commonFieldsStep1 = [
   'expected_shipments_forecast',
   'expected_consumption_forecast',
@@ -23,6 +28,8 @@ const commonFieldsStep1 = [
   'base_price',
   'price_after_discount'
 ];
+
+// Common fields for step 2
 const commonFieldsStep2 = [
   'offer_type',
   'multi_category_offer',
@@ -43,7 +50,7 @@ const commonFieldsStep2 = [
   'event_num_property_2',
   'event_num_property_3'
 ];
-
+// Fields for each step
 const stepFields = {
   0: [
     'cpf_id',
@@ -58,22 +65,26 @@ const stepFields = {
   1: ['product_id', 'id_type', 'country_code', ...commonFieldsStep1],
   2: [...commonFieldsStep2]
 };
+// Fields that are dates
 const dateFields = [
   'event_in_store_end_date',
   'event_in_store_start_date',
   'start_of_shipments',
   'end_of_shipments'
 ];
-
+// Settings fields for each step
 const settingsFields = {
   0: [...commonFieldsStep0],
   1: [...commonFieldsStep1],
   2: [...commonFieldsStep2]
 };
-
+// Options for sales channels
 const salesChannelOptions = ['Store', 'Ecomm'];
+// Options for item types
 const itemTypeOptions = ['EDA', 'In & Out'];
+// Options for ID types
 const iDTypeOptions = ['FPC', 'GTIN'];
+// Options for countries
 const countryOptions = [
   'US',
   'CA',

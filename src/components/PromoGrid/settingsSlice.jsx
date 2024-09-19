@@ -6,6 +6,7 @@ export const getSettings = createAsyncThunk(
   'promogrid/getSettings',
   async (_, { rejectWithValue }) => {
     try {
+      // Call the API to get settings
       return await promoGridColumnSettings();
     } catch (error) {
       return rejectWithValue(error.message);
@@ -25,6 +26,7 @@ export const updateSettings = createAsyncThunk(
   }
 );
 
+// Create a slice for settings data
 const settingsSlice = createSlice({
   name: 'settingsData',
   initialState: {
@@ -34,6 +36,7 @@ const settingsSlice = createSlice({
   },
 
   reducers: {
+    // Reducer to toggle a specific setting
     toggleSetting(state, action) {
       const field = action.payload;
       state.settings[field] = !state.settings[field];
@@ -41,21 +44,25 @@ const settingsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Handle pending state for getSettings
       .addCase(getSettings.pending, (state) => {
         state.isLoading = true;
       })
+      // Handle fulfilled state for getSettings
       .addCase(getSettings.fulfilled, (state, action) => {
         state.isLoading = false;
         state.settings = action.payload;
       })
+      // Handle rejected state for getSettings
       .addCase(getSettings.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       })
-
+      // Handle pending state for updateSettings
       .addCase(updateSettings.pending, (state) => {
         state.isLoading = true;
       })
+      // Handle fulfilled state for updateSettings
       .addCase(updateSettings.fulfilled, (state, action) => {
         state.isLoading = false;
         state.settings = {
@@ -63,6 +70,7 @@ const settingsSlice = createSlice({
           ...action.payload
         };
       })
+      // Handle rejected state for updateSettings
       .addCase(updateSettings.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;

@@ -21,6 +21,7 @@ import CPFForecast from './pages/CPFForecast';
 import PromoGridValidations from './components/PromoGrid/PromoGridValidations';
 import ThresholdSettings from './pages/ThresholdSettings';
 
+// Creating router with defined routes
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -34,6 +35,7 @@ const router = createBrowserRouter(
   )
 );
 
+// Creating root element and rendering the app
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

@@ -24,19 +24,19 @@ import StatusBadges from './StatusBadges';
 import CellCheckboxComponent from './CellCheckboxComponent';
 
 const SkuItem = ({
-  sku,
-  prod_name,
-  isExpanded,
-  selectedUnit,
-  editedValues = {},
-  setEditedValues,
-  index,
-  selectedFilters,
-  onAccordionChange,
-  cpfEnabled,
-  pendingCount,
-  missingCount,
-  warningCount
+  sku, // The SKU identifier for the product
+  prod_name, // The name of the product
+  isExpanded, // Boolean indicating if the accordion is expanded
+  selectedUnit, // The unit selected for the forecast
+  editedValues = {}, // Object containing edited values for the forecast
+  setEditedValues, // Function to update the edited values
+  index, // Index of the current SKU item in the list
+  selectedFilters, // Object containing the selected filters
+  onAccordionChange, // Function to handle accordion state change
+  cpfEnabled, // Boolean indicating if CPF  is enabled
+  pendingCount, // Number of pending forecasts
+  missingCount, // Number of missing forecasts
+  warningCount // Number of warning forecasts
 }) => {
   const [data, setData] = useState([]);
   const [lastSelectedSku, setLastSelectedSku] = useState(null);
@@ -51,6 +51,7 @@ const SkuItem = ({
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
 
+  // Fetch data based on SKU
   const fetchData = async (sku) => {
     setIsLoading(true);
     setIsError(false);
@@ -75,6 +76,7 @@ const SkuItem = ({
     }
   };
 
+  // Handle accordion click
   const handleAccordionClick = (sku) => {
     if (sku === lastSelectedSku) {
       return;
@@ -83,6 +85,7 @@ const SkuItem = ({
     fetchData(sku);
   };
 
+  // Effect to initialize row selection based on data
   useEffect(() => {
     const initialRowSelection = {};
     if (data) {
@@ -96,10 +99,12 @@ const SkuItem = ({
     setRowSelection(initialRowSelection);
   }, [data]);
 
+  // Handle accordion change
   const handleAccordionChange = () => {
     onAccordionChange(isExpanded ? -1 : index);
   };
 
+  // Handle save button click
   const handleSave = (event) => {
     event.stopPropagation();
     if (cpfEnabled) {
@@ -107,6 +112,7 @@ const SkuItem = ({
     }
   };
 
+  // Handle submit action
   const handleSubmit = async () => {
     setOpenSubmitDialog(false);
     try {
@@ -157,6 +163,7 @@ const SkuItem = ({
     }
   };
 
+  // Convert units based on selected unit type
   const convertedUnits = (value, unit) => {
     let convertedValue;
     switch (unit) {
@@ -175,6 +182,7 @@ const SkuItem = ({
     return convertedValue;
   };
 
+  // Handle edit units
   const handleEditUnits = (rowIndex, columnId, value) => {
     setEditedValues((prev) => ({
       ...prev,
@@ -187,6 +195,7 @@ const SkuItem = ({
     setRowSelection(initialRowSelection);
   };
 
+  // Effect to update row selection based on edited values
   useEffect(() => {
     if (Object.keys(editedValues).length === 0) {
       const updatedRowSelection = { ...rowSelection };
@@ -201,6 +210,7 @@ const SkuItem = ({
     }
   }, [editedValues]);
 
+  // Configuration for previous forecast table
   const previousForecastTable = useMaterialReactTable({
     columns: PreviousForecastColumns({
       selectedUnit,
@@ -262,6 +272,7 @@ const SkuItem = ({
     }));
   };
 
+  // Configuration for new forecast table
   const NewForecastTable = useMaterialReactTable({
     columns: NewForecastColumns({
       selectedUnit,

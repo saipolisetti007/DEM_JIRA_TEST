@@ -5,6 +5,7 @@ import { Button, Typography } from '@mui/material';
 import PromoCard from './PromoCard';
 import { Link } from 'react-router-dom';
 
+// Event Promo Grid component card
 const EventPromoGrid = () => {
   return (
     <PromoCard backgroundImage={BackgroundLaptop} backgroundColor="#52ADE9">

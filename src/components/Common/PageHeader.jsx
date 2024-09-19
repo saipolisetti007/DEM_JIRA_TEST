@@ -6,21 +6,22 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import BlankExcelDownload from './BlankExcelDownload';
 import UploadFileDialog from './UploadFileDialog';
 
+// PageHeader is a functional component that renders the header section of a page with title, subtitle, and action buttons.
 const PageHeader = ({
-  title,
-  subtitle,
-  isDataLoading,
-  handleAddEventOpen,
-  handleDataDownloadExcel,
-  handleDownloadBlankExcel,
-  handleUploadDataExcel
+  title, // The main title to display in the header.
+  subtitle, // The subtitle to display under the main title.
+  isDataLoading, // Boolean indicating if data is currently loading.
+  handleAddEventOpen, // Callback function to handle the "Add New Event" button click.
+  handleDataDownloadExcel, // Callback function to handle downloading data as an Excel file.
+  handleDownloadBlankExcel, // Callback function to handle downloading a blank Excel template.
+  handleUploadDataExcel // Callback function to handle uploading data from an Excel file.
 }) => {
   const [open, setOpen] = useState(false);
-
+  // Function to open the upload file dialog.
   const handleClickOpen = () => {
     setOpen(true);
   };
-
+  // Function to close the upload file dialog.
   const handleClose = () => {
     setOpen(false);
   };
@@ -37,14 +38,18 @@ const PageHeader = ({
           </Typography>
         </div>
         <div className="flex items-center gap-2">
+          {/* Component to handle uploading Excel data */}
           <UploadExcelData
             handleClickOpen={handleClickOpen}
             testId="upload"
             handleUploadDataExcel={handleUploadDataExcel}
             isDataLoading={isDataLoading}
           />
+          {/* Component to handle downloading data as an Excel file */}
           <ExcelWithDataDownload handleDataDownloadExcel={handleDataDownloadExcel} />
+          {/* Component to handle downloading a blank Excel template */}
           <BlankExcelDownload handleDownloadBlankExcel={handleDownloadBlankExcel} />
+          {/* Button to open the "Add New Event" dialog */}
           <Button
             variant="outlined"
             color="success"

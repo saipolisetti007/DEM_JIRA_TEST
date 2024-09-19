@@ -5,19 +5,26 @@ import moment from 'moment';
 
 // Function to set a cookie
 const setCookie = (name, value, days) => {
-  const expires = moment().add(days, 'days');
-  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+  const expires = moment().add(days, 'days'); // Calculate the expiration date
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`; // Set the cookie
 };
 
 // Function to get a cookie by name
 const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+  const value = `; ${document.cookie}`; // Get all cookies
+  const parts = value.split(`; ${name}=`); // Split cookies by the desired name
+  if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift()); // Return the cookie value if found
 };
 
-const COOKIE_NAME = 'columnVisibility';
+const COOKIE_NAME = 'columnVisibility'; // Name of the cookie to store column visibility
 
+/**
+ * ManageColumns component to manage the visibility of table columns.
+ * @param {Object} props - Component props.
+ * @param {Array} props.columns - Array of column objects.
+ * @param {Object} props.columnVisibility - Object representing the visibility of each column.
+ * @param {Function} props.onColumnVisibilityChange - Function to handle column visibility change.
+ */
 const ManageColumns = ({ columns, columnVisibility, onColumnVisibilityChange }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -28,6 +35,7 @@ const ManageColumns = ({ columns, columnVisibility, onColumnVisibilityChange }) 
     setAnchorEl(null);
   };
 
+  // Effect to load saved column visibility from cookies on component mount
   useEffect(() => {
     const savedVisibility = getCookie(COOKIE_NAME);
     if (savedVisibility) {
@@ -38,6 +46,7 @@ const ManageColumns = ({ columns, columnVisibility, onColumnVisibilityChange }) 
     }
   }, []);
 
+  // Handle column visibility change
   const handleColumnVisibilityChange = (changedColumnId, newVisibility) => {
     onColumnVisibilityChange(changedColumnId, newVisibility);
 
@@ -46,7 +55,7 @@ const ManageColumns = ({ columns, columnVisibility, onColumnVisibilityChange }) 
       ...columnVisibility,
       [changedColumnId]: newVisibility
     };
-    setCookie(COOKIE_NAME, JSON.stringify(updatedVisibility), 365);
+    setCookie(COOKIE_NAME, JSON.stringify(updatedVisibility), 365); // Save the updated visibility to cookies
   };
 
   return (

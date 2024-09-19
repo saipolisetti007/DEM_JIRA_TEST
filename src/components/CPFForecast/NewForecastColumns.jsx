@@ -8,7 +8,9 @@ const NewForecastColumns = ({
   handleEditUnits,
   cpfEnabled
 }) => {
+  // State to manage local edit values
   const [localEditValues, setLocalEditValues] = useState({});
+  // Handle change in edit input fields
   const handleEditChange = (rowIndex, columnId, value) => {
     setLocalEditValues((prev) => ({
       ...prev,
@@ -19,15 +21,19 @@ const NewForecastColumns = ({
     }));
   };
 
+  // Handle blur event to save edited values
   const handleBlur = (rowIndex, columnId) => {
     if (localEditValues[rowIndex] && localEditValues[rowIndex][columnId] !== undefined) {
       handleEditUnits(rowIndex, columnId, localEditValues[rowIndex][columnId]);
     }
   };
+
+  // Reset local edit values when selected unit changes
   useEffect(() => {
     setLocalEditValues({});
   }, [selectedUnit]);
 
+  // Define columns for the forecast table
   const columns = useMemo(
     () => [
       {
