@@ -185,6 +185,6 @@ describe('cpfForecastApi', () => {
     performApiRequest.mockResolvedValueOnce(data);
     const result = await fetchThresholdFilters();
     expect(result).toEqual(data);
-    expect(performApiRequest).toHaveBeenCalledWith('cpf/threshold-rules/filters/');
+    expect(performApiRequest).toHaveBeenCalledWith('cpf/threshold-rules/filters?');
   });
 });

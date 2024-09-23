@@ -31,6 +31,74 @@ const mockFilters = {
     }
   }
 };
+const mockSubsectorsFilters = [
+  "Health Care No Detail",
+  "Other Products",
+  "Hair Care",
+  "Baby Care",
+  "Premium Skin Care & Cosmetics",
+  "Family Care",
+  "Skin Care",
+  "Skin and Personal Care",
+  "Hair Care Products",
+  "New Business Unit",
+  "Discontinued Professional Salon",
+  "Blades & Razors",
+  "To Be Deleted",
+  "Discontinued Coffee",
+  "Unknown",
+  "Feminine Care No Detail",
+  "Female Hair Care",
+  "Discontinued Businesses",
+  "Gillette AP/DO & Body Spray",
+  "Discontinued Personal Power",
+  "Chemicals",
+  "Beauty Care No Detail",
+  "Snacks & Coffee No Detail",
+  "Discontinued Snacks",
+  "Mass Skin Care",
+  "Discontinued Cosmetics",
+  "Inactv Incontinence",
+  "Discontinued Prestige",
+  "Gillette Other",
+  "Discontinued Pet Care",
+  "Prestige",
+  "Grooming Care",
+  "Corp Innovation Fund",
+  "Appliances",
+  "Pet Care",
+  "ZInactive Hair Color",
+  "Fabric Care",
+  "Antiperspirant/Deodorant",
+  "Other Products No Detail",
+  "Oral Care",
+  "Other Beauty Care",
+  "Family Care No Detail",
+  "Feminine Care",
+  "Professional Salon",
+  "Baby & Feminine Care No Detail",
+  "Grooming No Detail SS",
+  "Personal Power",
+  "Gillette Personal Care NBD",
+  "Personal Care",
+  "Beauty Care",
+  "Non-Competitor",
+  "Old Skin FYB24",
+  "Discontinued Pharmaceuticals",
+  "Personal Beauty Care",
+  "Wella",
+  "Corporate Activities",
+  "Prestige & Prof Care No Detail",
+  "Personal Cleansing",
+  "Home Care",
+  "Shave Care",
+  "Personal Health Care",
+  "Inactive Sub_Sector",
+  "Feminine Care plus Adult Incontinence",
+  "Color Cosmetics",
+  "Hair Color",
+  "Fabric & Home Care No Detail"
+]
 
 const mockData = {
   results: [
@@ -124,7 +192,6 @@ const simulateData = async () => {
 describe('ThresholdSettingsData Component', () => {
   beforeEach(() => {
     cpfThresholdList.mockResolvedValue(mockData);
-    fetchThresholdFilters.mockResolvedValue(mockFilters);
     cpfThresholdAdd.mockResolvedValue({});
     cpfThresholdEdit.mockResolvedValue({});
     cpfThresholdDelete.mockResolvedValue({});
@@ -181,7 +248,7 @@ describe('ThresholdSettingsData Component', () => {
     await act(async () => {
       fireEvent.click(addButton);
     });
-
+    fetchThresholdFilters.mockResolvedValue(mockSubsectorsFilters);
     // Check if the dialog opened
     await waitFor(() => {
       expect(screen.getByText('Return to Settings')).toBeInTheDocument();
@@ -339,6 +406,10 @@ describe('ThresholdSettingsData Component', () => {
         </Provider>
       )
     );
+    const addButton = screen.getByText('Add New Threshold Rule');
+    await act(async () => {
+      fireEvent.click(addButton);
+    });
     await waitFor(() => {
       expect(fetchThresholdFilters).toHaveBeenCalled();
     });
@@ -353,6 +424,10 @@ describe('ThresholdSettingsData Component', () => {
         </Provider>
       )
     );
+    const addButton = screen.getByText('Add New Threshold Rule');
+    await act(async () => {
+      fireEvent.click(addButton);
+    });
     await waitFor(() => {
       expect(fetchThresholdFilters).toHaveBeenCalled();
     });
@@ -361,7 +436,7 @@ describe('ThresholdSettingsData Component', () => {
   test('should handle form submission correctly add rule', async () => {
     cpfThresholdAdd.mockResolvedValueOnce({});
     cpfThresholdList.mockResolvedValue(mockData);
-    fetchThresholdFilters.mockResolvedValue(mockFilters);
+    fetchThresholdFilters.mockResolvedValue(mockSubsectorsFilters);
     await act(async () =>
       render(
         <Provider store={store}>
@@ -375,7 +450,10 @@ describe('ThresholdSettingsData Component', () => {
     await act(async () => {
       fireEvent.click(addButton);
     });
-
+    await waitFor(() => {
+      expect(fetchThresholdFilters).toHaveBeenCalled();
+    });
+   
     await simulateData();
 
     await act(async () => {
@@ -398,7 +476,7 @@ describe('ThresholdSettingsData Component', () => {
       response: { data: { message: 'Rule already exist ' } }
     });
     cpfThresholdList.mockResolvedValue(mockData);
-    fetchThresholdFilters.mockResolvedValue(mockFilters);
+    fetchThresholdFilters.mockResolvedValue(mockSubsectorsFilters);
     await act(async () =>
       render(
         <Provider store={store}>
@@ -412,7 +490,9 @@ describe('ThresholdSettingsData Component', () => {
     await act(async () => {
       fireEvent.click(addButton);
     });
-
+    await waitFor(() => {
+      expect(fetchThresholdFilters).toHaveBeenCalled();
+    });
     await simulateData();
 
     await act(async () => {
@@ -427,7 +507,7 @@ describe('ThresholdSettingsData Component', () => {
   test('should handle error during adding rule without response message ', async () => {
     cpfThresholdAdd.mockRejectedValueOnce(new Error('error'));
     cpfThresholdList.mockResolvedValue(mockData);
-    fetchThresholdFilters.mockResolvedValue(mockFilters);
+    fetchThresholdFilters.mockResolvedValue(mockSubsectorsFilters);
     await act(async () =>
       render(
         <Provider store={store}>
@@ -441,7 +521,9 @@ describe('ThresholdSettingsData Component', () => {
     await act(async () => {
       fireEvent.click(addButton);
     });
-
+    await waitFor(() => {
+      expect(fetchThresholdFilters).toHaveBeenCalled();
+    });
     await simulateData();
     await act(async () => {
       fireEvent.click(screen.getByText('Save'));
@@ -458,7 +540,7 @@ describe('ThresholdSettingsData Component', () => {
   test('should handle form submission correctly edit rule', async () => {
     cpfThresholdEdit.mockResolvedValueOnce({});
     cpfThresholdList.mockResolvedValue(mockData);
-    fetchThresholdFilters.mockResolvedValue(mockFilters);
+    fetchThresholdFilters.mockResolvedValue(mockSubsectorsFilters);
     await act(async () =>
       render(
         <Provider store={store}>
@@ -475,7 +557,10 @@ describe('ThresholdSettingsData Component', () => {
     await act(async () => {
       fireEvent.click(EditButton);
     });
-
+   
+    await waitFor(() => {
+      expect(fetchThresholdFilters).toHaveBeenCalled();
+    });
     await simulateData();
 
     await act(async () => {
@@ -496,7 +581,7 @@ describe('ThresholdSettingsData Component', () => {
       response: { data: { message: 'Rule already exist ' } }
     });
     cpfThresholdList.mockResolvedValue(mockData);
-    fetchThresholdFilters.mockResolvedValue(mockFilters);
+    fetchThresholdFilters.mockResolvedValue(mockSubsectorsFilters);
     await act(async () =>
       render(
         <Provider store={store}>
@@ -513,7 +598,10 @@ describe('ThresholdSettingsData Component', () => {
     await act(async () => {
       fireEvent.click(EditButton);
     });
-
+   
+    await waitFor(() => {
+      expect(fetchThresholdFilters).toHaveBeenCalled();
+    });
     await simulateData();
 
     await act(async () => {
@@ -528,7 +616,7 @@ describe('ThresholdSettingsData Component', () => {
   test('should handle error during editing rule without response message ', async () => {
     cpfThresholdEdit.mockRejectedValueOnce(new Error('error'));
     cpfThresholdList.mockResolvedValue(mockData);
-    fetchThresholdFilters.mockResolvedValue(mockFilters);
+    fetchThresholdFilters.mockResolvedValue(mockSubsectorsFilters);
     await act(async () =>
       render(
         <Provider store={store}>
@@ -545,7 +633,10 @@ describe('ThresholdSettingsData Component', () => {
     await act(async () => {
       fireEvent.click(EditButton);
     });
-
+    
+    await waitFor(() => {
+      expect(fetchThresholdFilters).toHaveBeenCalled();
+    });
     await simulateData();
     await act(async () => {
       fireEvent.click(screen.getByText('Save Changes'));

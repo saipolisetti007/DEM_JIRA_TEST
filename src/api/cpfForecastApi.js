@@ -80,6 +80,7 @@ export const cpfThresholdDelete = async (rowId) => {
 };
 
 // Fetches filters for CPF threshold rules for subsector, category, brand and brandform
-export const fetchThresholdFilters = async () => {
-  return await performApiRequest('cpf/threshold-rules/filters/');
+export const fetchThresholdFilters = async (...reqParams) => {
+  const url = `cpf/threshold-rules/filters?${reqParams}`;
+  return await performApiRequest(url);
 };

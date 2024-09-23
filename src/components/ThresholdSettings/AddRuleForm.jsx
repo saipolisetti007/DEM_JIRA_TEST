@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import FormInputControl from '../Common/FormInputControl';
 import { Alert, Box, Grid, Typography } from '@mui/material';
 import { useFormContext, useWatch } from 'react-hook-form';
-
-// Component for adding or editing a rule
+import { fetchThresholdFilters } from '../../api/cpfForecastApi';
 const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [brandForms, setBrandForms] = useState([]);
   // Destructure methods from useFormContext
-  const { setValue, getValues } = useFormContext();
+  const { setValue, getValues, clearErrors } = useFormContext();
   const currentValues = getValues(); // Get current form values
 
   // Watch specific form fields for changes
@@ -28,34 +27,50 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
     name: 'brand'
   });
 
+  const fetchSubsequentFilters = async (reqParams) => {
+    return await fetchThresholdFilters(reqParams);
+  };
+
+  // added to prevent repetitive api calls
+  const stableSubsector = useMemo(() => subsector, [subsector]);
+  const stableCategory = useMemo(() => category, [category]);
+  const stableBrand = useMemo(() => brand, [brand]);
+
   // Effect to update categories when subsector changes
   useEffect(() => {
     if (subsector) {
-      const categories = filters.rawData[subsector] ? Object.keys(filters.rawData[subsector]) : [];
-      setCategories(categories);
-      setBrands([]);
-      setBrandForms([]);
+      const reqParams = 'subsector=' + subsector;
+      fetchSubsequentFilters(reqParams).then((data) => {
+        const categories = data || [];
+        setCategories(categories);
+        setBrands([]);
+        setBrandForms([]);
+      });
     }
-  }, [subsector, filters.rawData]);
+  }, [stableSubsector]);
 
   // Effect to update brands when category changes
   useEffect(() => {
     if (category) {
-      const brands = filters.rawData[subsector]?.[category]
-        ? Object.keys(filters.rawData[subsector][category])
-        : [];
-      setBrands(brands);
-      setBrandForms([]);
+      const reqParams = 'subsector=' + subsector + '&category=' + category;
+      fetchSubsequentFilters(reqParams).then((data) => {
+        const brands = data || [];
+        setBrands(brands);
+        setBrandForms([]);
+      });
     }
-  }, [category, subsector, filters.rawData]);
+  }, [stableCategory]);
 
   // Effect to update brand forms when brand changes
   useEffect(() => {
     if (brand) {
-      const brandForms = filters.rawData[subsector]?.[category]?.[brand] || [];
-      setBrandForms(brandForms);
+      const reqParams = 'subsector=' + subsector + '&category=' + category + '&brand=' + brand;
+      fetchSubsequentFilters(reqParams).then((data) => {
+        const brandForms = data || [];
+        setBrandForms(brandForms);
+      });
     }
-  }, [brand, category, subsector, filters.rawData]);
+  }, [stableBrand]);
 
   // Options for select inputs
   const compareOptions = ['Customer Forecast'];
@@ -74,6 +89,7 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
     if (operation === '% difference') {
       if (unitsValue !== '%') {
         setValue('unit', '%');
+        clearErrors('unit');
       }
     } else if (
       operation === 'Abs. unit difference' &&

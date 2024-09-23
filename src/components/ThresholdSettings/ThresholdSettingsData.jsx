@@ -24,6 +24,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import InfoSnackBar from '../Common/InfoSnackBar';
 import DialogComponent from '../Common/DialogComponent';
 import { useSelector } from 'react-redux';
+import PageLoader from '../Common/PageLoader';
 
 const ThresholdSettingsData = () => {
   const [data, setData] = useState([]);
@@ -42,6 +43,7 @@ const ThresholdSettingsData = () => {
   const { customerId } = useSelector((state) => state.userProfileData); // Get customerId from Redux store
   const methods = useForm({ mode: 'onChange', defaultValues: rowData || {} }); // Initialize react-hook-form
   const { handleSubmit, control, formState } = methods; // Destructure methods from useForm
+  const [isPageLoading, setIsPageLoading] = useState(false);
   // State to manage pagination
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -58,7 +60,6 @@ const ThresholdSettingsData = () => {
     if (customerId) {
       fetchData(customerId);
     }
-    fetchFilters();
   }, [customerId]);
 
   // Reset form when mode or rowData changes
@@ -90,7 +91,7 @@ const ThresholdSettingsData = () => {
     try {
       const data = await fetchThresholdFilters();
       setFilters({
-        subsectors: data ? Object.keys(data) : [],
+        subsectors: data || [],
         rawData: data || {}
       });
     } catch (error) {
@@ -99,11 +100,14 @@ const ThresholdSettingsData = () => {
   };
 
   //Add Rule functions
-  const handleAddRule = () => {
+  const handleAddRule = async () => {
     setIsMode('add');
     methods.reset({});
     setErrorMessage('');
     setOpenDialog(true);
+    setIsPageLoading(true);
+    await fetchFilters();
+    setIsPageLoading(false);
   };
 
   //Save Rule
@@ -140,11 +144,15 @@ const ThresholdSettingsData = () => {
   };
 
   //Edit Rule functions
-  const handleEditRule = (row) => {
+
+  const handleEditRule = async (row) => {
     setIsMode('edit');
     setOpenDialog(true);
     setErrorMessage('');
     setRowData(row.original);
+    setIsPageLoading(true);
+    await fetchFilters();
+    setIsPageLoading(false);
   };
 
   //Edit Save Rule
@@ -336,6 +344,11 @@ const ThresholdSettingsData = () => {
           disabled={!formState.isValid}
           handleConfirm={handleSave}
           handleClose={handleDialogClose}>
+          {isPageLoading && (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <PageLoader />
+            </div>
+          )}
           <FormProvider {...methods}>
             <AddRuleForm control={control} filters={filters} errorMessage={errorMessage} />
           </FormProvider>
@@ -349,6 +362,11 @@ const ThresholdSettingsData = () => {
           disabled={!formState.isValid}
           handleConfirm={handleEditSave}
           handleClose={handleDialogClose}>
+          {isPageLoading && (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <PageLoader />
+            </div>
+          )}
           <FormProvider {...methods}>
             <AddRuleForm
               control={control}

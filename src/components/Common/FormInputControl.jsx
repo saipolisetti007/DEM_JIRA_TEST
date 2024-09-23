@@ -137,7 +137,7 @@ const FormInputControl = ({
                 ''
               )
             }>
-            {options.length > 0 ? (
+            {options.length > 0 && options[0] ? (
               options.map((option) => (
                 <MenuItem key={option} value={option}>
                   {option}
