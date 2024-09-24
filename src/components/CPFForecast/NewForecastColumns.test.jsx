@@ -141,6 +141,9 @@ describe('NewForecastColumns', () => {
       if (column.accessorKey === 'percentChange') {
         const row = { original: { [column.id]: 5 } };
         expect(column.Cell({ row, column })).toBe('5.00%');
+        // New test case for value == null
+        const rowWithNullValue = { original: { [column.id]: null } };
+        expect(column.Cell({ row: rowWithNullValue, column })).toBe(' ');
       } else if (column.accessorKey === 'events') {
         render(<column.Cell {...cellProps} />);
       } else {

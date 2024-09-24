@@ -46,12 +46,11 @@ describe('CPFForecast', () => {
       </Provider>
     );
 
-    expect(screen.getByText('Pending Approval : ...')).toBeInTheDocument();
+    expect(screen.getByText('Forecast Warning : ...')).toBeInTheDocument();
   });
 
   test('should fetch and display data correctly', async () => {
     cpfPendingCount.mockResolvedValueOnce({
-      pending_approvals_count: 5,
       missing_count: 3,
       warning_count: 2
     });
@@ -65,7 +64,6 @@ describe('CPFForecast', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Pending Approval : 5')).toBeInTheDocument();
       expect(screen.getByText('Forecast Warning : 2')).toBeInTheDocument();
       expect(screen.getByText('Forecast Missing : 3')).toBeInTheDocument();
     });
@@ -82,7 +80,7 @@ describe('CPFForecast', () => {
       </Provider>
     );
 
-    await waitFor(() => expect(screen.getByText('Pending Approval : ...')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Forecast Warning : ...')).toBeInTheDocument());
   });
 
   test('should render NavigationButton components correctly', () => {

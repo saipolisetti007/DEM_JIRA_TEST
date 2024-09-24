@@ -5,10 +5,6 @@ const PreviousForecastColumns = ({ selectedUnit, convertedUnits }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'week',
-        header: 'Weeks'
-      },
-      {
         accessorKey: 'prevUnits',
         header: 'Units',
         Cell: ({ row, column }) => convertedUnits(row.original[column.id], selectedUnit)

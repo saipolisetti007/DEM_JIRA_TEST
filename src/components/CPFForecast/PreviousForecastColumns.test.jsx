@@ -19,8 +19,8 @@ describe('PreviousForecastColumns', () => {
     );
 
     const columns = result.current;
-    expect(columns).toHaveLength(3);
-    const headers = ['Weeks', 'Units', 'Event type'];
+    expect(columns).toHaveLength(2);
+    const headers = ['Units', 'Event type'];
     headers.forEach((header, index) => {
       expect(columns[index].header).toBe(header);
     });

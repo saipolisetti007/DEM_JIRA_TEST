@@ -48,7 +48,10 @@ const NewForecastColumns = ({
         enableEditing: false,
         Cell: ({ row, column }) => {
           const value = row.original[column.id];
-          const numericValue = value != null ? Number(value) : 0;
+          if (value == null) {
+            return ' ';
+          }
+          const numericValue = Number(value);
           return `${numericValue.toFixed(2)}%`;
         }
       },

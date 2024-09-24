@@ -165,6 +165,9 @@ const SkuItem = ({
 
   // Convert units based on selected unit type
   const convertedUnits = (value, unit) => {
+    if (value === null) {
+      return '';
+    }
     let convertedValue;
     switch (unit) {
       case 'cs':
@@ -179,7 +182,7 @@ const SkuItem = ({
       default:
         convertedValue = Math.round(value);
     }
-    return convertedValue;
+    return convertedValue.toString();
   };
 
   // Handle edit units
@@ -350,6 +353,7 @@ const SkuItem = ({
             rowSelection={rowSelection}
             handleCheckboxChange={handleCheckboxChange}
             setRowSelection={setRowSelection}
+            prevUnits={row.original.prevUnits}
           />
         )
       }
@@ -413,7 +417,7 @@ const SkuItem = ({
                 </Typography>
               </div>
 
-              <div className="mt-2" data-testid="NewForecastTable">
+              <div className="mt-2 cpftable" data-testid="NewForecastTable">
                 <MRT_ToolbarAlertBanner table={NewForecastTable} className="info-message" />
                 <MRT_TableContainer table={NewForecastTable} />
               </div>
@@ -424,7 +428,7 @@ const SkuItem = ({
                 Last Submitted Forecast
               </Typography>
 
-              <div className="mt-2">
+              <div className="mt-2 cpftable">
                 <MRT_ToolbarAlertBanner table={previousForecastTable} className="info-message" />
                 <MRT_TableContainer table={previousForecastTable} />
               </div>

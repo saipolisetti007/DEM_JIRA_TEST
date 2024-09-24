@@ -54,7 +54,10 @@ td.MuiTableCell-root[data-pinned='true'] {
   border-left: 0 !important;
   border-right: 0 !important;
 }
-
+.cpftable th.MuiTableCell-root,
+.cpftable td.MuiTableCell-root {
+  height: 40px !important;
+}
 td.MuiTableCell-root .Mui-disabled {
   display: none;
 }

@@ -24,6 +24,7 @@ describe('CellComponent', () => {
         rowSelection={rowSelection}
         handleCheckboxChange={mockHandleCheckboxChange}
         setRowSelection={mockSetRowSelection}
+        prevUnits={null}
       />
     );
   });
@@ -31,7 +32,7 @@ describe('CellComponent', () => {
   test('renders correctly', () => {
     expect(screen.getByRole('checkbox')).toBeInTheDocument();
     expect(screen.getByTestId('WarningAmberIcon')).toBeInTheDocument();
-    expect(screen.getByTestId('ErrorOutlineIcon')).toBeInTheDocument();
+    expect(screen.getByTestId('ErrorIcon')).toBeInTheDocument();
   });
 
   test('renders checkbox when row.original.active is true', () => {
@@ -43,7 +44,7 @@ describe('CellComponent', () => {
   });
 
   test('renders ErrorOutlineIcon when row.original.forecastMissing is true', () => {
-    expect(screen.getByTestId('ErrorOutlineIcon')).toBeInTheDocument();
+    expect(screen.getByTestId('ErrorIcon')).toBeInTheDocument();
   });
 
   test('calls handleCheckboxChange when checkbox is clicked', () => {
