@@ -58,24 +58,24 @@ export const cpfPendingCount = async () => {
 };
 
 export const cpfThresholdList = async (customerId) => {
-  const url = `/cpf/items/?customer=${customerId}`;
+  const url = `/cpf/threshold-items/?customer=${customerId}`;
   return await performApiRequest(url);
 };
 
 // Adds a new CPF threshold rule based on the provided data
 export const cpfThresholdAdd = async (data) => {
-  await performApiRequest('cpf/add/', 'POST', data);
+  await performApiRequest('cpf/threshold-add/', 'POST', data);
 };
 
 // Edits an existing CPF threshold rule based on the provided data
 export const cpfThresholdEdit = async (rowId, data) => {
-  const url = `/cpf/edit/${rowId}/`;
+  const url = `/cpf/threshold-edit/${rowId}/`;
   await performApiRequest(url, 'PUT', data);
 };
 
 // Deletes a CPF threshold rule based on the provided row ID
 export const cpfThresholdDelete = async (rowId) => {
-  const url = `/cpf/items/${rowId}/cancel/`;
+  const url = `/cpf/threshold-items/${rowId}/cancel/`;
   await performApiRequest(url, 'DELETE');
 };
 

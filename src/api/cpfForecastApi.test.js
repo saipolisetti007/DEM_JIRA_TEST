@@ -152,14 +152,14 @@ describe('cpfForecastApi', () => {
     performApiRequest.mockResolvedValueOnce(data);
     const result = await cpfThresholdList(customerId);
     expect(result).toEqual(data);
-    const url = `/cpf/items/?customer=${customerId}`;
+    const url = `/cpf/threshold-items/?customer=${customerId}`;
     expect(performApiRequest).toHaveBeenCalledWith(url);
   });
   test('adds new row data', async () => {
     const rowData = { id: 1, name: 'test' };
     performApiRequest.mockResolvedValueOnce(rowData);
     await cpfThresholdAdd(rowData);
-    expect(performApiRequest).toHaveBeenCalledWith('cpf/add/', 'POST', rowData);
+    expect(performApiRequest).toHaveBeenCalledWith('cpf/threshold-add/', 'POST', rowData);
   });
 
   test('updates row data', async () => {
@@ -168,7 +168,7 @@ describe('cpfForecastApi', () => {
     performApiRequest.mockResolvedValueOnce(rowData);
 
     await cpfThresholdEdit(rowId, rowData);
-    const url = `/cpf/edit/${rowId}/`;
+    const url = `/cpf/threshold-edit/${rowId}/`;
     expect(performApiRequest).toHaveBeenCalledWith(url, 'PUT', rowData);
   });
 
@@ -176,7 +176,7 @@ describe('cpfForecastApi', () => {
     const rowId = 1;
     performApiRequest.mockResolvedValueOnce(rowId);
     await cpfThresholdDelete(rowId);
-    const url = `/cpf/items/${rowId}/cancel/`;
+    const url = `/cpf/threshold-items/${rowId}/cancel/`;
     expect(performApiRequest).toHaveBeenCalledWith(url, 'DELETE');
   });
 
