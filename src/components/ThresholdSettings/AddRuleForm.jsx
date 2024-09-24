@@ -39,6 +39,10 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
   // Effect to update categories when subsector changes
   useEffect(() => {
     if (subsector) {
+      setCategories([]);
+      setValue('category', undefined);
+      setValue('brand', undefined);
+      setValue('brand_form', undefined);
       const reqParams = 'subsector=' + subsector;
       fetchSubsequentFilters(reqParams).then((data) => {
         const categories = data || [];
@@ -52,6 +56,9 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
   // Effect to update brands when category changes
   useEffect(() => {
     if (category) {
+      setBrands([]);
+      setValue('brand', undefined);
+      setValue('brand_form', undefined);
       const reqParams = 'subsector=' + subsector + '&category=' + category;
       fetchSubsequentFilters(reqParams).then((data) => {
         const brands = data || [];
@@ -64,6 +71,8 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
   // Effect to update brand forms when brand changes
   useEffect(() => {
     if (brand) {
+      setBrandForms([]);
+      setValue('brand_form', undefined);
       const reqParams = 'subsector=' + subsector + '&category=' + category + '&brand=' + brand;
       fetchSubsequentFilters(reqParams).then((data) => {
         const brandForms = data || [];
@@ -125,7 +134,8 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
               label="Category"
               type="select"
               options={categories}
-              disabled={!subsector}
+              isDisabled={!subsector && !isEdit}
+              loading={subsector && categories.length === 0}
             />
           </Grid>
           <Grid item xs={3}>
@@ -135,7 +145,8 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
               label="Brand"
               type="select"
               options={brands}
-              disabled={!category}
+              isDisabled={!category && !isEdit}
+              loading={category && brands.length === 0}
             />
           </Grid>
           <Grid item xs={3}>
@@ -145,7 +156,8 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
               label="Brand form"
               type="select"
               options={brandForms}
-              disabled={!brand}
+              isDisabled={!brand && !isEdit}
+              loading={brand && brandForms.length === 0}
             />
           </Grid>
         </Grid>

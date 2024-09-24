@@ -7,7 +7,8 @@ import {
   FormControlLabel,
   FormControl,
   FormHelperText,
-  Autocomplete
+  Autocomplete,
+  Typography
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -29,7 +30,8 @@ const FormInputControl = ({
   isDisabled, // Boolean to determine if the field is disabled
   defaultValue, // Default value for the form field
   isChecked, // Boolean to determine if the switch is checked by default
-  rules // Validation rules for the form field
+  rules, // Validation rules for the form field
+  loading // Boolean to determine if the field is loading
 }) => {
   // Get clearErrors function from useFormContext
   const { clearErrors } = useFormContext();
@@ -111,44 +113,52 @@ const FormInputControl = ({
         );
       case 'select':
         return (
-          <TextField
-            {...field}
-            select
-            label={label}
-            data-testid={label}
-            aria-labelledby={label}
-            variant="outlined"
-            fullWidth
-            required={isRequired}
-            size="small"
-            color={isWarning ? 'warning' : ''}
-            focused={isWarning}
-            error={!!error && !isWarning}
-            helperText={
-              error ? (
-                <span
-                  style={{
-                    color: isWarning ? theme.palette.warning.main : ''
-                  }}>
-                  {isWarning ? <WarningIcon fontSize="small" /> : <ErrorIcon fontSize="small" />}
-                  {error.message}
-                </span>
+          <>
+            <TextField
+              {...field}
+              select
+              label={label}
+              data-testid={label}
+              aria-labelledby={label}
+              variant="outlined"
+              fullWidth
+              required={isRequired}
+              size="small"
+              color={isWarning ? 'warning' : ''}
+              focused={isWarning}
+              error={!!error && !isWarning}
+              disabled={isDisabled}
+              helperText={
+                error ? (
+                  <span
+                    style={{
+                      color: isWarning ? theme.palette.warning.main : ''
+                    }}>
+                    {isWarning ? <WarningIcon fontSize="small" /> : <ErrorIcon fontSize="small" />}
+                    {error.message}
+                  </span>
+                ) : (
+                  ''
+                )
+              }>
+              {options.length > 0 && options[0] ? (
+                options.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))
               ) : (
-                ''
-              )
-            }>
-            {options.length > 0 && options[0] ? (
-              options.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
+                <MenuItem value="" disabled>
+                  No Options Available
                 </MenuItem>
-              ))
-            ) : (
-              <MenuItem value="" disabled>
-                No Options Available
-              </MenuItem>
+              )}
+            </TextField>
+            {loading && (
+              <Typography component="span" variant="body2" marginLeft={0.5}>
+                Loading options...
+              </Typography>
             )}
-          </TextField>
+          </>
         );
       case 'autocomplete':
         return (

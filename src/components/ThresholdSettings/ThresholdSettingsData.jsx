@@ -51,8 +51,7 @@ const ThresholdSettingsData = () => {
   });
   // State to manage filters
   const [filters, setFilters] = useState({
-    subsectors: [],
-    rawData: {}
+    subsectors: []
   });
 
   // Fetch data and filters when customerId changes
@@ -91,8 +90,7 @@ const ThresholdSettingsData = () => {
     try {
       const data = await fetchThresholdFilters();
       setFilters({
-        subsectors: data || [],
-        rawData: data || {}
+        subsectors: data || []
       });
     } catch (error) {
       console.error('Failed to load filters:', error);
@@ -339,42 +337,44 @@ const ThresholdSettingsData = () => {
         <AddEditFormDialog
           open={openDialog}
           title="Add New Threshold Rule"
-          cancelText="Return to Settings"
-          confirmText={isSaving ? 'Saving' : 'Save'}
+          cancelText={isPageLoading ? null : 'Return to Settings'}
+          confirmText={isPageLoading ? null : isSaving ? 'Saving' : 'Save'}
           disabled={!formState.isValid}
           handleConfirm={handleSave}
           handleClose={handleDialogClose}>
-          {isPageLoading && (
+          {isPageLoading ? (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <PageLoader />
             </div>
+          ) : (
+            <FormProvider {...methods}>
+              <AddRuleForm control={control} filters={filters} errorMessage={errorMessage} />
+            </FormProvider>
           )}
-          <FormProvider {...methods}>
-            <AddRuleForm control={control} filters={filters} errorMessage={errorMessage} />
-          </FormProvider>
         </AddEditFormDialog>
       ) : (
         <AddEditFormDialog
           open={openDialog}
           title="Edit Threshold Rule"
-          cancelText="Cancel"
-          confirmText={isSaving ? 'Saving' : 'Save Changes'}
+          cancelText={isPageLoading ? null : 'Cancel'}
+          confirmText={isPageLoading ? null : isSaving ? 'Saving' : 'Save Changes'}
           disabled={!formState.isValid}
           handleConfirm={handleEditSave}
           handleClose={handleDialogClose}>
-          {isPageLoading && (
+          {isPageLoading ? (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <PageLoader />
             </div>
+          ) : (
+            <FormProvider {...methods}>
+              <AddRuleForm
+                control={control}
+                filters={filters}
+                errorMessage={errorMessage}
+                isEdit={true}
+              />
+            </FormProvider>
           )}
-          <FormProvider {...methods}>
-            <AddRuleForm
-              control={control}
-              filters={filters}
-              errorMessage={errorMessage}
-              isEdit={true}
-            />
-          </FormProvider>
         </AddEditFormDialog>
       )}
 

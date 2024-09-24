@@ -38,12 +38,16 @@ const AddEditFormDialog = ({
       </DialogTitle>
       <DialogContent sx={{ minWidth: '950px' }}>{children}</DialogContent>
       <DialogActions sx={{ mb: 1 }}>
-        <Button color="primary" variant="outlined" onClick={handleClose}>
-          {cancelText}
-        </Button>
-        <Button color="primary" variant="contained" onClick={handleConfirm}>
-          {confirmText}
-        </Button>
+        {cancelText && (
+          <Button color="primary" variant="outlined" onClick={handleClose}>
+            {cancelText}
+          </Button>
+        )}
+        {confirmText && (
+          <Button color="primary" variant="contained" onClick={handleConfirm}>
+            {confirmText}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );
