@@ -33,8 +33,8 @@ describe('CPFForecast', () => {
       </Provider>
     );
 
-    expect(screen.getByText('CPF forecast')).toBeInTheDocument();
-    expect(screen.getByText('Stay up to date with the shipping forecast')).toBeInTheDocument();
+    expect(screen.getByText('CPF Review')).toBeInTheDocument();
+    expect(screen.getByText('Check the forecast for your shipment')).toBeInTheDocument();
   });
 
   test('should display loading state initially', () => {
@@ -46,7 +46,7 @@ describe('CPFForecast', () => {
       </Provider>
     );
 
-    expect(screen.getByText('Forecast Warning : ...')).toBeInTheDocument();
+    expect(screen.getByText('Alerts : ...')).toBeInTheDocument();
   });
 
   test('should fetch and display data correctly', async () => {
@@ -64,8 +64,8 @@ describe('CPFForecast', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Forecast Warning : 2')).toBeInTheDocument();
-      expect(screen.getByText('Forecast Missing : 3')).toBeInTheDocument();
+      expect(screen.getByText('Alerts : 2')).toBeInTheDocument();
+      expect(screen.getByText('Missing : 3')).toBeInTheDocument();
     });
   });
 
@@ -80,7 +80,7 @@ describe('CPFForecast', () => {
       </Provider>
     );
 
-    await waitFor(() => expect(screen.getByText('Forecast Warning : ...')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Alerts : ...')).toBeInTheDocument());
   });
 
   test('should render NavigationButton components correctly', () => {
@@ -92,7 +92,7 @@ describe('CPFForecast', () => {
       </Provider>
     );
     // Check if the link with the correct URL and text is present in the document
-    const linkElement = screen.getByRole('link', { name: 'Forecast Missing : ...' });
+    const linkElement = screen.getByRole('link', { name: 'Missing : ...' });
     expect(linkElement).toBeInTheDocument();
     expect(linkElement).toHaveAttribute('href', '/cpf-forecast?status=Forecast Missing');
   });

@@ -38,33 +38,33 @@ const CPFForecast = () => {
         <img src={CPF_GRAPH} alt="DEM Logo" width={62} height={62} />
       </div>
       <div className="text-left mx-8">
-        <Typography variant="h2">CPF forecast</Typography>
-        <Typography variant="subtitle1">Stay up to date with the shipping forecast</Typography>
+        <Typography variant="h2">CPF Review</Typography>
+        <Typography variant="subtitle1">Check the forecast for your shipment</Typography>
       </div>
-      <div className="text-center mx-4">
-        <Button
-          component={Link}
-          to="/cpf-forecast?status=Forecast Warning"
-          variant="contained"
-          color="warning"
-          size="small"
-          className="m-1"
-          sx={{
-            paddingX: 1.5
-          }}>
-          Forecast Warning : {loading ? '...' : warningCount}
-        </Button>
+      <div className="text-left mx-4">
         <Button
           component={Link}
           to="/cpf-forecast?status=Forecast Missing"
           variant="contained"
           color="error"
-          size="small"
           className="my-2"
+          size="small"
           sx={{
-            paddingX: 1.5
+            paddingX: 2.5
           }}>
-          Forecast Missing : {loading ? '...' : missingCount}
+          Missing : {loading ? '...' : missingCount}
+        </Button>
+        <Button
+          component={Link}
+          to="/cpf-forecast?status=Forecast Warning"
+          variant="contained"
+          color="warning"
+          className="m-1"
+          size="small"
+          sx={{
+            paddingX: 2.5
+          }}>
+          Alerts : {loading ? '...' : warningCount}
         </Button>
       </div>
     </PromoCard>

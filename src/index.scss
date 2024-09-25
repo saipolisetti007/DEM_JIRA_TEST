@@ -138,3 +138,11 @@ th.custom-row-actions.MuiTableCell-root[data-pinned='true']:before {
 .column-filter {
   min-width: 220px !important;
 }
+
+.material-card {
+  width: 32.5%;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  background: linear-gradient(90deg, #ffffff 0%, #f2f9fd 100%);
+  padding: 20px 30px 20px 30px;
+  border-radius: 8px 0px 0px 0px;
+}

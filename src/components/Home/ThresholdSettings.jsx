@@ -16,7 +16,7 @@ const ThresholdSettings = () => {
         <Typography variant="h2">Threshold settings</Typography>
         <Typography variant="subtitle1">Adjust the settings and manage the forecast</Typography>
       </div>
-      <div className="text-right mx-8">
+      <div className="text-left mx-8">
         <Button
           component={Link}
           to="/threshold-settings"
@@ -25,12 +25,12 @@ const ThresholdSettings = () => {
           size="small"
           sx={{
             backgroundColor: '#fff',
-            paddingX: 5,
+            paddingX: 2.5,
             '&:hover': {
               backgroundColor: '#f1f1f1' // Custom hover background color
             }
           }}>
-          See More
+          Show More
         </Button>
       </div>
     </PromoCard>

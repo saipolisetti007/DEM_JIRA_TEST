@@ -16,7 +16,7 @@ const EventPromoGrid = () => {
         <Typography variant="h2">Event Promo Plan</Typography>
         <Typography variant="subtitle1">Manage events in your promo grid</Typography>
       </div>
-      <div className="text-right mx-8">
+      <div className="text-left mx-8">
         <Button
           component={Link}
           to="/promo-grid"
@@ -25,12 +25,12 @@ const EventPromoGrid = () => {
           size="small"
           sx={{
             backgroundColor: '#fff',
-            paddingX: 5,
+            paddingX: 2.5,
             '&:hover': {
               backgroundColor: '#f1f1f1'
             }
           }}>
-          See More
+          Show More
         </Button>
       </div>
     </PromoCard>

@@ -46,7 +46,7 @@ describe('EventPromoGrid', () => {
       </MemoryRouter>
     );
 
-    const linkElement = screen.getByRole('link', { name: 'See More' });
+    const linkElement = screen.getByRole('link', { name: 'Show More' });
     expect(linkElement).toBeInTheDocument();
     expect(linkElement).toHaveAttribute('href', '/promo-grid');
   });
