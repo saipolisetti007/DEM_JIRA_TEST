@@ -9,7 +9,7 @@ axios.interceptors.request.use(
     // Retrieve token and expiration from session storage
     let token = sessionStorage.getItem('accessToken');
     let expiration = sessionStorage.getItem('accessTokenExpiration');
-    const customerId = localStorage.getItem('customerId'); // Retrieve customer ID from local storage
+    const customerId = sessionStorage.getItem('customerId'); // Retrieve customer ID from session storage
     // If no token or token is expired, get a new access token
     if (!token || (expiration && new Date(expiration) <= new Date())) {
       token = await getAccessToken();

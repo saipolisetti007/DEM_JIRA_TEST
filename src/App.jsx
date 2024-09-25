@@ -6,7 +6,7 @@ import SignIn from './components/SignIn/SignIn';
 import msalInstance, { getAccessToken } from './auth/msalInstance';
 import SecondaryNavBar from '../src/components/Header/SecondaryNavBar';
 import DefaultPageLoader from './components/Common/DefaultPageLoader';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { fetchUserProfile } from './components/Header/userProfileSlice';
 import { fetchCountries } from './components/PromoGrid/countryCodeSlice';
 
@@ -16,8 +16,6 @@ const App = () => {
   const activeAccount = msalInstance?.getActiveAccount();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const userProfile = useSelector((state) => state.userProfileData.userData);
-  const countries = useSelector((state) => state.countriesData.countriesData);
 
   // Handle redirect promise and set authentication state
   useEffect(() => {
@@ -33,14 +31,14 @@ const App = () => {
   // Fetch user profile and countries data if active account exists
   useEffect(() => {
     if (activeAccount) {
-      const storedUserData = JSON.parse(localStorage.getItem('userData'));
-      const countriesData = JSON.parse(localStorage.getItem('countriesData'));
-      // Fetch countries data if not present or different from the current state
-      if (!countriesData || JSON.stringify(countriesData) !== JSON.stringify(countries)) {
+      const storedUserData = JSON.parse(sessionStorage.getItem('userData'));
+      const countriesData = JSON.parse(sessionStorage.getItem('countriesData'));
+      // Fetch countries data if not present in session storage
+      if (!countriesData) {
         dispatch(fetchCountries());
       }
-      // Fetch user profile data if not present or different from the current state
-      if (!storedUserData || JSON.stringify(storedUserData) !== JSON.stringify(userProfile)) {
+      // Fetch user profile data if not present  in session storage
+      if (!storedUserData) {
         setIsAuthenticated(false);
         dispatch(fetchUserProfile()).then(() => {
           setIsAuthenticated(true);
@@ -49,7 +47,7 @@ const App = () => {
         setIsAuthenticated(true);
       }
     }
-  }, [activeAccount, dispatch, userProfile, countries]);
+  }, [activeAccount, dispatch]);
 
   // Show loader if not authenticated
   if (!isAuthenticated) {

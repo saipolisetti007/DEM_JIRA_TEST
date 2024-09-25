@@ -17,7 +17,7 @@ export const fetchCountries = createAsyncThunk(
 const countryCodeSlice = createSlice({
   name: 'countriesData',
   initialState: {
-    countriesData: JSON.parse(localStorage.getItem('countriesData')) || [], // Initialize with data from local storage or empty array
+    countriesData: JSON.parse(sessionStorage.getItem('countriesData')) || [], // Initialize with data from sessionStorage or empty array
     isLoading: false,
     error: null
   },
@@ -33,7 +33,7 @@ const countryCodeSlice = createSlice({
       .addCase(fetchCountries.fulfilled, (state, action) => {
         state.isLoading = false;
         state.countriesData = action.payload;
-        localStorage.setItem('countriesData', JSON.stringify(action.payload)); // Save to local storage
+        sessionStorage.setItem('countriesData', JSON.stringify(action.payload)); // Save to session Storage
       })
       // Handle rejected state of fetchCountries
       .addCase(fetchCountries.rejected, (state, action) => {

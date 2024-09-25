@@ -10,16 +10,16 @@ export const fetchUserProfile = createAsyncThunk('api/fetchUserProfile', async (
 const userProfileSlice = createSlice({
   name: 'userProfileData',
   initialState: {
-    userData: JSON.parse(localStorage.getItem('userData')) || null, // Initial user data from localStorage or null
+    userData: JSON.parse(sessionStorage.getItem('userData')) || null, // Initial user data from sessionStorage or null
     status: 'idle',
     error: null,
-    customerId: localStorage.getItem('customerId') || null // Initial customer ID from localStorage or null
+    customerId: sessionStorage.getItem('customerId') || null // Initial customer ID from sessionStorage or null
   },
   reducers: {
-    // Reducer to set customer ID and store it in localStorage
+    // Reducer to set customer ID and store it in sessionStorage
     setCustomerId: (state, action) => {
       state.customerId = action.payload;
-      localStorage.setItem('customerId', action.payload);
+      sessionStorage.setItem('customerId', action.payload);
     }
   },
   extraReducers: (builder) => {
@@ -32,10 +32,10 @@ const userProfileSlice = createSlice({
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.userData = action.payload;
-        localStorage.setItem('userData', JSON.stringify(action.payload));
+        sessionStorage.setItem('userData', JSON.stringify(action.payload));
         if (!state.customerId && action.payload.customers) {
           state.customerId = Object.keys(action.payload.customers)[0];
-          localStorage.setItem('customerId', state.customerId);
+          sessionStorage.setItem('customerId', state.customerId);
         }
       })
       // Handle rejected state of fetchUserProfile
