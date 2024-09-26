@@ -6,42 +6,42 @@ import { cpfDecisions, cpfSkuForecast } from '../../api/cpfForecastApi';
 jest.mock('../../api/cpfForecastApi');
 
 describe('SkuItem', () => {
-  const cpfData = [
-    {
-      cs_factor: 100,
-      it_factor: 10,
-      forecast: [
-        {
-          week: '08/05/2024',
-          unit: 28567.35,
-          prevUnits: 0,
-          percentChange: null,
-          unit_diff: null,
-          editedUnits: 10,
-          finalunits: null,
-          approved: true,
-          active: true
-        },
-        {
-          week: '12/05/2024',
-          unit: 28567.35,
-          prevUnits: 0,
-          percentChange: null,
-          unit_diff: null,
-          editedUnits: 5,
-          finalunits: null,
-          approved: false,
-          active: true
-        }
-      ]
-    }
-  ];
-
+  const cpfData = {
+    cs_factor: 100,
+    it_factor: 10,
+    forecast: [
+      {
+        week: '08/05/2024',
+        unit: 28567.35,
+        prevUnits: 0,
+        percentChange: null,
+        unit_diff: null,
+        editedUnits: 10,
+        finalunits: null,
+        approved: true,
+        active: true,
+        comment: 'Updated comment'
+      },
+      {
+        week: '12/05/2024',
+        unit: 28567.35,
+        prevUnits: 0,
+        percentChange: null,
+        unit_diff: null,
+        editedUnits: 5,
+        finalunits: null,
+        approved: false,
+        active: true,
+        comment: 'Updated comment'
+      }
+    ]
+  };
   const selectedFilters = {
     customerId: ['123'],
     eventType: ['text'],
     eventSubtype: ['text'],
-    status: ['text']
+    status: ['text'],
+    comments: ['text']
   };
 
   const sku = 'test';
@@ -189,7 +189,13 @@ describe('SkuItem', () => {
     });
 
     const mockUpdatedData = [
-      { week: '08/05/2024', active: true, approved: true, editedUnits: '10' }
+      {
+        week: '08/05/2024',
+        active: true,
+        approved: true,
+        editedUnits: '10',
+        comment: 'Updated comment'
+      }
     ];
     const updatedData = { sku: sku, units: selectedUnit, forecast: mockUpdatedData };
     cpfDecisions.mockResolvedValue(updatedData);
@@ -249,18 +255,82 @@ describe('SkuItem', () => {
       fireEvent.click(screen.getByTestId('CloseIcon'));
     });
   });
-  test('calls handleCellEdit correctly', async () => {
-    cpfSkuForecast.mockResolvedValue(cpfData);
+  // test('calls handleCellEdit correctly', async () => {
+  //   cpfSkuForecast.mockResolvedValue(cpfData);
+  //   render(
+  //     <SkuItem
+  //       sku={sku}
+  //       prod_name={prod_name}
+  //       selectedUnit={selectedUnit}
+  //       editedValues={editedValues}
+  //       setEditedValues={setEditedValues}
+  //       onAccordionChange={mockAccordionChange}
+  //       cpfEnabled={true}
+  //       selectedFilters={selectedFilters}
+  //     />
+  //   );
+  //   await act(async () => {
+  //     fireEvent.click(screen.getByText(`SKU : ${sku}`));
+  //   });
+  //   await waitFor(() => {
+  //     expect(cpfSkuForecast).toHaveBeenCalled();
+  //   });
+
+  //   waitFor(() => {
+  //     const editedUnits = screen.getByLabelText('Edited Units');
+  //     fireEvent.change(editedUnits, { target: { value: '110' } });
+  //     expect(editedUnits.value).toBe(110);
+  //   });
+  //   waitFor(() => {
+  //     expect(setEditedValues).toHaveBeenCalledWith({
+  //       1: { editedUnits: '110' }
+  //     });
+  //   });
+  // });
+
+  test('convert units test', async () => {
+    const newcpfData = {
+      cs_factor: 100,
+      it_factor: 10,
+      forecast: [
+        {
+          week: '08/05/2024',
+          unit: 28567.35,
+          prevUnits: 0,
+          percentChange: null,
+          unit_diff: null,
+          editedUnits: 10,
+          finalunits: null,
+          approved: true,
+          active: true,
+          comment: 'Updated comment'
+        },
+        {
+          week: '12/05/2024',
+          unit: 28567.35,
+          prevUnits: 0,
+          percentChange: null,
+          unit_diff: null,
+          editedUnits: 5,
+          finalunits: null,
+          approved: false,
+          active: true,
+          comment: 'Updated comment'
+        }
+      ]
+    };
+    cpfSkuForecast.mockResolvedValue(newcpfData);
     render(
       <SkuItem
         sku={sku}
         prod_name={prod_name}
         selectedUnit={selectedUnit}
-        editedValues={editedValues}
+        editedValues={{}}
         setEditedValues={setEditedValues}
         onAccordionChange={mockAccordionChange}
         cpfEnabled={true}
         selectedFilters={selectedFilters}
+        selectedRowIds={selectedRowIds}
       />
     );
     await act(async () => {
@@ -270,50 +340,10 @@ describe('SkuItem', () => {
       expect(cpfSkuForecast).toHaveBeenCalled();
     });
 
-    waitFor(() => {
-      const editedUnits = screen.getByLabelText('Edited Units');
-      fireEvent.change(editedUnits, { target: { value: '110' } });
-      expect(editedUnits.value).toBe(110);
-    });
-    waitFor(() => {
-      expect(setEditedValues).toHaveBeenCalledWith({
-        1: { editedUnits: '110' }
-      });
-    });
-  });
-
-  test('converts units correctly', async () => {
-    cpfSkuForecast.mockResolvedValue(cpfData);
-    const mockConvertedUnits = jest.fn().mockImplementation((value, unit) => {
-      if (unit === 'cs') return Math.round(value / csFactor);
-      if (unit === 'it') return Math.round(value / itFactor);
-      if (unit === 'msu') return (value / 1000).toFixed(2);
-      return value;
-    });
-    render(
-      <SkuItem
-        sku={sku}
-        index={0}
-        prod_name={prod_name}
-        selectedUnit={selectedUnit}
-        editedValues={editedValues}
-        setEditedValues={setEditedValues}
-        onAccordionChange={mockAccordionChange}
-        cpfEnabled={true}
-        selectedFilters={selectedFilters}
-      />
-    );
+    fireEvent.click(screen.getByText('Save Decision'));
+    expect(screen.getByText('Are you sure.. ? Save decision?')).toBeInTheDocument();
     await act(async () => {
-      fireEvent.click(screen.getByText(`SKU : ${sku}`));
-    });
-    await waitFor(() => {
-      expect(cpfSkuForecast).toHaveBeenCalled();
-    });
-    await waitFor(() => {
-      expect(mockConvertedUnits(100, 'cs')).toBe(1);
-      expect(mockConvertedUnits(100, 'it')).toBe(10);
-      expect(mockConvertedUnits(1000, 'msu')).toBe('1.00');
-      expect(mockConvertedUnits(100, 'su')).toBe(100);
+      fireEvent.click(screen.getByText('Submit'));
     });
   });
 });

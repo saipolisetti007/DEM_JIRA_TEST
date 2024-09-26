@@ -214,7 +214,8 @@ const PromoGridData = () => {
     createDebouncedFetchFilters(promoGridFilters, setFilterOptions, setIsSnackOpen, setSnackBar, [
       'eventType',
       'eventSubtype',
-      'status'
+      'status',
+      'comments'
     ]),
     []
   );

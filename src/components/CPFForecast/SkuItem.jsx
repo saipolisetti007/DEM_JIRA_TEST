@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import {
   Accordion,
@@ -22,6 +23,7 @@ import PreviousForecastColumns from './PreviousForecastColumns';
 
 import StatusBadges from './StatusBadges';
 import CellCheckboxComponent from './CellCheckboxComponent';
+import CommentsColumns from './CommentsColumns';
 
 const SkuItem = ({
   sku, // The SKU identifier for the product
@@ -50,7 +52,7 @@ const SkuItem = ({
   const [isSaving, setIsSaving] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackBar, setSnackBar] = useState({ message: '', severity: '' });
-
+  const [comments, setComments] = useState({});
   // Fetch data based on SKU
   const fetchData = async (sku) => {
     setIsLoading(true);
@@ -61,7 +63,8 @@ const SkuItem = ({
         customerId: selectedFilters.customerId[0],
         eventType: selectedFilters.eventType,
         eventSubtype: selectedFilters.eventSubtype,
-        status: selectedFilters.status
+        status: selectedFilters.status,
+        comments: selectedFilters.comments
       };
       const response = await cpfSkuForecast(requestbody);
       setIsLoading(false);
@@ -120,24 +123,35 @@ const SkuItem = ({
 
       const updatedRowData = data.map((row, index) => {
         const editedValue = editedValues[index];
+        const comment = Object.hasOwn(comments, index) ? comments[index] : row.comment;
         const hasEdits = editedValue !== undefined;
         if (selectedRowIds.includes(index.toString())) {
           if (hasEdits) {
-            return { ...row, ...editedValue, approved: true };
+            return { ...row, ...editedValue, approved: true, comment: comment ?? null };
           } else {
             const convertedRow = { ...row };
             if (row.editedUnits !== undefined) {
               convertedRow.editedUnits = convertedUnits(row.editedUnits, selectedUnit);
             }
-            return { ...convertedRow, approved: true };
+            return { ...convertedRow, approved: true, comment: comment ?? null };
           }
         }
-        return { ...row, approved: false };
+        return { ...row, approved: false, comment: comment ?? null };
       });
 
       const updatedTableData = updatedRowData.map((row) => {
-        // eslint-disable-next-line no-unused-vars
-        const { unit, unit_diff, prevUnits, percentChange, finalunits, ...rest } = row;
+        const {
+          unit,
+          unit_diff,
+          prevUnits,
+          percentChange,
+          events,
+          prevEvents,
+          forecastIncorrect,
+          forecastMissing,
+          finalunits,
+          ...rest
+        } = row;
         return rest;
       });
 
@@ -213,6 +227,16 @@ const SkuItem = ({
     }
   }, [editedValues]);
 
+  // Define the function to handle checkbox change
+  const handleCheckboxChange = (event, row, setRowSelection) => {
+    const isChecked = event.target.checked;
+    // Update the row selection state based on the checkbox state
+    setRowSelection((prevSelection) => ({
+      ...prevSelection,
+      [row.id]: isChecked
+    }));
+  };
+
   // Configuration for previous forecast table
   const previousForecastTable = useMaterialReactTable({
     columns: PreviousForecastColumns({
@@ -232,11 +256,12 @@ const SkuItem = ({
       }
     },
     muiTableHeadCellProps: {
-      sx: {
-        backgroundColor: '#E0E0E0',
+      sx: (theme) => ({
+        backgroundColor: theme.palette.primary.dark,
+        color: theme.palette.primary.contrastText,
         textTransform: 'initial',
         verticalAlign: 'middle'
-      }
+      })
     },
     muiToolbarAlertBannerProps: isError
       ? {
@@ -255,7 +280,7 @@ const SkuItem = ({
       density: 'compact'
     },
     defaultColumn: {
-      size: 150
+      size: 100
     },
     state: {
       isLoading: isLoading,
@@ -264,16 +289,6 @@ const SkuItem = ({
       showProgressBars: isRefetching
     }
   });
-
-  // Define the function to handle checkbox change
-  const handleCheckboxChange = (event, row, setRowSelection) => {
-    const isChecked = event.target.checked;
-    // Update the row selection state based on the checkbox state
-    setRowSelection((prevSelection) => ({
-      ...prevSelection,
-      [row.id]: isChecked
-    }));
-  };
 
   // Configuration for new forecast table
   const NewForecastTable = useMaterialReactTable({
@@ -301,10 +316,7 @@ const SkuItem = ({
         backgroundColor: theme.palette.primary.dark,
         color: theme.palette.primary.contrastText,
         textTransform: 'initial',
-        verticalAlign: 'middle',
-        '&:hover': {
-          backgroundColor: theme.palette.primary.dark
-        }
+        verticalAlign: 'middle'
       })
     },
     muiToolbarAlertBannerProps: isError
@@ -326,7 +338,7 @@ const SkuItem = ({
       density: 'compact'
     },
     defaultColumn: {
-      size: 120
+      size: 100
     },
     displayColumnDefOptions: {
       'mrt-row-select': {
@@ -360,6 +372,57 @@ const SkuItem = ({
     },
     state: {
       rowSelection,
+      isLoading: isLoading,
+      isSaving: isSaving,
+      showAlertBanner: isError,
+      showProgressBars: isRefetching
+    }
+  });
+
+  // Configuration for comments table
+  const commentsTable = useMaterialReactTable({
+    columns: CommentsColumns({ comments, setComments }),
+    data: data || [],
+    muiTableProps: {
+      sx: {
+        borderCollapse: 'collapse',
+        border: '0.5px solid rgba(0, 0, 0, 0.23)'
+      }
+    },
+    muiTableBodyCellProps: {
+      sx: {
+        border: '0.5px solid rgba(0, 0, 0, 0.23)'
+      }
+    },
+    muiTableHeadCellProps: {
+      sx: (theme) => ({
+        backgroundColor: theme.palette.primary.dark,
+        color: theme.palette.primary.contrastText,
+        textTransform: 'initial',
+        verticalAlign: 'middle'
+      })
+    },
+    muiToolbarAlertBannerProps: isError
+      ? {
+          color: 'error',
+          children: 'Network Error. Could not fetch the comments data !!!'
+        }
+      : undefined,
+    editDisplayMode: 'table',
+    enableRowActions: false,
+    enableColumnActions: false,
+    enableColumnFilters: false,
+    enablePagination: false,
+    enableSorting: false,
+    enableEditing: true,
+    muiTableBodyRowProps: { hover: false },
+    initialState: {
+      density: 'compact'
+    },
+    defaultColumn: {
+      size: 150
+    },
+    state: {
       isLoading: isLoading,
       isSaving: isSaving,
       showAlertBanner: isError,
@@ -423,14 +486,25 @@ const SkuItem = ({
               </div>
             </Grid>
 
-            <Grid item md={4}>
+            <Grid item md={2}>
               <Typography variant="h5" component="h4" className="h-6">
-                Last Submitted Forecast
+                Previous Forecast
               </Typography>
 
               <div className="mt-2 cpftable">
                 <MRT_ToolbarAlertBanner table={previousForecastTable} className="info-message" />
                 <MRT_TableContainer table={previousForecastTable} />
+              </div>
+            </Grid>
+
+            <Grid item md={2}>
+              <Typography variant="h5" component="h4" className="h-6">
+                Comment section
+              </Typography>
+
+              <div className="mt-2 cpftable">
+                <MRT_ToolbarAlertBanner table={commentsTable} className="info-message" />
+                <MRT_TableContainer table={commentsTable} />
               </div>
             </Grid>
           </Grid>

@@ -80,6 +80,14 @@ const createDebouncedFetchFilters = (
               : response.status || [];
         }
 
+        // Conditionally add comments to newOptions if not excluded
+        if (!excludeKeys.includes('comments')) {
+          newOptions.comments =
+            updatedFilters.comments?.length && Array.isArray(response.comments)
+              ? Array.from(new Set([...prevOptions.comments, ...response.comments]))
+              : response.comments || [];
+        }
+
         return newOptions;
       });
     } catch (error) {

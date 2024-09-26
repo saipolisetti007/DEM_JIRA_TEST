@@ -12,7 +12,8 @@ export const cpfFilters = async (filters = {}) => {
     prodName: [],
     eventType: [],
     eventSubtype: [],
-    customerId: []
+    customerId: [],
+    comments: []
   };
 
   const payload = { ...defaultFilters, ...filters };
@@ -36,7 +37,8 @@ export const cpfGetForecast = async (filters = {}) => {
     eventType: filters.eventType || [],
     eventSubtype: filters.eventSubtype || [],
     customerId: filters.customerId || [],
-    status: filters.status || []
+    status: filters.status || [],
+    comments: filters.comments || []
   };
 
   return await performApiRequest(url, 'POST', body);

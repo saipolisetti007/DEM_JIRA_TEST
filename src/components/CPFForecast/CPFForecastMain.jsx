@@ -42,7 +42,8 @@ const CPFForecastMain = () => {
     customerItemNumber: [],
     eventType: [],
     eventSubtype: [],
-    status: []
+    status: [],
+    comments: []
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
@@ -55,7 +56,8 @@ const CPFForecastMain = () => {
     customerItemNumber: [],
     eventType: [],
     eventSubtype: [],
-    status: []
+    status: [],
+    comments: []
   });
 
   // Fetch filter options from API
@@ -75,7 +77,8 @@ const CPFForecastMain = () => {
         customerItemNumber: response?.customer_item_number || prevOptions.customerItemNumber,
         eventType: response?.event_type || prevOptions.eventType,
         eventSubtype: response?.event_subtype || prevOptions.eventSubtype,
-        status: response?.status || prevOptions.status
+        status: response?.status || prevOptions.status,
+        comments: response?.comments || prevOptions.comments
       }));
       setIsLoading(false);
       setSelectedFilters((prevFilters) => ({
@@ -201,7 +204,10 @@ const CPFForecastMain = () => {
     <>
       <PageSection>
         <Box className="flex justify-between items-center">
-          <DefaultPageHeader title="CPF Forecast" subtitle="Select the SKU to see the forecast" />
+          <DefaultPageHeader
+            title="CPF Review"
+            subtitle="Select Filters and SKU to see the forecast"
+          />
           <div>
             <Box className="flex justify-between items-center">
               <div>

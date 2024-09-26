@@ -17,7 +17,8 @@ function formatFilterKey(filterKey) {
     customerId: 'Customer ID',
     custFlag: 'Customization Flag',
     eventType: 'Event Type',
-    eventSubtype: 'Event Subtype'
+    eventSubtype: 'Event Subtype',
+    comments: 'Comment'
   };
 
   return customLabels[filterKey] || filterKey.charAt(0).toUpperCase() + filterKey.slice(1);

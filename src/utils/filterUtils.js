@@ -30,6 +30,7 @@ export const mapFilterParams = (filterParams) => {
     eventType: filterParams.eventType,
     eventSubtype: filterParams.eventSubtype,
     customerId: filterParams.customerId,
-    status: filterParams.status
+    status: filterParams.status,
+    comments: filterParams.comments
   };
 };

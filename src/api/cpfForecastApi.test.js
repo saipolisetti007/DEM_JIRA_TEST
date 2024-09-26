@@ -32,7 +32,8 @@ describe('cpfForecastApi', () => {
       customer_item_number: ['123456'],
       eventType: ['MVM'],
       eventSubtype: ['Future Value'],
-      customer_id: ['2000038335']
+      customer_id: ['2000038335'],
+      comments: ['test']
     };
     performApiRequest.mockResolvedValueOnce(mockFilters);
     const result = await cpfFilters();
@@ -47,7 +48,8 @@ describe('cpfForecastApi', () => {
       prodName: [],
       eventType: [],
       eventSubtype: [],
-      customerId: []
+      customerId: [],
+      comments: []
     });
   });
 
@@ -97,7 +99,8 @@ describe('cpfForecastApi', () => {
       eventType: [],
       eventSubtype: [],
       customerId: [],
-      status: []
+      status: [],
+      comments: []
     });
   });
 
@@ -107,7 +110,8 @@ describe('cpfForecastApi', () => {
       prodName: ['Product1'],
       customerItemNumber: ['123456'],
       customerId: ['123'],
-      status: ['Pending']
+      status: ['Pending'],
+      comments: ['test']
     }; // Updated keys
     const data = {
       sku: '100123456'
@@ -126,7 +130,8 @@ describe('cpfForecastApi', () => {
       eventType: [],
       eventSubtype: [],
       customerId: ['123'],
-      status: ['Pending']
+      status: ['Pending'],
+      comments: ['test']
     });
   });
 

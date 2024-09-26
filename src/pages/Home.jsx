@@ -18,7 +18,7 @@ const Home = () => {
           <Typography variant="h3" component="h2" className="mb-3">
             Visit the main sections of the CPF app
           </Typography>
-          <div className="flex justify-start flex-wrap flex-col gap-5 md:flex-row items-center ">
+          <div className="flex justify-between flex-wrap flex-col md:flex-row items-center ">
             <EventPromoGrid />
             <CPFForecast />
             <ThresholdSettings />
