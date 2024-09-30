@@ -7,6 +7,9 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [brandForms, setBrandForms] = useState([]);
+  const [isBrandFormLoading, setIsBrandFormLoading] = useState(false);
+  const [isBrandsLoading, setIsBrandsLoading] = useState(false);
+  const [isCategoryLoading, setIsCategoryLoading] = useState(false);
   // Destructure methods from useFormContext
   const { setValue, getValues, clearErrors } = useFormContext();
   const currentValues = getValues(); // Get current form values
@@ -39,6 +42,7 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
   // Effect to update categories when subsector changes
   useEffect(() => {
     if (subsector) {
+      setIsCategoryLoading(true);
       setCategories([]);
       setValue('category', undefined);
       setValue('brand', undefined);
@@ -49,6 +53,7 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
         setCategories(categories);
         setBrands([]);
         setBrandForms([]);
+        setIsCategoryLoading(false);
       });
     }
   }, [stableSubsector]);
@@ -56,6 +61,7 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
   // Effect to update brands when category changes
   useEffect(() => {
     if (category) {
+      setIsBrandsLoading(true);
       setBrands([]);
       setValue('brand', undefined);
       setValue('brand_form', undefined);
@@ -64,6 +70,7 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
         const brands = data || [];
         setBrands(brands);
         setBrandForms([]);
+        setIsBrandsLoading(false);
       });
     }
   }, [stableCategory]);
@@ -71,12 +78,14 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
   // Effect to update brand forms when brand changes
   useEffect(() => {
     if (brand) {
+      setIsBrandFormLoading(true);
       setBrandForms([]);
       setValue('brand_form', undefined);
       const reqParams = 'subsector=' + subsector + '&category=' + category + '&brand=' + brand;
       fetchSubsequentFilters(reqParams).then((data) => {
         const brandForms = data || [];
         setBrandForms(brandForms);
+        setIsBrandFormLoading(false);
       });
     }
   }, [stableBrand]);
@@ -135,7 +144,7 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
               type="select"
               options={categories}
               isDisabled={!subsector && !isEdit}
-              loading={subsector && categories.length === 0}
+              loading={isCategoryLoading}
             />
           </Grid>
           <Grid item xs={3}>
@@ -146,7 +155,7 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
               type="select"
               options={brands}
               isDisabled={!category && !isEdit}
-              loading={category && brands.length === 0}
+              loading={isBrandsLoading}
             />
           </Grid>
           <Grid item xs={3}>
@@ -157,7 +166,7 @@ const AddRuleForm = ({ control, filters, isEdit, errorMessage }) => {
               type="select"
               options={brandForms}
               isDisabled={!brand && !isEdit}
-              loading={brand && brandForms.length === 0}
+              loading={isBrandFormLoading}
             />
           </Grid>
         </Grid>

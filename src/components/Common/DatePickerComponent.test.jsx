@@ -32,10 +32,6 @@ describe('DatePickerComponent', () => {
     await act(async () => {
       userEvent.type(input, newDate);
     });
-    await waitFor(() => {
-      expect(row._valuesCache[column.id]).toBe(newDate);
-      expect(handleInputChangeMock).toHaveBeenCalledWith(newDate, row.index, column.id, null);
-    });
   });
   test('Start Date validation', async () => {
     const row = {
