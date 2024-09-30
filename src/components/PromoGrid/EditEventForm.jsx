@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { useForm, FormProvider } from 'react-hook-form';
 import StepEventMainParameters from './StepEventMainParameters';
@@ -95,9 +95,21 @@ const EditEventForm = ({ rowData, handleClose }) => {
   const [updatedData, setUpdatedData] = useState(null);
   const formattedData = formatRowData(rowData);
   const methods = useForm({ mode: 'onChange', defaultValues: formattedData });
-  const { handleSubmit, control, setError, formState } = methods;
+  const { handleSubmit, control, setError, trigger, formState } = methods;
   const [expanded, setExpanded] = React.useState('panel1');
   const [warningMessage, setWarningMessage] = useState('');
+
+  useEffect(() => {
+    // Trigger validation on load
+    trigger('event_description').then((isValid) => {
+      if (!isValid) {
+        setError('event_description', {
+          type: 'maxLength',
+          message: 'Description can not be exceed 49 characters'
+        });
+      }
+    });
+  }, [trigger, setError]);
 
   /**
    * Handle panel expansion change.
