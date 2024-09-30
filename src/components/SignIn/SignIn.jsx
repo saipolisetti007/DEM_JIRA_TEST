@@ -21,9 +21,12 @@ const SignIn = () => {
       <Grid item xs={12} sm={7} md={7}>
         <div className="flex flex-col items-center h-full w-full ">
           <div className="flex-1 text-center p-8">
-            <img src={LogoImage} alt="DEM Logo" width={100} height={100} className="m-auto" />
+            <img src={LogoImage} alt="DEM Logo" className="m-auto" />
+            <Typography component="h1" variant="h5" marginTop={1}>
+              Customer
+            </Typography>
             <Typography component="h1" variant="h5">
-              Customer Promo Forecaster
+              Promo Forecaster
             </Typography>
           </div>
 
