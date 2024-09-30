@@ -44,7 +44,7 @@ const CPFForecast = () => {
       <div className="text-left mx-4">
         <Button
           component={Link}
-          to="/cpf-forecast?status=Forecast Missing"
+          to="/cpf-forecast?status=Missing"
           variant="contained"
           color="error"
           className="my-2"
@@ -56,7 +56,7 @@ const CPFForecast = () => {
         </Button>
         <Button
           component={Link}
-          to="/cpf-forecast?status=Forecast Warning"
+          to="/cpf-forecast?status=Alert"
           variant="contained"
           color="warning"
           className="m-1"
@@ -64,7 +64,7 @@ const CPFForecast = () => {
           sx={{
             paddingX: 2.5
           }}>
-          Alerts : {loading ? '...' : warningCount}
+          Alert : {loading ? '...' : warningCount}
         </Button>
       </div>
     </PromoCard>

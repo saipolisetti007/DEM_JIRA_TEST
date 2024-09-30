@@ -46,7 +46,7 @@ describe('CPFForecast', () => {
       </Provider>
     );
 
-    expect(screen.getByText('Alerts : ...')).toBeInTheDocument();
+    expect(screen.getByText('Alert : ...')).toBeInTheDocument();
   });
 
   test('should fetch and display data correctly', async () => {
@@ -64,7 +64,7 @@ describe('CPFForecast', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Alerts : 2')).toBeInTheDocument();
+      expect(screen.getByText('Alert : 2')).toBeInTheDocument();
       expect(screen.getByText('Missing : 3')).toBeInTheDocument();
     });
   });
@@ -80,7 +80,7 @@ describe('CPFForecast', () => {
       </Provider>
     );
 
-    await waitFor(() => expect(screen.getByText('Alerts : ...')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Alert : ...')).toBeInTheDocument());
   });
 
   test('should render NavigationButton components correctly', () => {
@@ -94,6 +94,6 @@ describe('CPFForecast', () => {
     // Check if the link with the correct URL and text is present in the document
     const linkElement = screen.getByRole('link', { name: 'Missing : ...' });
     expect(linkElement).toBeInTheDocument();
-    expect(linkElement).toHaveAttribute('href', '/cpf-forecast?status=Forecast Missing');
+    expect(linkElement).toHaveAttribute('href', '/cpf-forecast?status=Missing');
   });
 });
