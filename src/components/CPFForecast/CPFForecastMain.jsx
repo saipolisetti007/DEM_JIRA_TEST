@@ -262,6 +262,7 @@ const CPFForecastMain = () => {
                     pendingCount={item.pending_approvals_count}
                     missingCount={item.missing_count}
                     warningCount={item.warning_count}
+                    fetchFilters={fetchFilters}
                   />
                 ))
               )}

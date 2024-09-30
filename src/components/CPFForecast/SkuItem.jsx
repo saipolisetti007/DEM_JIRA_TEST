@@ -38,7 +38,8 @@ const SkuItem = ({
   cpfEnabled, // Boolean indicating if CPF  is enabled
   pendingCount, // Number of pending forecasts
   missingCount, // Number of missing forecasts
-  warningCount // Number of warning forecasts
+  warningCount, // Number of warning forecasts
+  fetchFilters
 }) => {
   const [data, setData] = useState([]);
   const [lastSelectedSku, setLastSelectedSku] = useState(null);
@@ -163,10 +164,11 @@ const SkuItem = ({
         message: 'Data Submitted successfully !!!',
         severity: 'success'
       });
+      fetchFilters(selectedFilters);
       setEditedValues({});
       setIsRefetching(true);
       setIsSaving(false);
-      await fetchData(sku);
+      // await fetchData(sku);
     } catch (error) {
       setIsSnackOpen(true);
       setSnackBar({
