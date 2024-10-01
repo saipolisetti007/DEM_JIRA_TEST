@@ -448,38 +448,41 @@ describe('PromoGridValidations', () => {
         {
           golden_customer_id: '1',
           validations: {
-            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
-            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
-            product_id: "Duplicate event line entry in Promo Grid - 814.1",
-            event_type: "Duplicate event line entry in Promo Grid - 814.1",
-            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+            event_in_store_start_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            event_in_store_end_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            product_id: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_type: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_subtype: 'Duplicate event line entry in Promo Grid - 814.1'
           },
           validation_warning: {
-            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
-            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
-            product_id: "Duplicate event line entry in Promo Grid - 814.1",
-            event_type: "Duplicate event line entry in Promo Grid - 814.1",
-            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
-            customer_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used",
-            proxy_like_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used"
+            event_in_store_start_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            event_in_store_end_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            product_id: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_type: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_subtype: 'Duplicate event line entry in Promo Grid - 814.1',
+            customer_item_number:
+              'Customer and Proxy Like Item Number not found. Cold Start Logic will be used',
+            proxy_like_item_number:
+              'Customer and Proxy Like Item Number not found. Cold Start Logic will be used'
           }
         },
         {
           golden_customer_id: '2',
           validations: {
-            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
-            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
-            product_id: "Duplicate event line entry in Promo Grid - 814.1",
-            event_type: "Duplicate event line entry in Promo Grid - 814.1",
-            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+            event_in_store_start_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            event_in_store_end_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            product_id: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_type: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_subtype: 'Duplicate event line entry in Promo Grid - 814.1'
           },
           validation_warning: {
-            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
-            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
-            product_id: "Duplicate event line entry in Promo Grid - 814.1",
-            event_type: "Duplicate event line entry in Promo Grid - 814.1",
-            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
-            customer_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used",
+            event_in_store_start_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            event_in_store_end_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            product_id: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_type: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_subtype: 'Duplicate event line entry in Promo Grid - 814.1',
+            customer_item_number:
+              'Customer and Proxy Like Item Number not found. Cold Start Logic will be used'
           }
         }
       ]
@@ -512,70 +515,74 @@ describe('PromoGridValidations', () => {
 
   test('test if similar kind of errors disappears on input change', async () => {
     const mockLocation = {
-          state: {
-            responseData: {
-              promo_header: '10',
-              rows: [
-                {
-                  golden_customer_id: '1',
-                  validations: {
-                    event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
-                    event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
-                    product_id: "Duplicate event line entry in Promo Grid - 814.1",
-                    event_type: "Duplicate event line entry in Promo Grid - 814.1",
-                    event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
-                  },
-                  validation_warning: {
-                    event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
-                    event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
-                    product_id: "Duplicate event line entry in Promo Grid - 814.1",
-                    event_type: "Duplicate event line entry in Promo Grid - 814.1",
-                    event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
-                    customer_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used",
-                  }
-                }
-              ]
+      state: {
+        responseData: {
+          promo_header: '10',
+          rows: [
+            {
+              golden_customer_id: '1',
+              validations: {
+                event_in_store_start_date: 'Duplicate event line entry in Promo Grid - 817.1',
+                event_in_store_end_date: 'Duplicate event line entry in Promo Grid - 817.1',
+                product_id: 'Duplicate event line entry in Promo Grid - 814.1',
+                event_type: 'Duplicate event line entry in Promo Grid - 814.1',
+                event_subtype: 'Duplicate event line entry in Promo Grid - 814.1'
+              },
+              validation_warning: {
+                event_in_store_start_date: 'Duplicate event line entry in Promo Grid - 817.1',
+                event_in_store_end_date: 'Duplicate event line entry in Promo Grid - 817.1',
+                product_id: 'Duplicate event line entry in Promo Grid - 814.1',
+                event_type: 'Duplicate event line entry in Promo Grid - 814.1',
+                event_subtype: 'Duplicate event line entry in Promo Grid - 814.1',
+                customer_item_number:
+                  'Customer and Proxy Like Item Number not found. Cold Start Logic will be used'
+              }
             }
-          }
-        };
+          ]
+        }
+      }
+    };
     useLocation.mockReturnValue(mockLocation);
     const mockResponseData = {
       rows: [
         {
           golden_customer_id: '1',
           validations: {
-            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
-            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
-            product_id: "Duplicate event line entry in Promo Grid - 814.1",
-            event_type: "Duplicate event line entry in Promo Grid - 814.1",
-            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+            event_in_store_start_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            event_in_store_end_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            product_id: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_type: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_subtype: 'Duplicate event line entry in Promo Grid - 814.1'
           },
           validation_warning: {
-            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
-            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
-            product_id: "Duplicate event line entry in Promo Grid - 814.1",
-            event_type: "Duplicate event line entry in Promo Grid - 814.1",
-            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
-            customer_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used",
-            proxy_like_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used"
+            event_in_store_start_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            event_in_store_end_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            product_id: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_type: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_subtype: 'Duplicate event line entry in Promo Grid - 814.1',
+            customer_item_number:
+              'Customer and Proxy Like Item Number not found. Cold Start Logic will be used',
+            proxy_like_item_number:
+              'Customer and Proxy Like Item Number not found. Cold Start Logic will be used'
           }
         },
         {
           golden_customer_id: '2',
           validations: {
-            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
-            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
-            product_id: "Duplicate event line entry in Promo Grid - 814.1",
-            event_type: "Duplicate event line entry in Promo Grid - 814.1",
-            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
+            event_in_store_start_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            event_in_store_end_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            product_id: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_type: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_subtype: 'Duplicate event line entry in Promo Grid - 814.1'
           },
           validation_warning: {
-            event_in_store_start_date: "Duplicate event line entry in Promo Grid - 817.1",
-            event_in_store_end_date: "Duplicate event line entry in Promo Grid - 817.1",
-            product_id: "Duplicate event line entry in Promo Grid - 814.1",
-            event_type: "Duplicate event line entry in Promo Grid - 814.1",
-            event_subtype: "Duplicate event line entry in Promo Grid - 814.1",
-            customer_item_number: "Customer and Proxy Like Item Number not found. Cold Start Logic will be used",
+            event_in_store_start_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            event_in_store_end_date: 'Duplicate event line entry in Promo Grid - 817.1',
+            product_id: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_type: 'Duplicate event line entry in Promo Grid - 814.1',
+            event_subtype: 'Duplicate event line entry in Promo Grid - 814.1',
+            customer_item_number:
+              'Customer and Proxy Like Item Number not found. Cold Start Logic will be used'
           }
         }
       ]

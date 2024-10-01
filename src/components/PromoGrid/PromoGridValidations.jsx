@@ -63,9 +63,15 @@ const PromoGridValidationTable = () => {
     fetchData();
   }, [responseData]);
   // Check if all validation errors are null
+
   const allErrorsNull = Object.values(validationErrors).every((error) => {
     return Object.values(error).every((value) => value === null);
   });
+
+  const allWarningsNull = Object.values(validationWarnings).every((error) => {
+    return Object.values(error).every((value) => value === null);
+  });
+
   // Handle input change and update validation errors
   const handleInputChange = (newValue, rowIndex, accessorKey, helperMessage, validationType) => {
     setSubmitDisabled(true);
@@ -103,92 +109,111 @@ const PromoGridValidationTable = () => {
     return errorMessage;
   };
   // Handle validation of data
+
   const handleValidate = async () => {
     setIsDataLoading(true);
-    if (!allErrorsNull) return;
+
+    if (!allErrorsNull && allWarningsNull) {
+      setIsDataLoading(false);
+      return;
+    }
+
     try {
-      const updatedRows = updatedData.rows.map((row) => {
-        // eslint-disable-next-line no-unused-vars
-        const { validations, validation_warning, ...rest } = row;
-        return rest;
-      });
+      const updatedRows = removeValidationsFromRows(updatedData.rows);
       const updatedState = { ...updatedData, rows: updatedRows };
       const response = await promoGridValidate(updatedState);
       setIsDataLoading(false);
+
       if (response.rows) {
-        // Assuming response contains updated rows with validation warnings
-        const warnings = response.rows.map((row) => row.validation_warning || {});
-        const hasWarnings = warnings.some((warning) => Object.keys(warning).length > 0);
-        if (hasWarnings) {
-          setUpdatedData(response);
-          setValidationErrors(warnings);
-          setValidationWarnings(warnings);
-          setWarningDialogOpen(true);
-          let cpfId1 = [];
-          let cpfId2 = [];
-          response.rows.forEach((row) => {
-            let warning = row.validation_warning;
-            if (
-              Object.hasOwn(warning, 'customer_item_number') &&
-              Object.hasOwn(warning, 'proxy_like_item_number')
-            ) {
-              cpfId1.push(row.cpf_id);
-            } else if (Object.hasOwn(warning, 'customer_item_number')) {
-              cpfId2.push(row.cpf_id);
-            }
-          });
-          let warningMsg = ``;
-          if (cpfId2.length > 0) {
-            let eventIds =
-              cpfId2.length > 5
-                ? `${cpfId2.slice(0, 5).join(',')} +${cpfId2.length - 5} more`
-                : cpfId2.join(',');
-            warningMsg = `<strong>Customer item not found in modelling data for Event IDs:
-                  ${eventIds}</strong>
-                  <h5>Proxy like item will be used for forecasting.</h5>
-                  `;
-          }
-          if (cpfId1.length > 0) {
-            let eventIds =
-              cpfId1.length > 5
-                ? `${cpfId1.slice(0, 5).join(',')} +${cpfId1.length - 5} more`
-                : cpfId1.join(',');
-            warningMsg =
-              warningMsg +
-              `<strong>Customer item and Proxy like item not found in modelling data for Event IDs:
-               ${eventIds}</strong>
-               <h5>Cold start logic will be used for forecasting.</h5>
-               `;
-          }
-          warningMsg = warningMsg + `<h5>Do you want to proceed?</h5>`;
-          setWarningMessage(warningMsg);
-        } else {
-          setSubmitDisabled(false);
-          setIsSnackOpen(true);
-          setSnackBar({
-            message: 'Validation successful. You can proceed to submit.',
-            severity: 'success'
-          });
-        }
+        handleValidationResponse(response);
       } else {
-        setSubmitDisabled(false);
-        setIsSnackOpen(true);
-        setSnackBar({
-          message: 'Validation Successful, please submit the data !!!',
-          severity: 'success'
-        });
+        handleValidationSuccess();
       }
     } catch (error) {
-      updateData(error.response.data);
-      setIsDataLoading(false);
-      setSubmitDisabled(true);
-      setIsSnackOpen(true);
-      setSnackBar({
-        message: 'Please check the validations !!!',
-        severity: 'error'
-      });
+      handleValidationError(error);
     }
   };
+
+  const removeValidationsFromRows = (rows) => {
+    return rows.map((row) => {
+      // eslint-disable-next-line no-unused-vars
+      const { validations, validation_warning, ...rest } = row;
+      return rest;
+    });
+  };
+
+  const handleValidationResponse = (response) => {
+    const warnings = response.rows.map((row) => row.validation_warning || {});
+    const hasWarnings = warnings.some((warning) => Object.keys(warning).length > 0);
+
+    if (hasWarnings) {
+      setUpdatedData(response);
+      setValidationErrors(warnings);
+      setValidationWarnings(warnings);
+      setWarningDialogOpen(true);
+      setWarningMessage(generateWarningMessage(response.rows));
+    } else {
+      handleValidationSuccess();
+    }
+  };
+
+  const generateWarningMessage = (rows) => {
+    let cpfId1 = [];
+    let cpfId2 = [];
+
+    rows.forEach((row) => {
+      let warning = row.validation_warning;
+      if (warning.customer_item_number && warning.proxy_like_item_number) {
+        cpfId1.push(row.cpf_id);
+      } else if (warning.customer_item_number) {
+        cpfId2.push(row.cpf_id);
+      }
+    });
+
+    let warningMsg = '';
+
+    if (cpfId2.length > 0) {
+      let eventIds =
+        cpfId2.length > 5
+          ? `${cpfId2.slice(0, 5).join(',')} +${cpfId2.length - 5} more`
+          : cpfId2.join(',');
+      warningMsg = `<strong>Customer item not found in modelling data for Event IDs: ${eventIds}</strong>
+                  <h5>Proxy like item will be used for forecasting.</h5>`;
+    }
+
+    if (cpfId1.length > 0) {
+      let eventIds =
+        cpfId1.length > 5
+          ? `${cpfId1.slice(0, 5).join(',')} +${cpfId1.length - 5} more`
+          : cpfId1.join(',');
+      warningMsg += `<strong>Customer item and Proxy like item not found in modelling data for Event IDs: ${eventIds}</strong>
+                   <h5>Cold start logic will be used for forecasting.</h5>`;
+    }
+
+    warningMsg += `<h5>Do you want to proceed?</h5>`;
+    return warningMsg;
+  };
+
+  const handleValidationSuccess = () => {
+    setSubmitDisabled(false);
+    setIsSnackOpen(true);
+    setSnackBar({
+      message: 'Validation Successful, please submit the data !!!',
+      severity: 'success'
+    });
+  };
+
+  const handleValidationError = (error) => {
+    updateData(error.response.data);
+    setIsDataLoading(false);
+    setSubmitDisabled(true);
+    setIsSnackOpen(true);
+    setSnackBar({
+      message: 'Please check the validations !!!',
+      severity: 'error'
+    });
+  };
+
   // Handle submission of data
   const handleSubmit = async () => {
     setWarningDialogOpen(false);
@@ -297,7 +322,7 @@ const PromoGridValidationTable = () => {
                 size="medium"
                 className="rounded-full ml-4"
                 onClick={handleValidate}
-                disabled={!allErrorsNull}>
+                disabled={!allErrorsNull && allWarningsNull}>
                 {isDataLoading ? 'Validating...' : 'Validate'}
               </Button>
 
