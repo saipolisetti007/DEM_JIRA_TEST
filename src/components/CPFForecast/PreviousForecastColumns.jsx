@@ -16,7 +16,7 @@ const PreviousForecastColumns = ({ selectedUnit, convertedUnits }) => {
         enableEditing: false
       }
     ],
-    [selectedUnit]
+    [selectedUnit, convertedUnits]
   );
 
   return columns;
