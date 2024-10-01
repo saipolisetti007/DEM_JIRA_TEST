@@ -17,7 +17,7 @@ const TrainingDocument = () => {
         </div>
         <Button
           component={Link}
-          to="https://pgone.sharepoint.com/:p:/r/sites/CustomerPromoForecasterUserInterfaceCPFUI/Shared%20Documents/Training/Athena%20Work%20process%20CPF%20UI%20(SharePoint).pptx?d=wa57c5e637b53450d8515a21a048283cf&csf=1&web=1&e=ZZ0UTL"
+          to="https://pgone.sharepoint.com/:f:/r/sites/CustomerPromoForecasterUserInterfaceCPFUI/Shared%20Documents/Training?csf=1&web=1&e=t35TOV"
           variant="outlined"
           target="_blank"
           size="small"
