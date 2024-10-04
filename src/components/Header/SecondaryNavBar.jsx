@@ -4,6 +4,7 @@ import { Button, Container, Typography } from '@mui/material';
 import DashboardIcon from '../../assets/dashboard/DashboardIcon';
 import GraphIcon from '../../assets/dashboard/GraphIcon';
 import ListIcon from '../../assets/dashboard/ListIcon';
+import EditIcon from '@mui/icons-material/Edit';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 // Seconday Nav bar for Navigation MenuNa
 const SecondaryNavBar = () => {
@@ -96,6 +97,26 @@ const SecondaryNavBar = () => {
               </ul>
             )}
           </div>
+          <NavLink
+            to="/manual-da"
+            className={({ isActive }) =>
+              isActive && !isOpen
+                ? 'bg-white font-bold rounded-full px-2 text-[#003DA5]'
+                : 'text-white'
+            }>
+            {({ isActive }) => (
+              <Button
+                variant="text"
+                color="inherit"
+                className="flex items-center align-middle text-sm">
+                <EditIcon isActive={isActive && !isOpen} />
+                <span
+                  className={`text-sm mx-2 ${isActive && !isOpen ? 'text-[#003DA5]' : 'text-white'}`}>
+                  Manual DA
+                </span>
+              </Button>
+            )}
+          </NavLink>
         </div>
       </Container>
     </nav>

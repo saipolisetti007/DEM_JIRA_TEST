@@ -20,6 +20,7 @@ import PromoGrid from './pages/PromoGrid';
 import CPFForecast from './pages/CPFForecast';
 import PromoGridValidations from './components/PromoGrid/PromoGridValidations';
 import ThresholdSettings from './pages/ThresholdSettings';
+import ManualDA from './pages/ManualDA';
 
 // Creating router with defined routes
 const router = createBrowserRouter(
@@ -28,6 +29,7 @@ const router = createBrowserRouter(
       <Route path="" element={<Home />} />
       <Route path="/signin" element={<SignIn />} />
       <Route path="/promo-grid" element={<PromoGrid />} />
+      <Route path="/manual-da" element={<ManualDA />} />
       <Route path="/promo-grid-validations" element={<PromoGridValidations />} />
       <Route path="/cpf-forecast" element={<CPFForecast />} />
       <Route path="/threshold-settings" element={<ThresholdSettings />} />

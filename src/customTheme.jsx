@@ -48,6 +48,15 @@ const customTheme = createTheme({
       dark: '#3B873E',
       contrastText: '#FFFFFF'
     },
+    cancel: {
+      main: 'rgba(0, 0, 0, 0.6)'
+    },
+    create: {
+      main: '#FFB547'
+    },
+    expired: {
+      main: '#156EB6'
+    },
     text: {
       primary: '#000000',
       secondary: 'rgba(0, 0, 0, 0.7)',
