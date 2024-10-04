@@ -299,6 +299,7 @@ const ThresholdSettingsData = () => {
         handleCancel={handleCancelRule}
         cancelTooltip="Delete"
         editTooltip="Edit"
+        isEdit={true}
       />
     ),
     state: {

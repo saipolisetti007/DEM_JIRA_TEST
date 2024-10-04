@@ -25,6 +25,8 @@ describe('ManageColumns', () => {
     golden_customer_id: false
   };
 
+  const cokieName = 'columnVisibility';
+
   const mockOnColumnVisibilityChange = jest.fn();
 
   beforeEach(() => {
@@ -40,6 +42,7 @@ describe('ManageColumns', () => {
         columns={columns}
         columnVisibility={initialVisibility}
         onColumnVisibilityChange={mockOnColumnVisibilityChange}
+        cookieName={cokieName}
       />
     );
 
@@ -66,6 +69,7 @@ describe('ManageColumns', () => {
         columnVisibility={initialVisibility}
         onColumnVisibilityChange={mockOnColumnVisibilityChange}
         handleClose={mockHanldeClose}
+        cookieName={cokieName}
       />
     );
 
@@ -87,6 +91,7 @@ describe('ManageColumns', () => {
         columns={columns}
         columnVisibility={initialVisibility}
         onColumnVisibilityChange={mockOnColumnVisibilityChange}
+        cookieName={cokieName}
       />
     );
     const button = screen.getByText('Manage Columns');
@@ -100,13 +105,12 @@ describe('ManageColumns', () => {
       cpf_id: true,
       golden_customer_id: true
     };
-    const name = 'columnVisibility';
     const expectedCookieValue = JSON.stringify(expectedVisibility);
     const encodedcookieValue = encodeURIComponent(expectedCookieValue);
     const expires = moment().add(365, 'days');
 
     expect(mockSetCookie).toHaveBeenCalledWith(
-      `${name}=${encodedcookieValue}; expires=${expires}; path=/`
+      `${cokieName}=${encodedcookieValue}; expires=${expires}; path=/`
     );
   });
 
@@ -117,6 +121,7 @@ describe('ManageColumns', () => {
         columns={columns}
         columnVisibility={initialVisibility}
         onColumnVisibilityChange={mockOnColumnVisibilityChange}
+        cookieName={cokieName}
       />
     );
 
@@ -132,6 +137,7 @@ describe('ManageColumns', () => {
         columns={columns}
         columnVisibility={initialVisibility}
         onColumnVisibilityChange={mockOnColumnVisibilityChange}
+        cookieName={cokieName}
       />
     );
 

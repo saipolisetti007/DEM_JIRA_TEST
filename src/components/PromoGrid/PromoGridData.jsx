@@ -32,7 +32,7 @@ import moment from 'moment';
 import { debounce } from 'lodash';
 import { getSettings } from './settingsSlice';
 import { reduceFilters, mapFilterParams } from '../../utils/filterUtils';
-import ManageColumns from './ManageColumns';
+import ManageColumns from '../Common/ManageColumns';
 import createDebouncedFetchFilters from '../../utils/debounceUtils';
 import DefaultPageLoader from '../Common/DefaultPageLoader';
 import { fetchEvents } from './eventsSlice';
@@ -511,6 +511,7 @@ const PromoGridData = () => {
         handleCancel={handleCancel}
         cancelTooltip="Cancel Event"
         editTooltip="Edit Event"
+        isEdit={true}
       />
     ),
     state: {
@@ -595,6 +596,7 @@ const PromoGridData = () => {
             table={table}
             columns={table.options.columns}
             columnVisibility={columnVisibility}
+            cookieName="columnVisibility"
             onColumnVisibilityChange={handleColumnVisibilityChange}
           />
         </div>

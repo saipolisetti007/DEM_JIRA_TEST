@@ -13,7 +13,7 @@ describe('ManualDaColumns', () => {
     const { result } = renderHookRedux(() => ManualDaColumns({ region: 'EU' }));
     const columns = result.current;
     // Test for all columns in EU region
-    expect(columns).toHaveLength(22);
+    expect(columns).toHaveLength(23);
     expect(result.current).toEqual(
       expect.arrayContaining([
         expect.objectContaining(
@@ -35,7 +35,7 @@ describe('ManualDaColumns', () => {
     const { result } = renderHookRedux(() => ManualDaColumns({ region: 'US' }));
     const columns = result.current;
     // Test for all columns in non-EU region
-    expect(columns).toHaveLength(22);
+    expect(columns).toHaveLength(23);
     expect(result.current).toEqual(
       expect.arrayContaining([
         expect.objectContaining(

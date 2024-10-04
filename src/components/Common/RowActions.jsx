@@ -10,7 +10,8 @@ const RowActions = ({
   handleEdit, // Callback function to handle the edit action.
   editTooltip = 'Edit Event', // Tooltip text for the edit button.
   cancelTooltip = 'Cancel Event', // Tooltip text for the cancel button.
-  handleCancel // Callback function to handle the cancel action.
+  handleCancel, // Callback function to handle the cancel action.
+  isEdit
 }) => {
   return (
     <Box
@@ -18,11 +19,13 @@ const RowActions = ({
       className="action-buttons">
       {hoveredRow === row.id && (
         <>
-          <Tooltip title={editTooltip} arrow placement="top">
-            <IconButton color="primary" size="small" onClick={() => handleEdit(row)}>
-              <EditIcon fontSize="inherit" />
-            </IconButton>
-          </Tooltip>
+          {isEdit ? (
+            <Tooltip title={editTooltip} arrow placement="top">
+              <IconButton color="primary" size="small" onClick={() => handleEdit(row)}>
+                <EditIcon fontSize="inherit" />
+              </IconButton>
+            </Tooltip>
+          ) : null}
           <Tooltip title={cancelTooltip} arrow placement="top">
             <IconButton color="primary" size="small" onClick={() => handleCancel(row)}>
               <CancelIcon fontSize="inherit" />

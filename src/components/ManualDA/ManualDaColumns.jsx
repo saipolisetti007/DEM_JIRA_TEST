@@ -1,24 +1,4 @@
-import { Button } from '@mui/material';
-import React, { useMemo } from 'react';
-
-// Custom cell renderer for status
-const StatusButton = ({ value }) => {
-  const statusMap = {
-    created: { color: 'create', label: 'Created' },
-    submitted: { color: 'success', label: 'Submitted' },
-    error: { color: 'error', label: 'Error' },
-    cancelled: { color: 'cancel', label: 'Cancelled' },
-    expired: { color: 'expired', label: 'Expired' }
-  };
-
-  const { color, label } = statusMap[value];
-
-  return (
-    <Button size="small" variant="contained" color={color}>
-      {label}
-    </Button>
-  );
-};
+import { useMemo } from 'react';
 
 const ManualDaColumns = ({ region }) => {
   // Memoize the columns array to optimize performance
@@ -34,9 +14,9 @@ const ManualDaColumns = ({ region }) => {
         size: 130
       },
       {
-        accessorKey: 'status',
-        header: 'Status',
-        Cell: ({ row, column }) => <StatusButton value={row.original[column.id]} />
+        accessorKey: 'da_name',
+        header: 'DA Name',
+        size: 150
       },
       {
         accessorKey: 'country_code',
@@ -44,14 +24,19 @@ const ManualDaColumns = ({ region }) => {
         size: 120
       },
       {
-        accessorKey: 'customer_identifier',
-        header: 'Customer Identifier',
+        accessorKey: 'customer_id',
+        header: 'Customer ID',
         size: 150
+      },
+      {
+        accessorKey: 'customer_name',
+        header: 'Customer Name',
+        size: 180
       },
       {
         accessorKey: 'event_description',
         header: 'Event Description',
-        size: 130
+        size: 250
       },
       ...(region === 'EU'
         ? []
@@ -89,11 +74,10 @@ const ManualDaColumns = ({ region }) => {
         header: 'Item Type',
         size: 130
       },
-
       {
         accessorKey: 'customer_item_number',
         header: 'Customer Item Number',
-        size: 150
+        size: 200
       },
       {
         accessorKey: 'org',
@@ -127,7 +111,7 @@ const ManualDaColumns = ({ region }) => {
       {
         accessorKey: 'volume_split_method ',
         header: 'Volume Split Method ',
-        size: 150
+        size: 200
       },
       {
         accessorKey: 'uom',
@@ -137,7 +121,7 @@ const ManualDaColumns = ({ region }) => {
       {
         accessorKey: 'destination_profile ',
         header: 'Destination Profile ',
-        size: 130
+        size: 160
       },
       {
         accessorKey: 'total_volume',
@@ -145,7 +129,7 @@ const ManualDaColumns = ({ region }) => {
         size: 150
       }
     ],
-    []
+    [region]
   );
   return columns;
 };

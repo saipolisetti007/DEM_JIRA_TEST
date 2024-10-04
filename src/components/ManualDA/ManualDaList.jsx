@@ -13,7 +13,7 @@ import {
 import ManualDaColumns from './ManualDaColumns';
 import RowActions from '../Common/RowActions';
 import { grey } from '@mui/material/colors';
-import ManageColumns from '../PromoGrid/ManageColumns';
+import ManageColumns from '../Common/ManageColumns';
 import Filters from '../Common/Filters';
 import { useSelector } from 'react-redux';
 import RowSelections from '../Common/RowSelections';
@@ -43,7 +43,15 @@ const ManualDaList = () => {
   // const [snackBar, setSnackBar] = useState({ message: '', severity: '', dataTestId: '' });
   // const [isSaving, setIsSaving] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
-  const [columnVisibility, setColumnVisibility] = useState({});
+  const [columnVisibility, setColumnVisibility] = useState({
+    da_id: false,
+    da_line: false,
+    da_name: false,
+    sub_sector: false,
+    category: false,
+    description: false,
+    customized_code: false
+  });
   //const [rowCount, setRowCount] = useState(0);
 
   const [hoveredRow, setHoveredRow] = useState(null);
@@ -133,7 +141,7 @@ const ManualDaList = () => {
         row={row}
         hoveredRow={hoveredRow}
         cancelTooltip="Cancel DA"
-        editTooltip="Edit DA"
+        isEdit={false}
       />
     ),
     state: {
@@ -162,9 +170,9 @@ const ManualDaList = () => {
       <Box className="flex justify-between items-center">
         <Filters isLoading="" filterOptions="" selectedFilters="" onFilterChange="" />
         <ManageColumns
-          table={table}
           columns={table.options.columns}
           columnVisibility={columnVisibility}
+          cookieName="manualDaColumnVisibility"
           onColumnVisibilityChange={handleColumnVisibilityChange}
         />
       </Box>

@@ -16,16 +16,15 @@ const getCookie = (name) => {
   if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift()); // Return the cookie value if found
 };
 
-const COOKIE_NAME = 'columnVisibility'; // Name of the cookie to store column visibility
-
 /**
  * ManageColumns component to manage the visibility of table columns.
  * @param {Object} props - Component props.
  * @param {Array} props.columns - Array of column objects.
  * @param {Object} props.columnVisibility - Object representing the visibility of each column.
  * @param {Function} props.onColumnVisibilityChange - Function to handle column visibility change.
+ * @param {string} props.cookieName - Name of the cookie to store column visibility.
  */
-const ManageColumns = ({ columns, columnVisibility, onColumnVisibilityChange }) => {
+const ManageColumns = ({ columns, columnVisibility, onColumnVisibilityChange, cookieName }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -37,14 +36,14 @@ const ManageColumns = ({ columns, columnVisibility, onColumnVisibilityChange }) 
 
   // Effect to load saved column visibility from cookies on component mount
   useEffect(() => {
-    const savedVisibility = getCookie(COOKIE_NAME);
+    const savedVisibility = getCookie(cookieName);
     if (savedVisibility) {
       const visibility = JSON.parse(savedVisibility);
       Object.keys(visibility).forEach((key) => {
         onColumnVisibilityChange(key, visibility[key]);
       });
     }
-  }, []);
+  }, [cookieName, onColumnVisibilityChange]);
 
   // Handle column visibility change
   const handleColumnVisibilityChange = (changedColumnId, newVisibility) => {
@@ -55,7 +54,7 @@ const ManageColumns = ({ columns, columnVisibility, onColumnVisibilityChange }) 
       ...columnVisibility,
       [changedColumnId]: newVisibility
     };
-    setCookie(COOKIE_NAME, JSON.stringify(updatedVisibility), 365); // Save the updated visibility to cookies
+    setCookie(cookieName, JSON.stringify(updatedVisibility), 365); // Save the updated visibility to cookies
   };
 
   return (
@@ -106,8 +105,7 @@ const ManageColumns = ({ columns, columnVisibility, onColumnVisibilityChange }) 
               />
             </MenuItem>
           ))}
-
-        <span onClick={handleClose} data-testid="closeMenu" />
+        <button onClick={handleClose} data-testid="closeMenu" style={{ display: 'none' }} />
       </Menu>
     </div>
   );
