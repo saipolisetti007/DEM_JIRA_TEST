@@ -300,7 +300,12 @@ const PromoGridValidationTable = () => {
   return (
     <>
       <PageSection>
-        <BreadcrumbNavigation onNavigate={handleNavigate} />
+        <BreadcrumbNavigation
+          previousPage="Event Promo Plan"
+          previousLink="/promo-grid"
+          currentPage="Promo Grid Validation Page"
+          onNavigate={handleNavigate}
+        />
         <Box className="p-2">
           <div className="flex items-center justify-between">
             <DefaultPageHeader
@@ -352,7 +357,8 @@ const PromoGridValidationTable = () => {
         open={dialogOpen}
         onClose={handleDialogClose}
         onConfirm={handleDialogConfirm}
-        onReturnToPromoGrid={handleReturnToPromoGrid}
+        onReturnToCurrentPage={handleReturnToPromoGrid}
+        currentPage="Promo Grid Validation"
       />
       <DialogComponent
         open={warningDialogOpen}

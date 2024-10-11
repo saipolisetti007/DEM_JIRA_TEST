@@ -6,12 +6,12 @@ import ValidationPageDialog from './ValidationPageDialog';
 describe('ValidationPageDialog', () => {
   const mockOnClose = jest.fn();
   const mockOnConfirm = jest.fn();
-  const mockOnReturnToPromoGrid = jest.fn();
+  const mockOnReturnToCurrentPage = jest.fn();
 
   beforeEach(() => {
     mockOnClose.mockClear();
     mockOnConfirm.mockClear();
-    mockOnReturnToPromoGrid.mockClear();
+    mockOnReturnToCurrentPage.mockClear();
   });
 
   test('renders the dialog with correct text and buttons', () => {
@@ -20,17 +20,16 @@ describe('ValidationPageDialog', () => {
         open={true}
         onClose={mockOnClose}
         onConfirm={mockOnConfirm}
-        onReturnToPromoGrid={mockOnReturnToPromoGrid}
+        mockOnReturnToCurrentPage={mockOnReturnToCurrentPage}
         isCanceling={false}
+        currentPage="Validation"
       />
     );
 
     expect(screen.getByText('Do you want to leave this page?')).toBeInTheDocument();
-    expect(
-      screen.getByText('You are about to leave the Promo Grid Validation page')
-    ).toBeInTheDocument();
+    expect(screen.getByText('You are about to leave the Validation page')).toBeInTheDocument();
     expect(screen.getByText('Are you sure you want to leave this page?')).toBeInTheDocument();
-    expect(screen.getByText('Return to Promo Grid Validation')).toBeInTheDocument();
+    expect(screen.getByText('Return to Validation')).toBeInTheDocument();
     expect(screen.getByText('Leave this page')).toBeInTheDocument();
   });
 
@@ -40,8 +39,9 @@ describe('ValidationPageDialog', () => {
         open={true}
         onClose={mockOnClose}
         onConfirm={mockOnConfirm}
-        onReturnToPromoGrid={mockOnReturnToPromoGrid}
+        mockOnReturnToCurrentPage={mockOnReturnToCurrentPage}
         isCanceling={false}
+        currentPage="Validation"
       />
     );
 
@@ -49,19 +49,19 @@ describe('ValidationPageDialog', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  test('calls onReturnToPromoGrid when the "Return to Promo Grid Validation" button is clicked', () => {
+  test('calls onReturnToPromoGrid when the "Return to Validation" button is clicked', () => {
     render(
       <ValidationPageDialog
         open={true}
         onClose={mockOnClose}
         onConfirm={mockOnConfirm}
-        onReturnToPromoGrid={mockOnReturnToPromoGrid}
+        mockOnReturnToCurrentPage={mockOnReturnToCurrentPage}
         isCanceling={false}
+        currentPage="Validation"
       />
     );
 
-    fireEvent.click(screen.getByText('Return to Promo Grid Validation'));
-    expect(mockOnReturnToPromoGrid).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByText('Return to Validation'));
   });
 
   test('calls onConfirm when the "Leave this page" button is clicked', () => {
@@ -70,8 +70,9 @@ describe('ValidationPageDialog', () => {
         open={true}
         onClose={mockOnClose}
         onConfirm={mockOnConfirm}
-        onReturnToPromoGrid={mockOnReturnToPromoGrid}
+        mockOnReturnToCurrentPage={mockOnReturnToCurrentPage}
         isCanceling={false}
+        currentPage="Validation"
       />
     );
 
@@ -79,17 +80,18 @@ describe('ValidationPageDialog', () => {
     expect(mockOnConfirm).toHaveBeenCalledTimes(1);
   });
 
-  test('disables the "Return to Promo Grid Validation" button when isCanceling is true', () => {
+  test('disables the "Return to Validation" button when isCanceling is true', () => {
     render(
       <ValidationPageDialog
         open={true}
         onClose={mockOnClose}
         onConfirm={mockOnConfirm}
-        onReturnToPromoGrid={mockOnReturnToPromoGrid}
+        mockOnReturnToCurrentPage={mockOnReturnToCurrentPage}
         isCanceling={true}
+        currentPage="Validation"
       />
     );
 
-    expect(screen.getByText('Return to Promo Grid Validation')).toBeDisabled();
+    expect(screen.getByText('Return to Validation')).toBeDisabled();
   });
 });

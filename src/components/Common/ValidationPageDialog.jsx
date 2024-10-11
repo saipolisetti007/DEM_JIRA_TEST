@@ -15,8 +15,9 @@ const ValidationPageDialog = ({
   open, // Boolean indicating if the dialog is open.
   onClose, // Callback function to handle closing the dialog.
   onConfirm, // Callback function to handle confirming the action to leave the page.
-  onReturnToPromoGrid, // Callback function to handle returning to the Promo Grid Validation page.
-  isCanceling // Boolean indicating if the cancel action is in progress.
+  onReturnToCurrentPage, // Callback function to handle returning to the Promo Grid Validation page.
+  isCanceling, // Boolean indicating if the cancel action is in progress.
+  currentPage
 }) => {
   return (
     <Dialog open={open} onClose={onClose}>
@@ -37,7 +38,7 @@ const ValidationPageDialog = ({
       </DialogTitle>
       <DialogContent sx={{ minWidth: '600px' }}>
         <DialogContentText variant="h5" sx={{ mb: 1 }}>
-          You are about to leave the Promo Grid Validation page
+          You are about to leave the {currentPage} page
         </DialogContentText>
         <DialogContentText variant="body1">
           Are you sure you want to leave this page?
@@ -46,10 +47,10 @@ const ValidationPageDialog = ({
       <DialogActions sx={{ marginBottom: 1 }}>
         <Button
           variant="outlined"
-          onClick={onReturnToPromoGrid}
+          onClick={onReturnToCurrentPage}
           color="primary"
           disabled={isCanceling}>
-          Return to Promo Grid Validation
+          Return to {currentPage}
         </Button>
         <Button variant="contained" color="primary" onClick={onConfirm}>
           Leave this page

@@ -612,6 +612,11 @@ const PromoGridData = () => {
           rowCount={rowCount}
           handleCancel={handleCancel}
           handleSelectedDataDownloadExcel={handleSelectedDataDownloadExcel}
+          isExportDropdown={false}
+          cancelTitle="Cancel events"
+          exportTitle="Export files"
+          exportMain="Export files"
+          exportOption=""
         />
         <div className="promogrid-table">
           <MRT_ToolbarAlertBanner table={table} className="info-message" />

@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Breadcrumbs } from '@mui/material';
 
 // BreadcrumbNavigation component to render breadcrumb navigation links
-const BreadcrumbNavigation = ({ onNavigate }) => {
+const BreadcrumbNavigation = ({ onNavigate, previousPage, previousLink, currentPage }) => {
   // Function to handle click events on breadcrumb links
   const handleClick = (event, target) => {
     event.preventDefault();
@@ -23,12 +23,12 @@ const BreadcrumbNavigation = ({ onNavigate }) => {
       <Typography
         component="a"
         href="/promo-grid"
-        onClick={(event) => handleClick(event, '/promo-grid')}
+        onClick={(event) => handleClick(event, previousLink)}
         style={{ textDecoration: 'underline', color: 'black', fontWeight: 500 }}>
-        Event Promo Plan
+        {previousPage}
       </Typography>
       {/* Current page indicator */}
-      <Typography color="action.disabled">Promo Grid Validation Page</Typography>
+      <Typography color="action.disabled">{currentPage}</Typography>
     </Breadcrumbs>
   );
 };

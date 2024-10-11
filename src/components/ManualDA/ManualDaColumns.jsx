@@ -1,6 +1,13 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+import StatusBadges from '../Common/StatusBadges';
 
 const ManualDaColumns = ({ region }) => {
+  const numWeeks = 24;
+  const volumeHeaders = Array.from({ length: numWeeks }, (_, index) => ({
+    accessorKey: `vol_${index + 1}`,
+    header: `Vol ${index + 1}`,
+    enableColumnFilter: false
+  }));
   // Memoize the columns array to optimize performance
   const columns = useMemo(
     () => [
@@ -19,14 +26,21 @@ const ManualDaColumns = ({ region }) => {
         size: 150
       },
       {
+        accessorKey: 'status',
+        header: 'Status',
+        Cell: ({ row, column }) => <StatusBadges value={row.original[column.id]} />
+      },
+      {
         accessorKey: 'country_code',
         header: 'Country Code',
-        size: 120
+        size: 120,
+        enableColumnFilter: false
       },
       {
         accessorKey: 'customer_id',
         header: 'Customer ID',
-        size: 150
+        size: 150,
+        enableColumnFilter: false
       },
       {
         accessorKey: 'customer_name',
@@ -77,7 +91,7 @@ const ManualDaColumns = ({ region }) => {
       {
         accessorKey: 'customer_item_number',
         header: 'Customer Item Number',
-        size: 200
+        size: 250
       },
       {
         accessorKey: 'org',
@@ -117,17 +131,34 @@ const ManualDaColumns = ({ region }) => {
         accessorKey: 'uom',
         header: 'UOM'
       },
-
       {
         accessorKey: 'destination_profile ',
         header: 'Destination Profile ',
-        size: 160
+        size: 200
+      },
+      {
+        accessorKey: 'total_volume_su ',
+        header: 'Total Volume (SU) ',
+        size: 180
       },
       {
         accessorKey: 'total_volume',
         header: 'Total Volume',
         size: 150
-      }
+      },
+      ...volumeHeaders
+      // {
+      //   accessorKey: 'last_modified_user_id',
+      //   header: 'Last modified user ID'
+      // },
+      // {
+      //   accessorKey: 'created',
+      //   header: 'Created '
+      // },
+      // {
+      //   accessorKey: 'last_modified',
+      //   header: 'Last Modified  '
+      // }
     ],
     [region]
   );

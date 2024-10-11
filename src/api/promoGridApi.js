@@ -44,7 +44,7 @@ export const cancelRowData = async (rowData) => {
 };
 
 // Helper function to download an Excel file
-const downloadExcel = async (endpoint, request, filename, body = null) => {
+export const downloadExcel = async (endpoint, request, filename, body = null) => {
   const response = await performApiRequest(endpoint, request, body, 'blob');
   const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
 
