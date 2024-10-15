@@ -4,7 +4,7 @@ import { Button, Container, Typography } from '@mui/material';
 import DashboardIcon from '../../assets/dashboard/DashboardIcon';
 import GraphIcon from '../../assets/dashboard/GraphIcon';
 import ListIcon from '../../assets/dashboard/ListIcon';
-import EditIcon from '@mui/icons-material/Edit';
+//import EditIcon from '@mui/icons-material/Edit';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 // Seconday Nav bar for Navigation MenuNa
 const SecondaryNavBar = () => {
@@ -97,7 +97,7 @@ const SecondaryNavBar = () => {
               </ul>
             )}
           </div>
-          <NavLink
+          {/* <NavLink
             to="/manual-da"
             className={({ isActive }) =>
               isActive && !isOpen
@@ -116,7 +116,7 @@ const SecondaryNavBar = () => {
                 </span>
               </Button>
             )}
-          </NavLink>
+          </NavLink> */}
         </div>
       </Container>
     </nav>

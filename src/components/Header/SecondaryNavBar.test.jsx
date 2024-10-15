@@ -22,7 +22,7 @@ describe('SecondaryNavBar component', () => {
     expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
     expect(screen.getByText(/Event Promo Plan/i)).toBeInTheDocument();
     expect(screen.getByText(/CPF Forecast/i)).toBeInTheDocument();
-    expect(screen.getByText(/Manual DA/i)).toBeInTheDocument();
+    // expect(screen.getByText(/Manual DA/i)).toBeInTheDocument();
   });
 
   test('renders all navigation links', () => {
@@ -30,7 +30,7 @@ describe('SecondaryNavBar component', () => {
     expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
     expect(screen.getByText(/Event Promo Plan/i)).toBeInTheDocument();
     expect(screen.getByText(/CPF Forecast/i)).toBeInTheDocument();
-    expect(screen.getByText(/Manual DA/i)).toBeInTheDocument();
+    // expect(screen.getByText(/Manual DA/i)).toBeInTheDocument();
   });
 
   test('applies active class to the correct link when navigating to /', () => {
@@ -44,9 +44,9 @@ describe('SecondaryNavBar component', () => {
     expect(screen.getByText(/CPF Forecast/i).closest('div')).not.toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
-    expect(screen.getByText(/Manual DA/i).closest('a')).not.toHaveClass(
-      'bg-white font-bold rounded-full px-2 text-[#003DA5]'
-    );
+    // expect(screen.getByText(/Manual DA/i).closest('a')).not.toHaveClass(
+    //   'bg-white font-bold rounded-full px-2 text-[#003DA5]'
+    // );
   });
 
   test('applies active class to the correct link when navigating to /promo-grid', () => {
@@ -60,9 +60,9 @@ describe('SecondaryNavBar component', () => {
     expect(screen.getByText(/CPF Forecast/i).closest('div')).not.toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
-    expect(screen.getByText(/Manual DA/i).closest('a')).not.toHaveClass(
-      'bg-white font-bold rounded-full px-2 text-[#003DA5]'
-    );
+    // expect(screen.getByText(/Manual DA/i).closest('a')).not.toHaveClass(
+    //   'bg-white font-bold rounded-full px-2 text-[#003DA5]'
+    // );
   });
 
   test('applies active class to the correct link when navigating to /cpf-forecast', () => {
@@ -76,26 +76,26 @@ describe('SecondaryNavBar component', () => {
     expect(screen.getByText(/Event Promo Plan/i).closest('a')).not.toHaveClass(
       'bg-white font-bold rounded-full px-2 text-[#003DA5]'
     );
-    expect(screen.getByText(/Manual DA/i).closest('a')).not.toHaveClass(
-      'bg-white font-bold rounded-full px-2 text-[#003DA5]'
-    );
+    // expect(screen.getByText(/Manual DA/i).closest('a')).not.toHaveClass(
+    //   'bg-white font-bold rounded-full px-2 text-[#003DA5]'
+    // );
   });
 
-  test('applies active class to the correct link when navigating to /manual-da', () => {
-    renderWithRouter(<SecondaryNavBar />, { route: '/manual-da' });
-    expect(screen.getByText(/CPF Forecast/i).closest('div')).not.toHaveClass(
-      'bg-white font-bold rounded-full px-2 text-[#003DA5]'
-    );
-    expect(screen.getByText(/Dashboard/i).closest('a')).not.toHaveClass(
-      'bg-white font-bold rounded-full px-2 text-[#003DA5]'
-    );
-    expect(screen.getByText(/Event Promo Plan/i).closest('a')).not.toHaveClass(
-      'bg-white font-bold rounded-full px-2 text-[#003DA5]'
-    );
-    expect(screen.getByText(/Manual DA/i).closest('a')).toHaveClass(
-      'bg-white font-bold rounded-full px-2 text-[#003DA5]'
-    );
-  });
+  // test('applies active class to the correct link when navigating to /manual-da', () => {
+  //   renderWithRouter(<SecondaryNavBar />, { route: '/manual-da' });
+  //   expect(screen.getByText(/CPF Forecast/i).closest('div')).not.toHaveClass(
+  //     'bg-white font-bold rounded-full px-2 text-[#003DA5]'
+  //   );
+  //   expect(screen.getByText(/Dashboard/i).closest('a')).not.toHaveClass(
+  //     'bg-white font-bold rounded-full px-2 text-[#003DA5]'
+  //   );
+  //   expect(screen.getByText(/Event Promo Plan/i).closest('a')).not.toHaveClass(
+  //     'bg-white font-bold rounded-full px-2 text-[#003DA5]'
+  //   );
+  //   expect(screen.getByText(/Manual DA/i).closest('a')).toHaveClass(
+  //     'bg-white font-bold rounded-full px-2 text-[#003DA5]'
+  //   );
+  // });
 
   test('navigates to the correct route', () => {
     renderWithRouter(<SecondaryNavBar />);
@@ -108,6 +108,6 @@ describe('SecondaryNavBar component', () => {
     expect(cpfButton).toBeInTheDocument();
     fireEvent.click(cpfButton);
     expect(screen.getByText('Forecast Review')).toBeInTheDocument();
-    expect(screen.getByText(/Manual DA/i).closest('a')).toHaveAttribute('href', '/manual-da');
+    // expect(screen.getByText(/Manual DA/i).closest('a')).toHaveAttribute('href', '/manual-da');
   });
 });

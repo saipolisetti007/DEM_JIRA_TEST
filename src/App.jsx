@@ -4,65 +4,70 @@ import PageLayout from './components/PageLayout/PageLayout';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SignIn from './components/SignIn/SignIn';
 import msalInstance, { getAccessToken } from './auth/msalInstance';
-import SecondaryNavBar from '../src/components/Header/SecondaryNavBar';
 import DefaultPageLoader from './components/Common/DefaultPageLoader';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserProfile } from './components/Header/userProfileSlice';
 import { fetchCountries } from './components/PromoGrid/countryCodeSlice';
 
 const App = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const activeAccount = msalInstance?.getActiveAccount();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const { fetchAttempted } = useSelector((state) => state.userProfileData);
 
   // Handle redirect promise and set authentication state
   useEffect(() => {
     msalInstance.handleRedirectPromise().then(() => {
       setIsAuthenticated(true);
       getAccessToken();
-      if (location.pathname === '/signin') {
-        navigate('/');
-      }
     });
-  }, [navigate]);
+  }, []);
 
   // Fetch user profile and countries data if active account exists
   useEffect(() => {
-    if (activeAccount) {
+    if (activeAccount && !fetchAttempted) {
       const storedUserData = JSON.parse(sessionStorage.getItem('userData'));
       const countriesData = JSON.parse(sessionStorage.getItem('countriesData'));
       // Fetch countries data if not present in session storage
       if (!countriesData) {
         dispatch(fetchCountries());
       }
-      // Fetch user profile data if not present  in session storage
+      // Fetch user profile data if not present in session storage
       if (!storedUserData) {
         setIsAuthenticated(false);
-        dispatch(fetchUserProfile()).then(() => {
-          setIsAuthenticated(true);
+        dispatch(fetchUserProfile()).then((response) => {
+          if (response.error) {
+            setIsAuthenticated(false);
+            navigate('/unauthorised'); // Ensure user stays on redirectpage
+          } else {
+            setIsAuthenticated(true);
+            navigate('/'); // Navigate to home page only on success
+          }
         });
       } else {
         setIsAuthenticated(true);
+        navigate('/'); // Navigate to home page if user data is already present
       }
     }
-  }, [activeAccount, dispatch]);
+  }, [activeAccount, dispatch, fetchAttempted]);
 
   // Show loader if not authenticated
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !fetchAttempted) {
     return <DefaultPageLoader />;
   }
-
+  const hideHeaderFooter = location.pathname === '/unauthorised' || location.pathname === '/signin';
   // Render the main application layout
   return (
     <MsalProvider instance={msalInstance}>
       <UnauthenticatedTemplate>
         <SignIn />
       </UnauthenticatedTemplate>
+
       <AuthenticatedTemplate>
-        <PageLayout>
-          <SecondaryNavBar />
+        <PageLayout hideHeaderFooter={hideHeaderFooter}>
           <Outlet />
         </PageLayout>
       </AuthenticatedTemplate>

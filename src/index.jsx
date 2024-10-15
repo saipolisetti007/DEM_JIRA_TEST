@@ -22,6 +22,7 @@ import PromoGridValidations from './components/PromoGrid/PromoGridValidations';
 import ThresholdSettings from './pages/ThresholdSettings';
 import ManualDA from './pages/ManualDA';
 import ManualDaValidations from './components/ManualDA/ManualDaValidations';
+import Unauthorised from './components/Unauthorised/Unauthorised';
 
 // Creating router with defined routes
 const router = createBrowserRouter(
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
       <Route path="/cpf-forecast" element={<CPFForecast />} />
       <Route path="/threshold-settings" element={<ThresholdSettings />} />
       <Route path="/manual-da-validations" element={<ManualDaValidations />} />
+      <Route path="/unauthorised" element={<Unauthorised />} />
     </Route>
   )
 );

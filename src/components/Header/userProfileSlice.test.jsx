@@ -55,7 +55,7 @@ describe('userProfileSlice', () => {
   });
 
   it('should set state.status to "failed" and set error message when fetchUserProfile is rejected', async () => {
-    const errorMessage = 'Failed to fetch user profile';
+    const errorMessage = 'Rejected';
     getUserProfile.mockRejectedValueOnce(new Error(errorMessage));
 
     await store.dispatch(fetchUserProfile());
