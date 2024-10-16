@@ -23,8 +23,11 @@ const App = () => {
     msalInstance.handleRedirectPromise().then(() => {
       setIsAuthenticated(true);
       getAccessToken();
+      if (location.pathname === '/signin') {
+        navigate('/');
+      }
     });
-  }, []);
+  }, [navigate]);
 
   // Fetch user profile and countries data if active account exists
   useEffect(() => {
@@ -44,12 +47,10 @@ const App = () => {
             navigate('/unauthorised'); // Ensure user stays on redirectpage
           } else {
             setIsAuthenticated(true);
-            navigate('/'); // Navigate to home page only on success
           }
         });
       } else {
         setIsAuthenticated(true);
-        navigate('/'); // Navigate to home page if user data is already present
       }
     }
   }, [activeAccount, dispatch, fetchAttempted]);
