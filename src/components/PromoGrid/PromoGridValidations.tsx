@@ -1,0 +1,400 @@
+import React, { useEffect, useState } from 'react';
+import {
+  MRT_TablePagination,
+  useMaterialReactTable,
+  MRT_TableContainer,
+  MRT_ToolbarAlertBanner
+} from 'material-react-table';
+import { Box, Button, Typography } from '@mui/material';
+import PromoGridValidationColumns from './PromoGridValidationColumns';
+import PageSection from '../Common/PageSection';
+import DefaultPageHeader from '../Common/DefaultPageHeader';
+import { handleChangeValidate } from '../../utils/commonMethods';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { promoGridSubmit, promoGridValidate } from '../../api/promoGridApi';
+import InfoSnackBar from '../Common/InfoSnackBar';
+import BreadcrumbNavigation from '../Common/BreadcrumbNavigation';
+import ValidationPageDialog from '../Common/ValidationPageDialog'; // Make sure the path is correct
+import DialogComponent from '../Common/DialogComponent';
+import { SnackBarType } from '../ThresholdSettings/ThresholdSettingsData';
+
+type RowType = {
+  [key: string]: any;
+  validations: Record<string, string | null>;
+  validation_warning: Record<string, string | null>;
+  cpf_id: string;
+  golden_customer_id: number;
+  customer_item_number: number;
+  proxy_like_item_number: string | null;
+  event_type: string | null;
+  event_subtype: string | null;
+};
+type ValidationDataType = {
+  rows: RowType[];
+  promo_header: string;
+};
+type ValidationErrorType = {
+  [key: string]: string | null;
+};
+const PromoGridValidationTable = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { responseData } = location.state || {};
+  const [tableData, setTableData] = useState<RowType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isDataLoading, setIsDataLoading] = useState<boolean>(false);
+  const [isRefetching, setIsRefetching] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [validationErrors, setValidationErrors] = useState<ValidationErrorType[]>([]);
+  const [validationWarnings, setValidationWarnings] = useState<ValidationErrorType[]>([]);
+  const [updatedData, setUpdatedData] = useState<ValidationDataType>({
+    rows: [],
+    promo_header: ''
+  });
+  const [submitDisabled, setSubmitDisabled] = useState<boolean>(true);
+  const [warningDialogOpen, setWarningDialogOpen] = useState<boolean>(false);
+  const [isSnackOpen, setIsSnackOpen] = useState<boolean>(false);
+  const [snackBar, setSnackBar] = useState<SnackBarType>({ message: '', severity: '' });
+  const [selectedCustomer, setSelectedCustomer] = useState<number>();
+  const [warningMessage, setWarningMessage] = useState<string>(``);
+  // State for the dialog
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [navigateTarget, setNavigateTarget] = useState(null);
+  // Fetch data from responseData and update state
+  const fetchData = async () => {
+    try {
+      const data: ValidationDataType = responseData || {};
+      updateData(data);
+      setIsLoading(false);
+      setIsRefetching(false);
+      setUpdatedData(data);
+      setSelectedCustomer(data.rows[0]?.golden_customer_id);
+    } catch (error) {
+      setIsLoading(true);
+      setIsError(true);
+    }
+  };
+  // Update table data and validation errors
+  const updateData = (data: ValidationDataType) => {
+    setTableData(data.rows || []);
+    const errors = data.rows.map((row) => row.validations || {});
+    setValidationErrors(errors);
+  };
+  // Fetch data on component mount or when responseData changes
+  useEffect(() => {
+    fetchData();
+  }, [responseData]);
+  // Check if all validation errors are null
+
+  const allErrorsNull = Object.values(validationErrors).every((error) => {
+    return Object.values(error).every((value) => value === null);
+  });
+
+  const allWarningsNull = Object.values(validationWarnings).every((error) => {
+    return Object.values(error).every((value) => value === null);
+  });
+
+  // Handle input change and update validation errors
+  const handleInputChange = (newValue, rowIndex, accessorKey, helperMessage, validationType) => {
+    setSubmitDisabled(true);
+    let errorMessage;
+    if (helperMessage) {
+      errorMessage = helperMessage;
+    } else {
+      errorMessage = handleChangeValidate(newValue, validationType);
+    }
+    const updatedErrors = [...validationErrors];
+    const errMsg = updatedErrors[rowIndex][accessorKey];
+
+    const updatedValues = [...updatedData.rows];
+    // checking for all fields with similar kind of errors and setting to null...
+    for (let key in updatedErrors[rowIndex]) {
+      let value = updatedErrors[rowIndex][key];
+      if (value === errMsg) {
+        updatedErrors[rowIndex][key] = null;
+      }
+    }
+
+    if (accessorKey === 'event_type' && updatedErrors[rowIndex]?.event_subtype) {
+      updatedErrors[rowIndex].event_subtype = null;
+    }
+    if (accessorKey === 'event_subtype' && updatedErrors[rowIndex]?.event_type) {
+      updatedErrors[rowIndex].event_type = null;
+    }
+    if (accessorKey === 'event_type') {
+      updatedErrors[rowIndex].event_subtype = 'Required';
+    }
+
+    setValidationErrors(updatedErrors);
+    updatedValues[rowIndex][accessorKey] = newValue;
+    return errorMessage;
+  };
+  // Handle validation of data
+
+  const handleValidate = async () => {
+    setIsDataLoading(true);
+
+    if (!allErrorsNull && allWarningsNull) {
+      setIsDataLoading(false);
+      return;
+    }
+
+    try {
+      const updatedRows = removeValidationsFromRows(updatedData.rows);
+      const updatedState = { ...updatedData, rows: updatedRows };
+      const response = await promoGridValidate(updatedState);
+      setIsDataLoading(false);
+
+      if (response.rows) {
+        handleValidationResponse(response);
+      } else {
+        handleValidationSuccess();
+      }
+    } catch (error) {
+      handleValidationError(error);
+    }
+  };
+
+  const removeValidationsFromRows = (rows) => {
+    return rows.map((row) => {
+      // eslint-disable-next-line no-unused-vars
+      const { validations, validation_warning, ...rest } = row;
+      return rest;
+    });
+  };
+
+  const handleValidationResponse = (response) => {
+    const warnings = response.rows.map((row) => row.validation_warning || {});
+    const hasWarnings = warnings.some((warning) => Object.keys(warning).length > 0);
+
+    if (hasWarnings) {
+      setUpdatedData(response);
+      setValidationErrors(warnings);
+      setValidationWarnings(warnings);
+      setWarningDialogOpen(true);
+      setWarningMessage(generateWarningMessage(response.rows));
+    } else {
+      handleValidationSuccess();
+    }
+  };
+
+  const generateWarningMessage = (rows) => {
+    let cpfId1: string[] = [];
+    let cpfId2: string[] = [];
+
+    rows.forEach((row) => {
+      let warning = row.validation_warning;
+      if (warning.customer_item_number && warning.proxy_like_item_number) {
+        cpfId1.push(row.cpf_id);
+      } else if (warning.customer_item_number) {
+        cpfId2.push(row.cpf_id);
+      }
+    });
+
+    let warningMsg = '';
+
+    if (cpfId2.length > 0) {
+      let eventIds =
+        cpfId2.length > 5
+          ? `${cpfId2.slice(0, 5).join(',')} +${cpfId2.length - 5} more`
+          : cpfId2.join(',');
+      warningMsg = `<strong>Customer item not found in modelling data for Event IDs: ${eventIds}</strong>
+                  <h5>Proxy like item will be used for forecasting.</h5>`;
+    }
+
+    if (cpfId1.length > 0) {
+      let eventIds =
+        cpfId1.length > 5
+          ? `${cpfId1.slice(0, 5).join(',')} +${cpfId1.length - 5} more`
+          : cpfId1.join(',');
+      warningMsg += `<strong>Customer item and Proxy like item not found in modelling data for Event IDs: ${eventIds}</strong>
+                   <h5>Cold start logic will be used for forecasting.</h5>`;
+    }
+
+    warningMsg += `<h5>Do you want to proceed?</h5>`;
+    return warningMsg;
+  };
+
+  const handleValidationSuccess = () => {
+    setSubmitDisabled(false);
+    setIsSnackOpen(true);
+    setSnackBar({
+      message: 'Validation Successful, please submit the data !!!',
+      severity: 'success'
+    });
+  };
+
+  const handleValidationError = (error) => {
+    updateData(error.response.data);
+    setIsDataLoading(false);
+    setSubmitDisabled(true);
+    setIsSnackOpen(true);
+    setSnackBar({
+      message: 'Please check the validations !!!',
+      severity: 'error'
+    });
+  };
+
+  // Handle submission of data
+  const handleSubmit = async () => {
+    setWarningDialogOpen(false);
+    try {
+      const promoHeader = {
+        promo_header: responseData.promo_header
+      };
+      await promoGridSubmit(promoHeader);
+      navigate('/promo-grid', {
+        state: {
+          messageData: 'Excel file data uploaded successfully !!!',
+          selectedCustomer: selectedCustomer
+        }
+      });
+    } catch (error) {
+      setIsSnackOpen(true);
+      setSnackBar({
+        message: 'Error occurred while updating the data ! Please try again !!!',
+        severity: 'error'
+      });
+    }
+  };
+  // Handle dialog close
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setWarningDialogOpen(false);
+  };
+  // Handle dialog confirm
+  const handleDialogConfirm = () => {
+    setDialogOpen(false);
+    if (navigateTarget) {
+      navigate(navigateTarget);
+    }
+  };
+  // Handle navigation
+  const handleNavigate = (target) => {
+    setNavigateTarget(target);
+    setDialogOpen(true);
+  };
+  // Handle return to promo grid
+  const handleReturnToPromoGrid = () => {
+    navigate('/promo-grid');
+  };
+
+  // Initialize table with data and columns
+  const table = useMaterialReactTable({
+    data: tableData,
+    columns: PromoGridValidationColumns({
+      validationErrors,
+      validationWarnings,
+      handleInputChange
+    }),
+    enableEditing: true,
+    editDisplayMode: 'table',
+    enableSorting: false,
+    enableColumnActions: false,
+    muiTableProps: {
+      sx: {
+        borderCollapse: 'collapse',
+        border: '0.5px solid rgba(0, 0, 0, 0.23)'
+      }
+    },
+    muiTableHeadCellProps: {
+      sx: (theme) => ({
+        backgroundColor: theme.palette.primary.dark,
+        color: theme.palette.primary.contrastText
+      })
+    },
+    muiToolbarAlertBannerProps: isError
+      ? {
+          color: 'error',
+          children: 'Network Error. Could not fetch the data.'
+        }
+      : undefined,
+    initialState: {
+      density: 'compact',
+      showGlobalFilter: true
+    },
+    state: {
+      isLoading: isLoading,
+      showAlertBanner: isError,
+      showProgressBars: isRefetching
+    }
+  });
+
+  return (
+    <>
+      <PageSection>
+        <BreadcrumbNavigation
+          previousPage="Event Promo Plan"
+          previousLink="/promo-grid"
+          currentPage="Promo Grid Validation Page"
+          onNavigate={handleNavigate}
+        />
+        <Box className="p-2">
+          <div className="flex items-center justify-between">
+            <DefaultPageHeader
+              title="Promo Grid Validations"
+              subtitle={
+                allErrorsNull ? (
+                  <Typography className="text-green-700">
+                    Validate the data and proceed to submit
+                  </Typography>
+                ) : (
+                  <Typography color="error">Fix and Validate errors before submitting</Typography>
+                )
+              }
+            />
+            <div className="flex items-center justify-between gap-2">
+              <Button
+                variant="outlined"
+                color="success"
+                size="medium"
+                className="rounded-full ml-4"
+                onClick={handleValidate}
+                disabled={!allErrorsNull && allWarningsNull}>
+                {isDataLoading ? 'Validating...' : 'Validate'}
+              </Button>
+
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={handleSubmit}
+                disabled={submitDisabled}>
+                Submit
+              </Button>
+            </div>
+          </div>
+        </Box>
+        <MRT_ToolbarAlertBanner table={table} />
+        <MRT_TableContainer table={table} />
+        <MRT_TablePagination table={table} />
+      </PageSection>
+      {isSnackOpen && snackBar && (
+        <InfoSnackBar
+          isOpen={isSnackOpen}
+          message={snackBar.message}
+          severity={snackBar.severity}
+          onClose={() => setIsSnackOpen(false)}
+        />
+      )}
+      <ValidationPageDialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        onConfirm={handleDialogConfirm}
+        onReturnToCurrentPage={handleReturnToPromoGrid}
+        currentPage="Promo Grid Validation"
+      />
+      <DialogComponent
+        open={warningDialogOpen}
+        title="Confirm submission"
+        dialogHeading="There are warnings in the form submission"
+        dialogContent={warningMessage}
+        cancelText="Return to PromoGrid"
+        confirmText="Proceed to Submit"
+        handleConfirm={handleSubmit}
+        handleClose={handleDialogClose}
+      />
+    </>
+  );
+};
+
+export default PromoGridValidationTable;

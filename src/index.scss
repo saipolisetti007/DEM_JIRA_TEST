@@ -71,14 +71,18 @@ th.MuiTableCell-head svg {
   justify-content: end !important;
 }
 .promogrid-table table .MuiTableHead-root tr,
-.threshold-table table .MuiTableHead-root tr {
+.threshold-table table .MuiTableHead-root tr,
+.manualda-table table .MuiTableHead-root tr {
   background-color: #0c3479 !important;
 }
-.promogrid-table table .MuiTableBody-root tr {
+.promogrid-table table .MuiTableBody-root tr,
+.manualda-table table .MuiTableBody-root tr,
+.manualda-table table td:nth-last-child(2){
   background-color: #f5f5f5 !important;
 }
 .promogrid-table table td:nth-last-child(2),
-.threshold-table table td:nth-last-child(2) {
+.threshold-table table td:nth-last-child(2),
+.manualda-table table td:nth-last-child(2) {
   border-right: none !important;
 }
 .MuiTableHead-root tr .custom-row-actions {

@@ -14,6 +14,10 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.5.2",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
     "axios": "^1.6.7",
     "husky": "^9.0.11",
     "material-react-table": "^2.12.1",
@@ -60,9 +64,9 @@
       "^axios$": "axios/dist/axios.js"
     },
     "collectCoverageFrom": [
-      "./src/api/**/*.{js,jsx}",
-      "./src/components/**/*.{js,jsx}",
-      "!src/api/**/storeApi.{js,jsx}"
+      "./src/api/**/*.{ts,tsx}",
+      "./src/components/**/*.{ts,tsx}",
+      "./src/components/**/*.{ts,tsx}"
     ],
     "coverageThreshold": {
       "global": {
@@ -75,6 +79,9 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/lodash": "^4.17.10",
+    "@typescript-eslint/eslint-plugin": "^8.7.0",
+    "@typescript-eslint/parser": "^8.7.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
