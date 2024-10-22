@@ -33,6 +33,9 @@ export type SnackBarType = {
 };
 type RowDataType = {
   id: string;
+  category: string;
+  brand: string;
+  brand_form: string;
 };
 
 export type FiltersType = {
@@ -57,6 +60,11 @@ const ThresholdSettingsData = () => {
   const methods = useForm({ mode: 'onChange', defaultValues: rowData || {} }); // Initialize react-hook-form
   const { handleSubmit, control } = methods; // Destructure methods from useForm
   const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
+  const [editedFieldData, setEditedFieldData] = useState<any>({
+    category: '',
+    brand: '',
+    brand_form: ''
+  });
   // State to manage pagination
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -78,6 +86,11 @@ const ThresholdSettingsData = () => {
   useEffect(() => {
     if (isMode === 'edit' && rowData) {
       methods.reset(rowData);
+      setEditedFieldData({
+        category: rowData.category,
+        brand: rowData.brand,
+        brand_form: rowData.brand_form
+      });
     } else if (isMode === 'add') {
       methods.reset({});
     }
@@ -176,6 +189,9 @@ const ThresholdSettingsData = () => {
     setIsSaving(true);
     try {
       if (rowData) {
+        data.category = editedFieldData.category;
+        data.brand = editedFieldData.brand;
+        data.brand_form = editedFieldData.brand_form;
         await cpfThresholdEdit(rowData.id, data);
       }
       setIsSaving(false);
@@ -394,6 +410,8 @@ const ThresholdSettingsData = () => {
                 setErrorMessage={setErrorMessage}
                 isEdit={true}
                 rowData={rowData}
+                editedFieldData={editedFieldData}
+                setEditedFieldData={setEditedFieldData}
               />
             </FormProvider>
           )}

@@ -13,6 +13,8 @@ type AddRuleFormProps = {
   // eslint-disable-next-line no-unused-vars
   setErrorMessage?: (message: string) => void;
   rowData?: Record<string, any> | null;
+  editedFieldData?: Record<string, any>;
+  setEditedFieldData?: Function;
 };
 
 const AddRuleForm = ({
@@ -21,7 +23,9 @@ const AddRuleForm = ({
   isEdit,
   errorMessage,
   setErrorMessage,
-  rowData
+  rowData,
+  editedFieldData,
+  setEditedFieldData
 }: AddRuleFormProps) => {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -50,6 +54,11 @@ const AddRuleForm = ({
     name: 'brand'
   });
 
+  const brand_form = useWatch({
+    control,
+    name: 'brand_form'
+  });
+
   const operation = useWatch({
     control,
     name: 'operation_type'
@@ -63,6 +72,7 @@ const AddRuleForm = ({
   const stableSubsector = useMemo(() => subsector, [subsector]);
   const stableCategory = useMemo(() => category, [category]);
   const stableBrand = useMemo(() => brand, [brand]);
+  const stableBrandForm = useMemo(() => brand_form, [brand_form]);
 
   useEffect(() => {
     if (errorMessage !== '') {
@@ -75,12 +85,21 @@ const AddRuleForm = ({
     if (subsector) {
       setIsCategoryLoading(true);
       setCategories([]);
+
       const reqParams = 'subsector=' + subsector;
       fetchSubsequentFilters(reqParams).then((data) => {
         const categories = data || [];
         setCategories(categories);
         setBrands([]);
         setBrandForms([]);
+        setEditedFieldData &&
+          setEditedFieldData({
+            ...editedFieldData,
+            subsector,
+            category: '',
+            brand: '',
+            brand_form: ''
+          });
         setIsCategoryLoading(false);
       });
     }
@@ -91,11 +110,14 @@ const AddRuleForm = ({
     if (category) {
       setIsBrandsLoading(true);
       setBrands([]);
+
       const reqParams = 'subsector=' + subsector + '&category=' + category;
       fetchSubsequentFilters(reqParams).then((data) => {
         const brands = data || [];
         setBrands(brands);
         setBrandForms([]);
+        setEditedFieldData &&
+          setEditedFieldData({ ...editedFieldData, category, brand: '', brand_form: '' });
         setIsBrandsLoading(false);
       });
     }
@@ -110,10 +132,18 @@ const AddRuleForm = ({
       fetchSubsequentFilters(reqParams).then((data) => {
         const brandForms = data || [];
         setBrandForms(brandForms);
+        setEditedFieldData &&
+          setEditedFieldData({ ...editedFieldData, category, brand, brand_form: '' });
         setIsBrandFormLoading(false);
       });
     }
   }, [stableBrand]);
+
+  useEffect(() => {
+    if (brand_form) {
+      setEditedFieldData && setEditedFieldData({ ...editedFieldData, category, brand, brand_form });
+    }
+  }, [stableBrandForm]);
 
   // Options for select inputs
   const compareOptions = ['Customer Forecast'];
