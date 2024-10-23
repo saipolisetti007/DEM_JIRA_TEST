@@ -82,6 +82,14 @@ const AddRuleForm = ({
 
   // Effect to update categories when subsector changes
   useEffect(() => {
+    setEditedFieldData &&
+      setEditedFieldData({
+        ...editedFieldData,
+        subsector,
+        category: null,
+        brand: null,
+        brand_form: null
+      });
     if (subsector) {
       setIsCategoryLoading(true);
       setCategories([]);
@@ -92,14 +100,6 @@ const AddRuleForm = ({
         setCategories(categories);
         setBrands([]);
         setBrandForms([]);
-        setEditedFieldData &&
-          setEditedFieldData({
-            ...editedFieldData,
-            subsector,
-            category: '',
-            brand: '',
-            brand_form: ''
-          });
         setIsCategoryLoading(false);
       });
     }
@@ -107,17 +107,16 @@ const AddRuleForm = ({
 
   // Effect to update brands when category changes
   useEffect(() => {
+    setEditedFieldData &&
+      setEditedFieldData({ ...editedFieldData, category, brand: null, brand_form: null });
     if (category) {
       setIsBrandsLoading(true);
       setBrands([]);
-
       const reqParams = 'subsector=' + subsector + '&category=' + category;
       fetchSubsequentFilters(reqParams).then((data) => {
         const brands = data || [];
         setBrands(brands);
         setBrandForms([]);
-        setEditedFieldData &&
-          setEditedFieldData({ ...editedFieldData, category, brand: '', brand_form: '' });
         setIsBrandsLoading(false);
       });
     }
@@ -125,6 +124,8 @@ const AddRuleForm = ({
 
   // Effect to update brand forms when brand changes
   useEffect(() => {
+    setEditedFieldData &&
+      setEditedFieldData({ ...editedFieldData, category, brand, brand_form: null });
     if (brand) {
       setIsBrandFormLoading(true);
       setBrandForms([]);
@@ -132,17 +133,13 @@ const AddRuleForm = ({
       fetchSubsequentFilters(reqParams).then((data) => {
         const brandForms = data || [];
         setBrandForms(brandForms);
-        setEditedFieldData &&
-          setEditedFieldData({ ...editedFieldData, category, brand, brand_form: '' });
         setIsBrandFormLoading(false);
       });
     }
   }, [stableBrand]);
 
   useEffect(() => {
-    if (brand_form) {
-      setEditedFieldData && setEditedFieldData({ ...editedFieldData, category, brand, brand_form });
-    }
+    setEditedFieldData && setEditedFieldData({ ...editedFieldData, category, brand, brand_form });
   }, [stableBrandForm]);
 
   // Options for select inputs
@@ -190,7 +187,7 @@ const AddRuleForm = ({
               control={control}
               name="category"
               label="Category"
-              type="select"
+              type="autocomplete"
               options={categories}
               isDisabled={!subsector && !isEdit}
               loading={isCategoryLoading}
@@ -201,7 +198,7 @@ const AddRuleForm = ({
               control={control}
               name="brand"
               label="Brand"
-              type="select"
+              type="autocomplete"
               options={brands}
               isDisabled={!category && !isEdit}
               loading={isBrandsLoading}
@@ -212,7 +209,7 @@ const AddRuleForm = ({
               control={control}
               name="brand_form"
               label="Brand form"
-              type="select"
+              type="autocomplete"
               options={brandForms}
               isDisabled={!brand && !isEdit}
               loading={isBrandFormLoading}

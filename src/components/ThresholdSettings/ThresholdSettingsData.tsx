@@ -61,9 +61,9 @@ const ThresholdSettingsData = () => {
   const { handleSubmit, control } = methods; // Destructure methods from useForm
   const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
   const [editedFieldData, setEditedFieldData] = useState<any>({
-    category: '',
-    brand: '',
-    brand_form: ''
+    category: null,
+    brand: null,
+    brand_form: null
   });
   // State to manage pagination
   const [pagination, setPagination] = useState({
@@ -144,6 +144,9 @@ const ThresholdSettingsData = () => {
     setIsSaving(true);
     try {
       data.customer = customerId;
+      data.category = editedFieldData.category;
+      data.brand = editedFieldData.brand;
+      data.brand_form = editedFieldData.brand_form;
       await cpfThresholdAdd(data);
       setIsSaving(false);
       setOpenDialog(false);
@@ -248,6 +251,7 @@ const ThresholdSettingsData = () => {
   };
   //Close Dialog
   const handleDialogClose = () => {
+    isMode === 'edit' && rowData ? methods.reset(rowData) : methods.reset({});
     setOpenDialog(false);
     setOpenConfirmDialog(false);
   };
@@ -385,6 +389,8 @@ const ThresholdSettingsData = () => {
                 filters={filters}
                 errorMessage={errorMessage}
                 setErrorMessage={setErrorMessage}
+                editedFieldData={editedFieldData}
+                setEditedFieldData={setEditedFieldData}
               />
             </FormProvider>
           )}

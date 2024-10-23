@@ -130,95 +130,96 @@ const FormInputControl = ({
         );
       case 'select':
         return (
-          <>
-            <TextField
-              {...field}
-              select
-              label={label}
-              data-testid={label}
-              aria-labelledby={label}
-              variant="outlined"
-              fullWidth
-              required={isRequired}
-              size="small"
-              color={isWarning ? 'warning' : undefined}
-              focused={isWarning}
-              error={!!error && !isWarning}
-              disabled={isDisabled}
-              helperText={
-                error ? (
-                  <span
-                    style={{
-                      color: isWarning ? theme.palette.warning.main : ''
-                    }}>
-                    {isWarning ? <WarningIcon fontSize="small" /> : <ErrorIcon fontSize="small" />}
-                    {error.message}
-                  </span>
-                ) : (
-                  ''
-                )
-              }>
-              {options.length > 0 && options[0] ? (
-                options.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))
+          <TextField
+            {...field}
+            select
+            label={label}
+            data-testid={label}
+            aria-labelledby={label}
+            variant="outlined"
+            fullWidth
+            required={isRequired}
+            size="small"
+            color={isWarning ? 'warning' : undefined}
+            focused={isWarning}
+            error={!!error && !isWarning}
+            disabled={isDisabled}
+            helperText={
+              error ? (
+                <span
+                  style={{
+                    color: isWarning ? theme.palette.warning.main : ''
+                  }}>
+                  {isWarning ? <WarningIcon fontSize="small" /> : <ErrorIcon fontSize="small" />}
+                  {error.message}
+                </span>
               ) : (
-                <MenuItem value="" disabled>
-                  No Options Available
+                ''
+              )
+            }>
+            {options.length > 0 && options[0] ? (
+              options.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
                 </MenuItem>
+              ))
+            ) : (
+              <MenuItem value="" disabled>
+                No Options Available
+              </MenuItem>
+            )}
+          </TextField>
+        );
+      case 'autocomplete':
+        return (
+          <>
+            <Autocomplete
+              {...field}
+              value={options.includes(field.value) ? field.value : null}
+              isOptionEqualToValue={(option, value) => option === value}
+              options={options}
+              disabled={isDisabled}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={label}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  color={isWarning ? 'warning' : undefined}
+                  focused={isWarning}
+                  required={isRequired}
+                  error={!!error && !isWarning}
+                  helperText={
+                    error ? (
+                      <span
+                        style={{
+                          color: isWarning ? theme.palette.warning.main : ''
+                        }}>
+                        {isWarning ? (
+                          <WarningIcon fontSize="small" />
+                        ) : (
+                          <ErrorIcon fontSize="small" />
+                        )}
+                        {error.message}
+                      </span>
+                    ) : (
+                      ''
+                    )
+                  }
+                />
               )}
-            </TextField>
+              onChange={(event, value) => {
+                field.onChange(value);
+                clearErrors(name);
+              }}
+            />
             {loading && (
               <Typography component="span" variant="body2" marginLeft={0.5}>
                 Loading options...
               </Typography>
             )}
           </>
-        );
-      case 'autocomplete':
-        return (
-          <Autocomplete
-            {...field}
-            value={options.includes(field.value) ? field.value : null}
-            isOptionEqualToValue={(option, value) => option === value}
-            options={options}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={label}
-                variant="outlined"
-                fullWidth
-                size="small"
-                color={isWarning ? 'warning' : undefined}
-                focused={isWarning}
-                required={isRequired}
-                error={!!error && !isWarning}
-                helperText={
-                  error ? (
-                    <span
-                      style={{
-                        color: isWarning ? theme.palette.warning.main : ''
-                      }}>
-                      {isWarning ? (
-                        <WarningIcon fontSize="small" />
-                      ) : (
-                        <ErrorIcon fontSize="small" />
-                      )}
-                      {error.message}
-                    </span>
-                  ) : (
-                    ''
-                  )
-                }
-              />
-            )}
-            onChange={(event, value) => {
-              field.onChange(value);
-              clearErrors(name);
-            }}
-          />
         );
       case 'switch':
         return (
