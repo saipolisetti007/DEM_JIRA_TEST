@@ -77,7 +77,7 @@ th.MuiTableCell-head svg {
 }
 .promogrid-table table .MuiTableBody-root tr,
 .manualda-table table .MuiTableBody-root tr,
-.manualda-table table td:nth-last-child(2){
+.manualda-table table td:nth-last-child(2) {
   background-color: #f5f5f5 !important;
 }
 .promogrid-table table td:nth-last-child(2),
@@ -168,4 +168,30 @@ th.custom-row-actions.MuiTableCell-root[data-pinned='true']:before {
 
 .comment-input.focused .MuiOutlinedInput-notchedOutline {
   border: 1px solid #003da5; /* or any other border style you prefer */
+}
+
+//Rating
+.rate-experience-wrap {
+  margin: 0 auto 10px auto;
+  text-align: center;
+}
+.rate-experience-wrap .rate-experience {
+  text-decoration: none !important;
+  color: #003daf !important;
+  text-align: center;
+  display: inline-block;
+  margin: 0 auto;
+}
+.rate-experience img {
+  display: block;
+  margin: 0 auto 5px auto;
+  width: 75px;
+  height: 28px;
+}
+.rate-experience span {
+  display: block;
+  margin: 0 !important;
+}
+.rate-experience:hover span {
+  text-decoration: underline;
 }

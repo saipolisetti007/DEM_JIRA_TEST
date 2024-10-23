@@ -1,12 +1,22 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import { Alert, Container, Link } from '@mui/material';
+import rateImage from '../../assets/images/RYE.svg';
 const moment = require('moment');
 
 // Footer component
 const Footer = () => {
   return (
     <footer data-testid="footer">
+      <div className="rate-experience-wrap">
+        <Link
+          href="https://rateexperience.pg.com/ratings?id=30902"
+          className="rate-experience"
+          target="_blank">
+          <img src={rateImage} alt="Rate Your Experience" />
+          <span>Rate your experience</span>
+        </Link>
+      </div>
       <Alert severity="info">
         In case of any issues please raise INC in ServiceNow here:{' '}
         <strong>
