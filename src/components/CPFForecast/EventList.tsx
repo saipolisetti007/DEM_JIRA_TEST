@@ -44,7 +44,7 @@ const EventAvatar = ({ event }: EventAvatarPropsType) => {
         <>
           <div>{`Event Type: ${eventType}`}</div>
           <div>{`Event Subtype: ${event.event_subtype}`}</div>
-          <div>{`Event store in window:`}</div>
+          <div>{`Event Delivery Date window:`}</div>
           <div>
             {event.event_start} - {event.event_end}
           </div>
