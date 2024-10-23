@@ -149,12 +149,6 @@ const PromoGridData = () => {
         active: response?.active || prevOptions.active
       }));
       setIsDataLoading(false);
-      setSelectedFilters((prevFilters) => ({
-        ...prevFilters,
-        customerId: location?.state?.selectedCustomer
-          ? [location.state.selectedCustomer]
-          : [customerId]
-      }));
       setFiltersUpdated(true);
     } catch (error) {
       setFiltersUpdated(true);
