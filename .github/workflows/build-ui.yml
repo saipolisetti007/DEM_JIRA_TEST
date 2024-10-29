@@ -18,13 +18,13 @@ on:
       - '.github/**/*' 
       - 'sonar-project.properties'
 
-   pull_request:
-    branches:
-      - develop
-      - stage
-      - main
-      - jira-test-01
-    types: [opened, synchronize, reopened]
+   # pull_request:
+   #  branches:
+   #    - develop
+   #    - stage
+   #    - main
+   #    - jira-test-01
+   #  types: [opened, synchronize, reopened]
 
 env:
     AZURE_WEBAPP_PACKAGE_PATH: '.'
