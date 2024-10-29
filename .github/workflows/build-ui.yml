@@ -10,19 +10,23 @@ on:
 
    push:
     branches:
-     - develop
-     - stage
-     - main
+    #  - develop
+    #  - stage
+    #  - main
+       - feature/jira-test
     paths-ignore:
       - '.github/**/*' 
       - 'sonar-project.properties'
 
-   pull_request:
-    branches:
-      - develop
-      - stage
-      - main
-    types: [opened, synchronize, reopened]
+  #  pull_request:
+  #   branches:
+  #     # - develop
+  #     # - stage
+  #     # - main
+  #   types: [opened, synchronize, reopened]
+
+env:
+    AZURE_WEBAPP_PACKAGE_PATH: '.'
 
 jobs:
   SonarQube_Scan:
@@ -52,6 +56,56 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
+  version-bump:
+    name: Version Bump
+    runs-on: [ ubuntu-latest ]
+    needs: [ SonarQube_Scan ]
+    outputs:
+        version: ${{ steps.bump-patch.outputs.version || steps.bump-minor.outputs.version }}
+    steps:
+        -   name: Checkout code
+            uses: actions/checkout@v2
+            with:
+                # token: ${{ secrets.ACTIONS_TOKEN }}
+                fetch-depth: 0
+        -   name: Install dependencies
+            uses: ./.github/actions/prepare
+            with:
+                node-version: ${{ vars.DEM_UI_NODE_VERSION }}
+        -   name: Git config
+            id: git
+            run: |
+                git config user.email "${{ vars.ACTIONS_ORG_EMAIL }}"
+                git config user.name "${{ vars.ACTIONS_ORG_NAME }}"
+                git config advice.ignoredHook false
+                HASH=$(git rev-parse HEAD)
+                echo "hash=${HASH}" >> $GITHUB_OUTPUT
+        -   name: Apply version bump (patch/hotfix)
+            id: bump-patch
+            if: (github.event.pull_request.title == 'patch' || github.event.pull_request.title == 'hotfix')
+            run: |
+                VERSION=$(npm version patch)
+                echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        -   name: Apply version bump (minor)
+            id: bump-minor
+            if: steps.bump-patch.outputs.version == null
+            run: |
+                VERSION=$(npm version minor)
+                echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        -   name: Save node_modules cache
+            uses: actions/cache/save@v4
+            with:
+                path: node_modules
+                key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+        -   name: Git push incremented version
+            run: |
+                COMMIT_MESSAGE="$(date) - Increment version ${{ steps.bump-patch.outputs.version || steps.bump-minor
+                .outputs.version }}"
+                git add .
+                git commit -m "${COMMIT_MESSAGE}" --no-verify
+                git push --force
+                echo $COMMIT_MESSAGE
+
   Build_UI_code_for_PR:
     name: Build_UI_code_for_PR
     if: ${{ startsWith(github.ref, 'refs/pull/') }}
@@ -77,7 +131,7 @@ jobs:
     name: Select Environment
     runs-on: [self-hosted,Linux, cicdframework]
     if: ${{ ! startsWith(github.ref, 'refs/pull/') }}
-    needs: SonarQube_Scan
+    needs: [ SonarQube_Scan, version-bump ]
     steps:
       -   name: Select deployment environment
           id: branch_check
@@ -148,22 +202,135 @@ jobs:
     outputs:
       version_num: ${{ steps.gitversion.outputs.MajorMinorPatch }}
 
-  Deploy:
-    name: Deploy to ${{ needs.environment.outputs.env_name }} environment
-    runs-on: [self-hosted,Linux, cicdframework]
-    if: ${{ ! startsWith(github.ref, 'refs/pull/') }}
-    needs: [environment, Build_UI_code]
-    environment: 
-      name: ${{ needs.environment.outputs.env_name }}
-    steps: 
-        - name: download the artifact
-          uses: actions/download-artifact@v4
+  update-changelog:
+    runs-on: ubuntu-latest
+    needs: [ Build_UI_code, version-bump ]
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+        - name: Set up Python
+          uses: actions/setup-python@v2
           with:
-            name: node-app-${{ needs.Build_UI_code.outputs.version_num }}
+            python-version: '3.x'
+        - name: Install JIRA client
+          run: |
+            pip install jira
+        - name: Generate Changelog
+          env:
+            JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+            JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+            JIRA_URL: ${{ secrets.JIRA_URL }}
+          run: |
+            python scripts/update_changelog.py
+        - name: Commit changes
+          run: |
+            git config user.email "${{ vars.ACTIONS_ORG_EMAIL }}"
+            git config user.name "${{ vars.ACTIONS_ORG_NAME }}"
+            git add changelog-new.md
+            git commit -m "Update changelog" || echo "No changes to commit"
+            git push
+#----Update Release Notes ---------#
 
-        - name: deploy the web-app
-          uses: azure/webapps-deploy@v2
-          with:
-            app-name: ${{ vars.APP_SERVICE_NAME }}
-            publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-            package: release.zip
+  release-creation:
+    name: Release Creation
+    # runs-on: [ self-hosted,Linux, cicdframework ]
+    runs-on: ubuntu-latest
+    needs: [ version-bump, update-changelog]
+    outputs:
+        version: ${{ steps.release_version.outputs.version }}
+    steps:
+        -   name: Checkout code
+            uses: actions/checkout@v3
+            with:
+             fetch-depth: 0
+        -   name: Release version fix conflict
+            id: release_version
+            run: |
+                ISEXISTRELEASE=$(gh release list | grep "${{ needs.version-bump.outputs.version }}" | wc -l)
+                if [ "$ISEXISTRELEASE" -ne "0" ]; then
+                    new_version=${{ needs.version-bump.outputs.version }}.$(date +"%Y%m%d%M")
+                else
+                    new_version=${{ needs.version-bump.outputs.version }}
+                fi
+                echo "version=${new_version}" >> $GITHUB_OUTPUT
+                echo "$new_version"
+            env:
+                GITHUB_TOKEN: ${{ github.token }}
+                GH_REPO: ${{ github.repository }}
+        # -   name: Get id of Jira task
+        #     id: jira-task-id
+        #     run: |
+        #         JIRATASK=$(echo "${{ github.event.pull_request.title }}" | sed -n -e 's/.*\(ALOI\-[0-9]\+\).*/\1/p')
+        #         echo "jiratask=${JIRATASK}" >> $GITHUB_OUTPUT
+        -   name: Normal feature release notes (default)
+            continue-on-error: true
+            run: |
+                echo "# Release notes:" > RELEASEBODY.md
+                # cat changelog-new.md >> RELEASEBODY.md
+                echo " PR title: ${{ github.event.pull_request.title }}" >> RELEASEBODY.md
+                cat changelog-new.md >> RELEASEBODY.md
+        -   name: Generate 'Enhancement' notes
+            if: github.event.label.name == 'enhancement' || contains(github.event.pull_request.labels.*.name, 'enhancement')
+            run: |
+                echo "# Release notes:" > RELEASEBODY.md
+                cat changelog-new.md >> RELEASEBODY.md
+                echo " PR title: ${{ github.event.pull_request.title }}" >> RELEASEBODY.md
+                echo "========== Pull request commits ==========" >> RELEASEBODY.md
+                CONTENT_OF_LOG=$(git log -n2 --pretty=format:"%cd %B" --date=format-local:"%Y-%m-%d %H:%M:%S")
+                echo "$CONTENT_OF_LOG" >> RELEASEBODY.md
+                echo "=========================================" >> RELEASEBODY.md
+        -   name: Generate 'Patch' notes
+            if: (github.event.pull_request.title == 'patch' || github.event.pull_request.title == 'hotfix') || github.event.label.name == 'patch' || contains(github.event.pull_request.labels.*.name, 'patch')
+            run: |
+                echo "# Release notes:" > RELEASEBODY.md
+                cat changelog-new.md >> RELEASEBODY.md
+                echo " PR title: ${{ github.event.pull_request.title }}" >> RELEASEBODY.md
+        -   name: Generate 'Feature' notes
+            if: github.event.label.name == 'feature' || contains(github.event.pull_request.labels.*.name, 'feature')
+            run: |
+                echo "# Release notes:" > RELEASEBODY.md
+                cat changelog-new.md >> RELEASEBODY.md
+                echo " PR title: ${{ github.event.pull_request.title }}" >> RELEASEBODY.md
+        -   name: Generate EPIC notes
+            if: github.event.label.name == 'epic' || contains(github.event.pull_request.labels.*.name, 'epic')
+            run: |
+                echo "# Release notes:" > RELEASEBODY.md
+                cat changelog-new.md >> RELEASEBODY.md
+                echo " PR title: ${{ github.event.pull_request.title }}" >> RELEASEBODY.md
+                echo "========== Pull request commits ==========" >> RELEASEBODY.md
+                CONTENT_OF_LOG=$(git log -n2 --pretty=format:"%cd %B" --date=format-local:"%Y-%m-%d %H:%M:%S")
+                echo "$CONTENT_OF_LOG" >> RELEASEBODY.md
+                echo "=========================================" >> RELEASEBODY.md
+                echo "Additional notes: < edit here manually >" >> RELEASEBODY.md
+        -   name: Release
+            id: release
+            run: |
+                pwd
+                ls -ltr RELEASEBODY.md
+                cat RELEASEBODY.md
+                gh release create "${{ steps.release_version.outputs.version }}" \
+                --notes-file RELEASEBODY.md \
+                -t "${{ steps.release_version.outputs.version }}"
+            env:
+                GITHUB_TOKEN: ${{ github.token }}
+                GH_REPO: ${{ github.repository }}
+#-----------------------------------------------#
+  # Deploy:
+  #   name: Deploy to ${{ needs.environment.outputs.env_name }} environment
+  #   runs-on: [self-hosted,Linux, cicdframework]
+  #   if: ${{ ! startsWith(github.ref, 'refs/pull/') }}
+  #   needs: [environment, Build_UI_code]
+  #   environment: 
+  #     name: ${{ needs.environment.outputs.env_name }}
+  #   steps: 
+  #       - name: download the artifact
+  #         uses: actions/download-artifact@v4
+  #         with:
+  #           name: node-app-${{ needs.Build_UI_code.outputs.version_num }}
+
+  #       - name: deploy the web-app
+  #         uses: azure/webapps-deploy@v2
+  #         with:
+  #           app-name: ${{ vars.APP_SERVICE_NAME }}
+  #           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+  #           package: release.zip
